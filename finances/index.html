@@ -253,7 +253,8 @@ footer{color:var(--ink-3);font-size:12px;text-align:center;padding:24px 0 8px}
 <script>
 /* =====================================================================
    CONTENU DU HUB : c'est ici qu'on modifie les dates et les ressources.
-   Les dates sont au format AAAA-MM-JJ. ⚠ Dates de la bêta = à confirmer.
+   Les dates sont au format AAAA-MM-JJ. Un examen est donné par sa semaine
+   (le lundi), le jour exact dépend du groupe. ⚠ Semaines de la bêta = à confirmer.
    ===================================================================== */
 const HUB = {
   annee: { debut: "2026-08-27", fin: "2027-06-18" },
@@ -274,7 +275,7 @@ const HUB = {
   ],
 
   examens: [
-    { id: "mi1", titre: "Examen de mi-étape 1", date: "2026-10-29", chapitre: "Chapitre 1 · La consommation",
+    { id: "mi1", titre: "Examen de mi-étape 1", semaine: "2026-10-26", chapitre: "Chapitre 1 · La consommation",
       sections: [
         ["1.1", "Consommer, c'est faire des choix", "p. 4-11"],
         ["1.2", "La publicité, un mal nécessaire?", "p. 12-15"]
@@ -287,7 +288,7 @@ const HUB = {
         "Calculer la TPS et la TVQ sur un achat",
         "Reconnaître la stratégie utilisée dans une publicité"
       ] },
-    { id: "e1", titre: "Examen d'étape 1", date: "2026-11-12", chapitre: "Chapitre 1 au complet",
+    { id: "e1", titre: "Examen d'étape 1", semaine: "2026-11-09", chapitre: "Chapitre 1 au complet",
       sections: [
         ["1.1", "Consommer, c'est faire des choix", "p. 4-11"],
         ["1.2", "La publicité, un mal nécessaire?", "p. 12-15"],
@@ -303,7 +304,7 @@ const HUB = {
         "Passer du salaire brut au salaire net",
         "Bâtir un budget simple : revenus, dépenses fixes et variables"
       ] },
-    { id: "mi2", titre: "Examen de mi-étape 2", date: "2026-12-17", chapitre: "Chapitres 2 et 3 · Crédit et épargne",
+    { id: "mi2", titre: "Examen de mi-étape 2", semaine: "2026-12-14", chapitre: "Chapitres 2 et 3 · Crédit et épargne",
       sections: [
         ["2.1", "Le crédit : facile d'accès?", "p. 42-49"],
         ["2.2", "Le crédit : comment ça marche?", "p. 50-67"],
@@ -317,7 +318,7 @@ const HUB = {
   // Les déblocages de notes et les examens s'ajoutent tout seuls au fil.
   messages: [
     { date: "2026-10-23", icone: "👋", texte: "Le hub du cours est ouvert", detail: "Reviens ici avant chaque examen." },
-    { date: "2026-10-26", icone: "🎯", texte: "Mi-étape jeudi : relis la liste « Je suis prêt si… »", detail: "Section Accueil" }
+    { date: "2026-10-26", icone: "🎯", texte: "Mi-étape cette semaine : relis la liste « Je suis prêt si… »", detail: "Section Accueil" }
   ],
 
   // Le truc de la semaine (un par semaine, en boucle).
@@ -345,6 +346,10 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const noteById = id => HUB.notes.find(n => n.id === id);
 // Une note est ouverte à sa date de sortie, si son fichier est en ligne (fichier: null = pas encore publiée).
 const ouverte = (n, today) => parse(n.dispo) <= today && !!n.fichier;
+// Un examen a lieu pendant une semaine (son lundi) ; le jour exact dépend du groupe.
+const lundiDe = d => new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() + 6) % 7);
+const finSemaine = x => new Date(parse(x.semaine).getTime() + 4 * DAY);
+const semainesAvant = (x, today) => Math.round(diff(lundiDe(today), parse(x.semaine)) / 7);
 const ICON_PAGE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/></svg>';
 
 let NOW = params.get("date") ? parse(params.get("date")) : new Date();
@@ -385,25 +390,25 @@ function render() {
     <div class="yearlbl"><span>${HUB.etapes.map(e => e.nom.replace("Étape ", "É")).join(" · ")}</span><span class="num">Semaine ${sem} / ${semTot}</span></div>`;
 
   // Prochain examen
-  const avenir = HUB.examens.filter(x => parse(x.date) >= today).sort((a, b) => parse(a.date) - parse(b.date));
+  const avenir = HUB.examens.filter(x => finSemaine(x) >= today).sort((a, b) => parse(a.semaine) - parse(b.semaine));
   const nx = avenir[0];
   const nextEl = document.getElementById("next");
   if (!nx) {
     nextEl.innerHTML = `<p class="kicker">Prochain examen</p><h3 style="margin-top:6px">Aucun examen à l'horizon</h3><p class="muted">Profites-en.</p>`;
   } else {
-    const j = diff(today, parse(nx.date));
+    const w = semainesAvant(nx, today);
     const n = nx.notes.map(noteById).filter(Boolean);
     const dispo = n.filter(x => ouverte(x, today));
     const bouton = dispo.length
       ? dispo.map(x => `<a class="btn" href="${encodeURI(x.fichier)}">${ICON_PAGE} Ouvrir les ${esc(x.titre.replace("Notes de cours", "notes"))}</a>`).join("")
       : `<span class="btn ghost">🔒 Les notes arrivent bientôt</span>`;
     nextEl.innerHTML = `
-      <div class="next ${j <= 3 ? "hot" : ""}">
-        <div class="days">${j === 0 ? `<b class="num">!</b><small>Aujourd'hui</small>` : `<b class="num">${j}</b><small>jour${j > 1 ? "s" : ""}</small>`}</div>
+      <div class="next ${w <= 1 ? "hot" : ""}">
+        <div class="days">${w === 0 ? `<b class="num">!</b><small>Cette sem.</small>` : `<b class="num">${w}</b><small>semaine${w > 1 ? "s" : ""}</small>`}</div>
         <div>
-          <p class="kicker">${j === 0 ? "C'est aujourd'hui · bonne chance!" : j <= 3 ? "Prochain examen · ça approche" : "Prochain examen"}</p>
+          <p class="kicker">${w === 0 ? "Cette semaine · bonne chance!" : w === 1 ? "La semaine prochaine · ça approche" : "Prochain examen"}</p>
           <h3>${esc(nx.titre)}</h3>
-          <p class="muted">${esc(fmt(parse(nx.date), { weekday: "long", day: "numeric", month: "long" }))} · ${esc(nx.chapitre)}</p>
+          <p class="muted">Semaine du ${esc(fmt(parse(nx.semaine), { day: "numeric", month: "long" }))} · le jour dépend de ton groupe · ${esc(nx.chapitre)}</p>
         </div>
       </div>
       <div class="secs">${nx.sections.map(s => `<div class="sec"><span class="id num">${esc(s[0])}</span><span class="t">${esc(s[1])}</span><span class="p">${ICON_PAGE}${esc(s[2])}</span></div>`).join("")}</div>
@@ -441,12 +446,12 @@ function render() {
 
   // Échéancier
   document.getElementById("timeline").innerHTML = HUB.examens.map(x => {
-    const d = parse(x.date), etat = d < today ? "past" : x === nx ? "now" : "";
+    const d = parse(x.semaine), etat = finSemaine(x) < today ? "past" : x === nx ? "now" : "";
     const notes = x.notes.map(noteById).filter(Boolean).map(n => ouverte(n, today)
       ? `<a class="tag" href="${encodeURI(n.fichier)}" style="background:var(--accent-soft);color:var(--ink);text-decoration:none">📘 ${esc(n.titre)}</a>`
       : `<span class="tag">🔒 ${esc(n.titre)}</span>`).join("");
     return `<div class="ev ${etat}">
-      <div class="date"><b class="num">${d.getDate()}</b><small>${esc(fmt(d, { month: "short" }).replace(".", ""))}</small></div>
+      <div class="date"><small>sem.</small><b class="num">${d.getDate()}</b><small>${esc(fmt(d, { month: "short" }).replace(".", ""))}</small></div>
       <div class="box"><h4>${esc(x.titre)}${etat === "past" ? " · terminé" : ""}</h4><p class="muted">${esc(x.chapitre)}</p>
         <div class="tags">${x.sections.map(s => `<span class="tag">${esc(s[0])} · ${esc(s[2])}</span>`).join("")}</div>
         ${notes ? `<div class="tags">${notes}</div>` : ""}</div></div>`;
@@ -456,7 +461,7 @@ function render() {
   const items = [
     ...HUB.messages.map(m => ({ d: parse(m.date), cls: "", ic: m.icone, b: m.texte, s: m.detail, amt: "" })),
     ...HUB.notes.filter(n => n.fichier).map(n => ({ d: parse(n.dispo), cls: "unlock", ic: "＋", b: n.titre + " débloquées", s: n.sujet, amt: "+1 note" })),
-    ...HUB.examens.map(x => ({ d: parse(x.date), cls: "exam", ic: "✎", b: x.titre, s: x.chapitre, amt: "Examen" }))
+    ...HUB.examens.map(x => ({ d: finSemaine(x), cls: "exam", ic: "✎", b: x.titre, s: x.chapitre, amt: "Examen" }))
   ].filter(i => i.d <= today).sort((a, b) => b.d - a.d);
   document.getElementById("feed").innerHTML = items.length
     ? items.map(i => `<div class="tx-row ${i.cls}"><div class="ic">${i.ic}</div><div class="tx"><b>${esc(i.b)}</b><span>${esc(i.s)} · ${esc(fmt(i.d, { day: "numeric", month: "short" }))}</span></div><span class="amt">${esc(i.amt)}</span></div>`).join("")

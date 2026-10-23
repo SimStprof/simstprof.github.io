@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Le Fil · Monde contemporain</title>
+<meta name="theme-color" content="#f6f4ef">
+<link rel="stylesheet" href="../polices/d8aae1194a.css">
+<style>
+/* Direction : une app de nouvelles. Manchette, bandeau « en direct », dossiers sous embargo, fil de dépêches. */
+:root{
+  --paper:#f6f4ef; --surface:#fffdf9; --ink:#121212; --ink-2:#4a4741; --ink-3:#8a857b; --rule:#d9d5cb;
+  --red:#d42a1e; --red-soft:#fbe3e0;
+  --pop:#0f7c80; --rich:#a86a12; --conf:#8e3a8a;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Inter Tight",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",Consolas,ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#121211; --surface:#1b1b19; --ink:#f1efe9; --ink-2:#bdb8ad; --ink-3:#86817a; --rule:#302e2a;
+    --red:#ff5a4a; --red-soft:#3a1714; --pop:#4fc6c9; --rich:#e7b155; --conf:#d887d3;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121211; --surface:#1b1b19; --ink:#f1efe9; --ink-2:#bdb8ad; --ink-3:#86817a; --rule:#302e2a;
+  --red:#ff5a4a; --red-soft:#3a1714; --pop:#4fc6c9; --rich:#e7b155; --conf:#d887d3;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.45;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{width:1em;height:1em;flex:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 16px}
+.mono{font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.e-pop{--c:var(--pop)} .e-rich{--c:var(--rich)} .e-conf{--c:var(--conf)}
+
+/* ============ Manchette ============ */
+.mast{padding:14px 0 0;text-align:center;border-bottom:3px double var(--ink)}
+.mast .dateline{display:flex;justify-content:space-between;color:var(--ink-3);padding-bottom:8px;border-bottom:1px solid var(--rule)}
+.mast h1{font-family:var(--serif);font-weight:800;font-size:clamp(46px,14vw,78px);line-height:.95;letter-spacing:-.035em;margin:10px 0 2px}
+.mast h1 i{font-style:normal;color:var(--red)}
+.mast .tag{color:var(--ink-2);padding-bottom:10px}
+.topnav{display:none;justify-content:center;gap:22px;padding:10px 0;border-top:1px solid var(--rule)}
+.topnav button{font-weight:700;font-size:14px;color:var(--ink-2);padding:2px 0;border-bottom:2px solid transparent}
+.topnav button[aria-current="true"]{color:var(--ink);border-color:var(--red)}
+
+/* Bandeau en direct */
+.live{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.live .on{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex:none;background:var(--red);color:#fff;padding:3px 8px;border-radius:3px}
+.live .on::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.25}}
+@media (prefers-reduced-motion: reduce){.live .on::before{animation:none}}
+.live b{font-weight:700}
+.live span.rest{color:var(--ink-3);margin-left:auto;white-space:nowrap}
+.year{display:flex;gap:4px;padding:10px 0 14px}
+.year div{flex:1;min-width:0}
+.year .bar{height:4px;background:var(--rule);border-radius:2px;overflow:hidden}
+.year .bar i{display:block;height:100%;background:var(--c)}
+.year small{display:block;margin-top:5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.year .now small{color:var(--c)}
+
+/* ============ Vues ============ */
+.view{display:none;flex-direction:column;gap:22px}
+.view.on{display:flex}
+.sec-t{display:flex;align-items:center;gap:10px;padding-top:4px}
+.sec-t h2{font-family:var(--serif);font-size:22px;font-weight:800;letter-spacing:-.01em}
+.sec-t::after{content:"";flex:1;height:1px;background:var(--ink)}
+
+/* À la une */
+.une .kick{color:var(--c);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.une .when{color:var(--red);background:var(--red-soft);padding:3px 8px;border-radius:3px}
+.une h2{font-family:var(--serif);font-weight:800;font-size:clamp(34px,9.5vw,52px);line-height:1;letter-spacing:-.025em;margin:10px 0 10px}
+.une .deck{font-family:var(--serif);font-size:19px;line-height:1.35;color:var(--ink-2)}
+.une .by{color:var(--ink-3);margin-top:10px;padding-bottom:14px;border-bottom:1px solid var(--rule)}
+.dossier{margin-top:14px}
+.dossier h3{color:var(--ink-3);margin-bottom:6px}
+.dossier ol{list-style:none;counter-reset:s}
+.dossier li{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--rule)}
+.dossier li::before{counter-increment:s;content:counter(s);font-family:var(--serif);font-weight:800;font-size:20px;color:var(--c);line-height:1}
+.dossier li b{font-weight:600}
+.dossier li span{color:var(--ink-3);white-space:nowrap}
+.format{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.format span{border:1px solid var(--ink);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600}
+.read{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding:15px 16px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:700;border-radius:4px}
+.read.off{background:var(--rule);color:var(--ink-3)}
+.read .arr{font-size:20px}
+
+/* Je suis prêt */
+.ready{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px}
+.ready-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ready-h b{font-family:var(--serif);font-size:20px;font-weight:800}
+.meter{height:4px;background:var(--rule);margin:10px 0 4px}
+.meter i{display:block;height:100%;background:var(--c);transition:width .3s}
+.check{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+.check:last-child{border-bottom:0}
+.check input{appearance:none;-webkit-appearance:none;width:20px;height:20px;border:2px solid var(--ink-3);border-radius:3px;flex:none;margin-top:1px;display:grid;place-content:center;cursor:pointer}
+.check input:checked{background:var(--c);border-color:var(--c)}
+.check input:checked::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.check input:checked + span{color:var(--ink-3);text-decoration:line-through}
+
+/* Le chiffre du monde */
+.fig{border-top:3px solid var(--ink);padding-top:12px}
+.fig .big{font-family:var(--serif);font-weight:800;font-size:56px;line-height:1;letter-spacing:-.03em;margin:6px 0 8px}
+.fig p{font-family:var(--serif);font-size:18px;line-height:1.35}
+.fig small{display:block;margin-top:8px;color:var(--ink-3)}
+
+/* Dossiers (notes) */
+.cards{display:grid;gap:14px}
+.card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--rule);border-left:5px solid var(--c);border-radius:4px;padding:14px 16px}
+.card .k{color:var(--c);display:flex;justify-content:space-between;gap:8px}
+.card h3{font-family:var(--serif);font-weight:700;font-size:23px;line-height:1.1;letter-spacing:-.01em;margin:6px 0 4px}
+.card p{color:var(--ink-2);font-size:14px}
+.card .st{margin-top:10px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+.card.emb{border-left-style:dashed;background:transparent}
+.card.emb h3{color:var(--ink-2)}
+.card.emb .st{color:var(--ink-3)}
+.stamp{color:var(--red);border:1.5px solid var(--red);padding:2px 7px;border-radius:3px;transform:rotate(-2deg)}
+.new{background:var(--red);color:#fff;padding:2px 7px;border-radius:3px}
+
+/* Agenda */
+.ag{display:grid;grid-template-columns:62px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule)}
+.ag .d{text-align:center;border-right:1px solid var(--rule);padding-right:12px}
+.ag .d b{display:block;font-family:var(--serif);font-weight:800;font-size:30px;line-height:1}
+.ag .d small{display:block;color:var(--ink-3);font-size:10px;white-space:nowrap}
+.ag .k{color:var(--c)}
+.ag h3{font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.15;margin:3px 0}
+.ag p{color:var(--ink-3);font-size:13.5px}
+.ag.past{opacity:.45}
+.ag.now .d b{color:var(--red)}
+
+/* Dépêches */
+.wire{border-top:1px solid var(--ink)}
+.dep{display:grid;grid-template-columns:60px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.dep .t{color:var(--red)}
+.dep b{display:block;font-weight:700}
+.dep span{color:var(--ink-3);font-size:13.5px}
+.empty{color:var(--ink-3);padding:14px 0}
+
+footer{color:var(--ink-3);font-size:12px;text-align:center;padding:28px 0 6px;border-top:1px solid var(--rule);margin-top:28px}
+
+/* Barre du bas */
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;justify-content:space-around;
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--ink)}
+nav.bottom button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--ink-3);padding:6px 10px;position:relative}
+nav.bottom button svg{width:22px;height:22px}
+nav.bottom button[aria-current="true"]{color:var(--ink)}
+nav.bottom button[aria-current="true"] svg{color:var(--red)}
+.dot{position:absolute;top:4px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--red)}
+
+.prof{position:fixed;right:12px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:20;background:var(--ink);color:var(--paper);border-radius:6px;padding:10px 12px;font-size:12px;font-weight:700;display:flex;gap:8px;align-items:center}
+.prof input{font:inherit;border:0;border-radius:4px;padding:4px 6px}
+#sansjs{padding:20px 0}
+
+/* ============ Ordinateur : une vraie une de journal ============ */
+@media (min-width: 900px){
+  body{padding-bottom:0}
+  .wrap{padding:0 32px 24px}
+  nav.bottom{display:none}
+  .topnav{display:flex}
+  .prof{bottom:20px}
+  main.dash{display:grid;grid-template-columns:1.6fr 1fr;gap:0 40px;align-items:start}
+  main.dash .view{display:flex}
+  main.dash .view[data-v="une"]{grid-row:1 / span 2;padding-right:40px;border-right:1px solid var(--rule)}
+  main.dash .view[data-v="dossiers"]{grid-column:2;grid-row:1}
+  main.dash .view[data-v="depeches"]{grid-column:2;grid-row:2;margin-top:28px}
+  main.dash .view[data-v="agenda"]{grid-column:1 / -1;margin-top:28px}
+  main.dash .view[data-v="une"] .une h2{font-size:58px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <div class="dateline mono"><span id="dateline"></span><span id="edition"></span></div>
+    <h1>Le Fil<i>.</i></h1>
+    <p class="tag mono">Monde contemporain · Secondaire 5</p>
+    <nav class="topnav" id="topnav">
+      <button data-go="all" aria-current="true">La une</button>
+      <button data-go="agenda">Agenda</button>
+      <button data-go="dossiers">Dossiers</button>
+      <button data-go="depeches">Dépêches</button>
+    </nav>
+  </header>
+  <div class="live" id="live"></div>
+  <div class="year" id="year"></div>
+
+  <main id="main" class="dash">
+    <div id="sansjs">
+      <p class="mono" style="color:var(--red)">Oups</p>
+      <p style="font-family:var(--serif);font-size:22px;font-weight:700;margin:4px 0">Ouvre cette page dans ton navigateur</p>
+      <p style="color:var(--ink-3)">L'aperçu de ton application (OneDrive, Teams, courriel…) n'affiche pas le hub. Ouvre-le avec Safari, Chrome ou Edge.</p>
+    </div>
+
+    <section class="view on" data-v="une">
+      <article class="une" id="une"></article>
+      <div class="ready" id="ready"></div>
+      <div class="fig" id="fig"></div>
+    </section>
+
+    <section class="view" data-v="dossiers">
+      <div class="sec-t"><h2>Les dossiers</h2></div>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <section class="view" data-v="depeches">
+      <div class="sec-t"><h2>Dépêches</h2></div>
+      <div class="wire" id="wire"></div>
+    </section>
+
+    <section class="view" data-v="agenda">
+      <div class="sec-t"><h2>L'agenda de l'année</h2></div>
+      <div id="agenda"></div>
+    </section>
+  </main>
+
+  <footer>Monde contemporain · Secondaire 5<br>
+    <b>Confidentialité :</b> aucun compte, aucun cookie, aucune statistique de visite. Tes crochets restent sur ton appareil.
+    Comme tout hébergeur, GitHub garde un journal technique des visites (adresse IP) pour la sécurité de ses serveurs.</footer>
+</div>
+
+<nav class="bottom" id="bottom">
+  <button data-go="une" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h13v16H6a2 2 0 0 1-2-2z"/><path d="M17 8h3v10a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3"/></svg>La une</button>
+  <button data-go="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button>
+  <button data-go="dossiers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Dossiers</button>
+  <button data-go="depeches"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5"/></svg>Dépêches<i class="dot" id="wireDot" hidden></i></button>
+</nav>
+
+<script>
+/* =====================================================================
+   CONTENU DU HUB : c'est ici qu'on modifie les semaines et les ressources.
+   Dates au format AAAA-MM-JJ. Un examen est donné par sa semaine (le lundi) :
+   le jour exact dépend du groupe. ⚠ Semaines de la bêta = à confirmer.
+   ===================================================================== */
+const HUB = {
+  annee: { debut: "2026-08-27", fin: "2027-06-18" },
+  etapes: [
+    { nom: "Étape 1", enjeu: "pop", debut: "2026-08-27", fin: "2026-11-13" },
+    { nom: "Étape 2", enjeu: "rich", debut: "2026-11-16", fin: "2027-02-05" },
+    { nom: "Étape 3", enjeu: "conf", debut: "2027-02-08", fin: "2027-06-18" }
+  ],
+  enjeux: {
+    pop: { nom: "Population", classe: "e-pop" },
+    rich: { nom: "Richesse", classe: "e-rich" },
+    conf: { nom: "Tensions et conflits", classe: "e-conf" }
+  },
+
+  // Les dossiers (notes de cours) sortent à leur date « dispo ». fichier: null = pas encore écrit / publié.
+  notes: [
+    { id: "p13", enjeu: "pop", titre: "Huit milliards de trajectoires", sujet: "Population · sections 1 à 3 : évolution, caractéristiques, migrants",
+      fichier: "population-s1-s3.html", dispo: "2026-10-05" },
+    { id: "p45", enjeu: "pop", titre: "Partir, travailler, s'installer", sujet: "Population · sections 4 et 5 : migrations, travail, villes",
+      fichier: null, dispo: "2026-10-30" },
+    { id: "r", enjeu: "rich", titre: "La richesse", sujet: "Disparités, Nord-Sud, mondialisation, OI et ONG",
+      fichier: null, dispo: "2026-11-30" },
+    { id: "c", enjeu: "conf", titre: "Les tensions et les conflits", sujet: "Relations internationales, ONU, alliances, ONG",
+      fichier: null, dispo: "2027-02-22" }
+  ],
+
+  examens: [
+    { id: "mi1", enjeu: "pop", titre: "Examen de mi-étape 1", manchette: "La population sous la loupe",
+      semaine: "2026-10-26", deck: "Comment la planète est passée à huit milliards, qui part, et pourquoi.",
+      sections: [
+        ["Comment la population a-t-elle évolué?", "p. 36-38"],
+        ["Les caractéristiques de la population", "p. 39-43"],
+        ["Qui sont les migrants et pourquoi partent-ils?", "p. 45-49"]
+      ],
+      format: ["Vrai ou faux", "Choix multiples", "Réponses courtes", "Associer des définitions", "Développement", "Opinion"],
+      notes: ["p13"],
+      pret: [
+        "Définir en une phrase le taux de natalité, le taux de mortalité et l'espérance de vie",
+        "Expliquer la transition démographique : la mortalité baisse avant la natalité",
+        "Dire quelle région grandit le plus vite (l'Afrique), laquelle est la plus peuplée (l'Asie) et laquelle stagne (l'Europe)",
+        "Donner trois raisons de la faible densité de certaines régions",
+        "Distinguer l'accroissement naturel, le solde migratoire et l'accroissement total; savoir que 2,1 est le seuil de renouvellement",
+        "Comparer les pays développés et en développement (natalité, mortalité, espérance de vie, migrations)",
+        "Expliquer le vieillissement et ses causes, les mesures natalistes et la politique de l'enfant unique",
+        "Distinguer immigrant et émigrant, migration temporaire et définitive, réfugié et clandestin"
+      ] },
+    { id: "e1", enjeu: "pop", titre: "Examen d'étape 1", manchette: "Partir, travailler, s'installer",
+      semaine: "2026-11-09", deck: "Les migrations, le monde du travail et les villes qui se transforment. Avec des rappels de la mi-étape.",
+      sections: [
+        ["Les migrations et le monde du travail", "p. 52-61"],
+        ["Les migrations transforment les villes", "p. 64-67"],
+        ["Rappels des sections 1 à 3", "p. 36-49"]
+      ],
+      format: ["Vrai ou faux à corriger", "Choix multiples", "« Nomme-moi trois… »", "Développement", "Opinion", "Cumulatif"],
+      notes: ["p45", "p13"],
+      pret: [
+        "Expliquer pourquoi les pays développés recrutent des immigrants, et nommer les secteurs qui manquent de travailleurs",
+        "Nommer des critères de sélection (système de points) et des mesures d'intégration",
+        "Définir l'intégration et expliquer son importance pour la paix sociale",
+        "Nommer la plus grande contrainte des immigrants qualifiés et les trois difficultés de la reconnaissance des diplômes",
+        "Définir la discrimination positive et donner mon opinion avec deux raisons",
+        "Nommer trois effets de la mobilité de la main-d'œuvre et définir l'exode des cerveaux",
+        "Définir l'économie parallèle et nommer ce qui rend un immigrant vulnérable aux abus",
+        "Expliquer l'exode rural et donner deux conséquences de l'urbanisation rapide au Sud",
+        "Comparer les villes du Nord (quartiers ethniques) et celles du Sud (bidonvilles)",
+        "Réussir toutes les cartes de rappel de la mi-étape"
+      ] },
+    { id: "e2", enjeu: "rich", titre: "Examen d'étape 2", manchette: "Qui s'enrichit, qui reste derrière?",
+      semaine: "2027-01-25", deck: "Colonisation, disparités, Nord-Sud, mondialisation, et ceux qui tentent de réduire l'écart.",
+      sections: [
+        ["Colonisation, décolonisation et néocolonisation", "p. 80-83"],
+        ["Les disparités dans la répartition de la richesse", "p. 84-92"],
+        ["La division Nord-Sud et les économies émergentes", "p. 93-98"],
+        ["La création de richesse", "p. 99-102"],
+        ["La mondialisation et les disparités", "p. 103-108"],
+        ["OI et ONG pour réduire les disparités", "p. 109-113"]
+      ],
+      format: [], notes: ["r"], pret: [] },
+    { id: "e3", enjeu: "conf", titre: "Examen d'étape 3", manchette: "Le monde en tensions",
+      semaine: "2027-06-07", deck: "Comment les États, l'ONU, les alliances et les ONG gèrent les conflits depuis 1945.",
+      sections: [
+        ["Les relations internationales depuis 1945", "p. 128-131"],
+        ["Les interventions extérieures", "p. 132-135"],
+        ["Les sources de tensions et de conflits", "p. 137-149"],
+        ["Le rôle de l'ONU", "p. 150-155"],
+        ["Les missions de maintien de la paix", "p. 156-159"],
+        ["Organisations et alliances", "p. 162-171"],
+        ["Les ONG en territoire souverain", "p. 172-175"]
+      ],
+      format: [], notes: ["c"], pret: [] }
+  ],
+
+  // Dépêches de l'enseignant (visibles à partir de leur date). Les sorties de dossiers et les examens s'ajoutent tout seuls.
+  depeches: [
+    { date: "2026-10-23", texte: "Le Fil est en ligne", detail: "Ton hub pour savoir quoi étudier, et quand." },
+    { date: "2026-10-26", texte: "Mi-étape cette semaine", detail: "Relis « Je suis prêt si je peux… » à la une." }
+  ],
+
+  // Le chiffre du monde (un par semaine, en boucle).
+  chiffres: [
+    { gros: "8 milliards", texte: "Le cap a été franchi en novembre 2022. Il a fallu 12 ans pour passer de 7 à 8.", source: "ONU" },
+    { gros: "2,1", texte: "Enfants par femme : le seuil de renouvellement. En dessous, une population vieillit et finit par baisser sans immigration.", source: "Manuel, section 2" },
+    { gros: "281 millions", texte: "Migrants internationaux dans le monde en 2020, soit environ 1 personne sur 30.", source: "OIM" },
+    { gros: "55 %", texte: "De la population mondiale vit en ville. L'ONU prévoit près de 70 % en 2050.", source: "ONU" }
+  ]
+};
+
+/* ============ Outils ============ */
+const params = new URLSearchParams(location.search);
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const iso = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const DAY = 864e5;
+const diff = (a, b) => Math.round((parse(iso(b)) - parse(iso(a))) / DAY);
+const fmt = (d, o) => d.toLocaleDateString("fr-CA", o);
+const court = d => fmt(d, { day: "numeric", month: "short" }).replace(".", "");
+const lundiDe = d => new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() + 6) % 7);
+const finSemaine = x => new Date(parse(x.semaine).getTime() + 4 * DAY);
+const semainesAvant = (x, today) => Math.round(diff(lundiDe(today), parse(x.semaine)) / 7);
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem("hubmonde:" + k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem("hubmonde:" + k, JSON.stringify(v)); } catch (e) {} }
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const noteById = id => HUB.notes.find(n => n.id === id);
+const ouverte = (n, today) => parse(n.dispo) <= today && !!n.fichier;
+const enj = k => HUB.enjeux[k];
+const pages = x => x.sections.flatMap(s => s[1].match(/\d+/g).map(Number));
+const quand = w => w === 0 ? "Cette semaine" : w === 1 ? "La semaine prochaine" : "Dans " + w + " semaines";
+
+let NOW = params.get("date") ? parse(params.get("date")) : new Date();
+
+/* ============ Rendu ============ */
+function render() {
+  document.getElementById("sansjs")?.remove();
+  const today = parse(iso(NOW));
+
+  // Manchette
+  const semTot = Math.ceil(diff(parse(HUB.annee.debut), parse(HUB.annee.fin)) / 7);
+  const sem = Math.min(semTot, Math.max(0, Math.floor(diff(parse(HUB.annee.debut), today) / 7) + 1));
+  document.getElementById("dateline").textContent = fmt(today, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  document.getElementById("edition").textContent = "Semaine " + sem + " / " + semTot;
+
+  // En direct : où on est dans l'année
+  const etape = HUB.etapes.find(e => today >= parse(e.debut) && today <= parse(e.fin));
+  let label = "Congé", rest = "Entre deux étapes";
+  if (today < parse(HUB.annee.debut)) { label = "Bientôt la rentrée"; rest = ""; }
+  else if (today > parse(HUB.annee.fin)) { label = "Bon été"; rest = "L'année est terminée"; }
+  else if (etape) {
+    const total = diff(parse(etape.debut), parse(etape.fin)), fait = diff(parse(etape.debut), today), reste = total - fait;
+    label = etape.nom + " · " + enj(etape.enjeu).nom + " · " + (reste <= 7 ? "dernier droit" : fait / total < .5 ? "1re moitié" : "2e moitié");
+    rest = reste === 0 ? "Dernier jour" : "Fin dans " + reste + " j";
+  }
+  document.getElementById("live").innerHTML = `<span class="on mono">En direct</span><b>${esc(label)}</b><span class="rest mono">${esc(rest)}</span>`;
+  document.getElementById("year").innerHTML = HUB.etapes.map(e => {
+    const p = Math.max(0, Math.min(1, diff(parse(e.debut), today) / diff(parse(e.debut), parse(e.fin))));
+    return `<div class="${enj(e.enjeu).classe} ${e === etape ? "now" : ""}" style="flex:${diff(parse(e.debut), parse(e.fin))}"><div class="bar"><i style="width:${p * 100}%"></i></div><small class="mono">${esc(enj(e.enjeu).nom)}</small></div>`;
+  }).join("");
+
+  // À la une : le prochain examen
+  const nx = HUB.examens.filter(x => finSemaine(x) >= today).sort((a, b) => parse(a.semaine) - parse(b.semaine))[0];
+  const une = document.getElementById("une");
+  if (!nx) {
+    une.className = "une";
+    une.innerHTML = `<p class="kick mono">À la une</p><h2>Aucun examen à l'horizon</h2><p class="deck">Profites-en pour suivre l'actualité.</p>`;
+  } else {
+    const w = semainesAvant(nx, today);
+    const notes = nx.notes.map(noteById).filter(Boolean);
+    const dispo = notes.filter(n => ouverte(n, today));
+    une.className = "une " + enj(nx.enjeu).classe;
+    une.innerHTML = `
+      <p class="kick mono"><span>${esc(enj(nx.enjeu).nom)} · ${esc(nx.titre)}</span><span class="when">${esc(quand(w))}</span></p>
+      <h2>${esc(nx.manchette)}</h2>
+      <p class="deck">${esc(nx.deck)}</p>
+      <p class="by mono">Semaine du ${esc(fmt(parse(nx.semaine), { day: "numeric", month: "long" }))} · le jour dépend de ton groupe</p>
+      <div class="dossier"><h3 class="mono">Dans ce dossier · manuel</h3>
+        <ol>${nx.sections.map(s => `<li><b>${esc(s[0])}</b><span class="mono">${esc(s[1])}</span></li>`).join("")}</ol></div>
+      ${nx.format.length ? `<div class="format">${nx.format.map(f => `<span>${esc(f)}</span>`).join("")}</div>` : ""}
+      ${dispo.length
+        ? dispo.map(n => `<a class="read" href="${encodeURI(n.fichier)}"><span>Lire le dossier : ${esc(n.titre)}</span><span class="arr">→</span></a>`).join("")
+        : `<span class="read off"><span>🔒 Le dossier sort bientôt</span></span>`}`;
+  }
+
+  // Je suis prêt si…
+  const ready = document.getElementById("ready");
+  if (nx && nx.pret.length) {
+    const coche = store.get("pret-" + nx.id) || [];
+    const nb = coche.filter(Boolean).length;
+    ready.hidden = false;
+    ready.className = "ready " + enj(nx.enjeu).classe;
+    ready.innerHTML = `
+      <div class="ready-h"><b>Je suis prêt si je peux…</b><span class="mono" style="color:var(--ink-3)">${nb} / ${nx.pret.length}</span></div>
+      <div class="meter"><i style="width:${nb / nx.pret.length * 100}%"></i></div>
+      ${nx.pret.map((t, i) => `<label class="check"><input type="checkbox" data-ex="${nx.id}" data-i="${i}" ${coche[i] ? "checked" : ""}><span>${esc(t)}</span></label>`).join("")}`;
+  } else ready.hidden = true;
+
+  // Le chiffre du monde
+  const c = HUB.chiffres[(sem - 1 + HUB.chiffres.length * 10) % HUB.chiffres.length];
+  document.getElementById("fig").innerHTML = `<p class="mono" style="color:var(--red)">Le chiffre du monde</p><div class="big">${esc(c.gros)}</div><p>${esc(c.texte)}</p><small class="mono">Source : ${esc(c.source)}</small>`;
+
+  // Dossiers
+  document.getElementById("cards").innerHTML = HUB.notes.map(n => {
+    const d = parse(n.dispo), ok = ouverte(n, today), neuf = ok && diff(d, today) <= 7;
+    const st = ok
+      ? `<div class="st">${neuf ? '<span class="new mono">Nouveau</span>' : ""}Lire le dossier →</div>`
+      : `<div class="st"><span class="stamp mono">Sous embargo</span>${d > today ? "jusqu'au " + esc(fmt(d, { day: "numeric", month: "long" })) : "bientôt"}</div>`;
+    const inner = `<div class="k mono"><span>${esc(enj(n.enjeu).nom)}</span></div><h3>${esc(n.titre)}</h3><p>${esc(n.sujet)}</p>${st}`;
+    const cls = "card " + enj(n.enjeu).classe;
+    return ok ? `<a class="${cls}" href="${encodeURI(n.fichier)}">${inner}</a>` : `<div class="${cls} emb">${inner}</div>`;
+  }).join("");
+
+  // Agenda
+  document.getElementById("agenda").innerHTML = HUB.examens.map(x => {
+    const d = parse(x.semaine), etat = finSemaine(x) < today ? "past" : x === nx ? "now" : "";
+    return `<div class="ag ${etat} ${enj(x.enjeu).classe}">
+      <div class="d"><small class="mono">sem. du</small><b>${d.getDate()}</b><small class="mono">${esc(fmt(d, { month: "short" }).replace(".", ""))}</small></div>
+      <div><p class="k mono">${esc(enj(x.enjeu).nom)}${etat === "past" ? " · terminé" : etat === "now" ? " · " + esc(quand(semainesAvant(x, today))) : ""}</p>
+        <h3>${esc(x.manchette)}</h3><p>${esc(x.titre)} · manuel p. ${Math.min(...pages(x))} à ${Math.max(...pages(x))}</p></div></div>`;
+  }).join("");
+
+  // Dépêches
+  const items = [
+    ...HUB.depeches.map(m => ({ d: parse(m.date), b: m.texte, s: m.detail })),
+    ...HUB.notes.filter(n => n.fichier).map(n => ({ d: parse(n.dispo), b: "Nouveau dossier : " + n.titre, s: enj(n.enjeu).nom })),
+    ...HUB.examens.map(x => ({ d: finSemaine(x), b: x.titre + " : c'est fait", s: enj(x.enjeu).nom }))
+  ].filter(i => i.d <= today).sort((a, b) => b.d - a.d);
+  document.getElementById("wire").innerHTML = items.length
+    ? items.map(i => `<div class="dep"><span class="t mono">${esc(court(i.d))}</span><div><b>${esc(i.b)}</b><span>${esc(i.s)}</span></div></div>`).join("")
+    : `<p class="empty">Aucune dépêche pour l'instant.</p>`;
+  const vu = store.get("wire-vu");
+  document.getElementById("wireDot").hidden = !items.length || (vu && parse(vu) >= items[0].d);
+}
+
+/* ============ Navigation ============ */
+const main = document.getElementById("main");
+const LARGE = matchMedia("(min-width: 900px)");
+function go(v) {
+  if (LARGE.matches && v === "all") main.classList.add("dash");
+  else {
+    main.classList.remove("dash");
+    document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.dataset.v === v));
+  }
+  document.querySelectorAll("[data-go]").forEach(b => b.setAttribute("aria-current", b.dataset.go === v));
+  if (v === "depeches") { store.set("wire-vu", iso(NOW)); document.getElementById("wireDot").hidden = true; }
+  scrollTo({ top: 0, behavior: "smooth" });
+}
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+LARGE.addEventListener("change", e => go(e.matches ? "all" : "une"));
+if (!LARGE.matches) main.classList.remove("dash");
+
+document.addEventListener("change", e => {
+  const c = e.target.closest("input[data-ex]");
+  if (!c) return;
+  const k = "pret-" + c.dataset.ex, v = store.get(k) || [];
+  v[+c.dataset.i] = c.checked; store.set(k, v); render();
+});
+
+/* ============ Mode prof : voir le hub à une autre date (?prof) ============ */
+if (params.has("prof")) {
+  const p = document.createElement("div");
+  p.className = "prof";
+  p.innerHTML = `Mode prof · date simulée <input type="date" value="${iso(NOW)}">`;
+  p.querySelector("input").addEventListener("input", e => { if (e.target.value) { NOW = parse(e.target.value); render(); } });
+  document.body.appendChild(p);
+}
+
+render();
+</script>
+</body>
+</html>
