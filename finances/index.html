@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Éduc fin · Hub</title>
+<meta name="theme-color" content="#0d0f0c">
+<link rel="stylesheet" href="../polices/51d063e0c2.css">
+<style>
+/* ============ Couleurs ============ */
+:root{
+  --bg:#f3f2ec; --surface:#ffffff; --surface-2:#ebeae2; --line:#dcdbd2;
+  --ink:#121410; --ink-2:#4b4f46; --ink-3:#83877c;
+  --accent:#1f7a45; --accent-ink:#ffffff; --accent-soft:#d9efdf;
+  --lime:#c6f432; --warn:#d9480f; --warn-soft:#fde4d6;
+  --card-a:#10140f; --card-b:#20331f; --card-ink:#f2f6ea;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d0f0c; --surface:#171a15; --surface-2:#20241d; --line:#2b3027;
+    --ink:#eef2e6; --ink-2:#b4baa9; --ink-3:#7c8373;
+    --accent:#c6f432; --accent-ink:#10140f; --accent-soft:#2a3517;
+    --warn:#ff8a4c; --warn-soft:#3a2216;
+    --card-a:#1d2a12; --card-b:#3f5a12; --card-ink:#f4f9e8;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d0f0c; --surface:#171a15; --surface-2:#20241d; --line:#2b3027;
+  --ink:#eef2e6; --ink-2:#b4baa9; --ink-3:#7c8373;
+  --accent:#c6f432; --accent-ink:#10140f; --accent-soft:#2a3517;
+  --warn:#ff8a4c; --warn-soft:#3a2216;
+  --card-a:#1d2a12; --card-b:#3f5a12; --card-ink:#f4f9e8;
+  --shadow:none;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;font-size:15px;line-height:1.45;
+  padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+.num{font-family:"Space Grotesk",Manrope,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{width:1em;height:1em;flex:none}
+
+.wrap{max-width:1180px;margin:0 auto;padding:16px}
+
+/* ============ En-tête ============ */
+header{display:flex;align-items:center;gap:12px;padding:6px 0 18px}
+.logo{width:40px;height:40px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:15px;letter-spacing:-.04em}
+.hello small{display:block;color:var(--ink-3);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.hello b{font-size:19px;letter-spacing:-.02em}
+.topnav{margin-left:auto;display:none;gap:4px;background:var(--surface);padding:4px;border-radius:999px;border:1px solid var(--line)}
+.topnav button{padding:8px 16px;border-radius:999px;font-weight:700;font-size:14px;color:var(--ink-2)}
+.topnav button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+
+/* ============ Vues ============ */
+.view{display:none;flex-direction:column;gap:16px}
+.view.on{display:flex}
+h2{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin:8px 2px -4px;display:flex;align-items:center;gap:8px}
+h2 .count{background:var(--surface-2);color:var(--ink-2);border-radius:999px;padding:1px 8px;font-size:11px}
+
+.box{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+
+/* Carte « bancaire » */
+.card{position:relative;overflow:hidden;border-radius:26px;padding:20px 20px 18px;color:var(--card-ink);
+  background:radial-gradient(120% 140% at 100% 0%,var(--card-b) 0%,var(--card-a) 60%);min-height:210px;display:flex;flex-direction:column}
+.card::after{content:"";position:absolute;right:-60px;bottom:-80px;width:240px;height:240px;border-radius:50%;
+  border:38px solid rgba(198,244,50,.10)}
+.card .row{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.chip{width:34px;height:26px;border-radius:6px;background:linear-gradient(135deg,#e9d98a,#b39a3e);opacity:.9}
+.card .period{margin-top:auto;padding-top:22px}
+.card .period small{font-size:13px;opacity:.75;font-weight:600}
+.card .period div{font-size:30px;font-weight:700;line-height:1.05;margin-top:2px}
+.yearbar{display:flex;gap:4px;margin-top:16px;position:relative}
+.yearbar .seg{height:6px;border-radius:3px;background:rgba(255,255,255,.16);position:relative;overflow:hidden}
+.yearbar .seg i{position:absolute;inset:0 auto 0 0;background:var(--lime);border-radius:3px}
+.yearlbl{display:flex;justify-content:space-between;font-size:11px;opacity:.65;margin-top:6px;font-weight:600}
+
+/* Compte à rebours */
+.next{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.days{width:92px;height:92px;border-radius:24px;background:var(--accent);color:var(--accent-ink);display:grid;place-content:center;text-align:center}
+.days b{font-size:40px;line-height:1}
+.days small{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.next.hot .days{background:var(--warn);color:#fff}
+.kicker{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+:root[data-theme="dark"] .kicker{color:var(--accent)}
+.next.hot .kicker{color:var(--warn)}
+.next h3{font-size:20px;letter-spacing:-.02em;line-height:1.15;margin:2px 0}
+.muted{color:var(--ink-3);font-size:13px}
+
+.secs{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.sec{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--surface-2)}
+.sec .id{font-weight:800;font-size:13px;min-width:34px}
+.sec .t{flex:1;font-weight:600;font-size:14px}
+.sec .p{font-size:12px;font-weight:700;color:var(--ink-2);white-space:nowrap;display:flex;align-items:center;gap:4px}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:14px;border-radius:16px;
+  background:var(--ink);color:var(--bg);font-weight:800;text-decoration:none;font-size:15px}
+.btn.ghost{background:var(--surface-2);color:var(--ink-3);cursor:default}
+.btn:not(.ghost):active{transform:scale(.98)}
+
+/* Liste « Je suis prêt si… » */
+.ready-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.ready-head b{font-size:16px}
+.meter{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;margin-bottom:12px}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+.check{display:flex;gap:12px;align-items:flex-start;padding:10px 2px;border-top:1px solid var(--line);cursor:pointer;font-weight:500}
+.check input{appearance:none;width:22px;height:22px;border-radius:7px;border:2px solid var(--line);flex:none;margin-top:1px;display:grid;place-content:center;cursor:pointer}
+.check input:checked{background:var(--accent);border-color:var(--accent)}
+.check input:checked::after{content:"";width:6px;height:11px;border:solid var(--accent-ink);border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.check input:checked + span{color:var(--ink-3);text-decoration:line-through}
+
+/* Truc de la semaine */
+.tip{background:var(--accent-soft);border:0}
+.tip .big{font-size:34px;font-weight:700;line-height:1;margin:6px 0}
+.tip p{color:var(--ink-2);font-size:14px}
+
+/* Notes */
+.notes{display:grid;gap:12px}
+.note{display:flex;gap:14px;align-items:center;text-decoration:none;padding:14px;border-radius:20px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+.note .ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:var(--accent);color:var(--accent-ink)}
+.note.locked{opacity:.62}
+.note.locked .ic{background:var(--surface-2);color:var(--ink-3)}
+.note .tx{flex:1;min-width:0}
+.note .tx b{display:block;font-size:15px}
+.note .tx span{font-size:13px;color:var(--ink-3)}
+.pill{font-size:11px;font-weight:800;padding:4px 9px;border-radius:999px;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+.pill.new{background:var(--lime);color:#10140f}
+.pill.lock{background:var(--surface-2);color:var(--ink-2)}
+.pill.ok{background:var(--accent-soft);color:var(--ink)}
+.go{font-size:18px;color:var(--ink-3)}
+
+/* Échéancier */
+.tl{display:flex;flex-direction:column;gap:0}
+.ev{display:grid;grid-template-columns:54px 1fr;gap:14px;position:relative;padding-bottom:18px}
+.ev::before{content:"";position:absolute;left:26px;top:54px;bottom:0;width:2px;background:var(--line)}
+.ev:last-child::before{display:none}
+.date{width:54px;height:54px;border-radius:16px;background:var(--surface);border:1px solid var(--line);display:grid;place-content:center;text-align:center;line-height:1}
+.date b{font-size:20px}
+.date small{font-size:10px;font-weight:800;text-transform:uppercase;color:var(--ink-3);margin-top:2px}
+.ev.past{opacity:.5}
+.ev.now .date{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ev.now .date small{color:var(--bg);opacity:.7}
+.ev .box{padding:14px 16px}
+.ev h4{font-size:16px;letter-spacing:-.01em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:12px;font-weight:700;padding:4px 9px;border-radius:8px;background:var(--surface-2);color:var(--ink-2)}
+
+/* Fil « Quoi de neuf » */
+.feed{padding:4px 18px}
+.tx-row{display:flex;gap:12px;align-items:center;padding:13px 0;border-top:1px solid var(--line)}
+.tx-row:first-child{border-top:0}
+.tx-row .ic{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);font-size:16px;flex:none}
+.tx-row.unlock .ic{background:var(--lime);color:#10140f}
+.tx-row.exam .ic{background:var(--warn-soft);color:var(--warn)}
+.tx-row .tx{flex:1;min-width:0}
+.tx-row .tx b{display:block;font-size:14px;font-weight:700}
+.tx-row .tx span{font-size:12px;color:var(--ink-3)}
+.tx-row .amt{font-weight:800;font-size:13px;white-space:nowrap}
+.tx-row.unlock .amt{color:var(--accent)}
+.empty{color:var(--ink-3);font-size:14px;padding:14px 0}
+
+/* Barre du bas (cellulaire) */
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;justify-content:space-around;
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 82%,transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+nav.bottom button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--ink-3);padding:6px 12px;border-radius:14px;position:relative}
+nav.bottom button svg{width:22px;height:22px}
+nav.bottom button[aria-current="true"]{color:var(--ink)}
+nav.bottom button[aria-current="true"] svg{color:var(--accent)}
+.dot{position:absolute;top:4px;right:14px;width:8px;height:8px;border-radius:50%;background:var(--warn)}
+
+/* Mode prof (bêta) */
+.prof{position:fixed;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:20;background:var(--ink);color:var(--bg);border-radius:16px;padding:10px 12px;font-size:12px;font-weight:700;display:flex;gap:8px;align-items:center;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.prof input{font:inherit;border-radius:8px;border:0;padding:4px 6px}
+
+footer{color:var(--ink-3);font-size:12px;text-align:center;padding:24px 0 8px}
+
+/* ============ Ordinateur : tableau de bord complet ============ */
+@media (min-width: 900px){
+  body{padding-bottom:0}
+  .wrap{padding:24px 32px}
+  nav.bottom{display:none}
+  .topnav{display:flex}
+  .prof{bottom:20px}
+  main.dash{display:grid;grid-template-columns:1.15fr 1fr;gap:24px;align-items:start}
+  main.dash .view{display:flex}
+  main.dash .view[data-v="exams"]{grid-column:1;grid-row:2}
+  main.dash .view[data-v="notes"]{grid-column:2;grid-row:1}
+  main.dash .view[data-v="feed"]{grid-column:2;grid-row:2}
+  .card{min-height:230px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">ÉF</div>
+    <div class="hello"><small id="today"></small><b id="greet">Salut!</b></div>
+    <div class="topnav" id="topnav">
+      <button data-go="all" aria-current="true">Tableau de bord</button>
+      <button data-go="home">Accueil</button>
+      <button data-go="exams">Examens</button>
+      <button data-go="notes">Notes</button>
+      <button data-go="feed">Quoi de neuf</button>
+    </div>
+  </header>
+
+  <main id="main" class="dash">
+    <div class="box" id="sansjs">
+      <p class="kicker">Oups</p>
+      <h3 style="margin:4px 0 6px">Ouvre cette page dans ton navigateur</h3>
+      <p class="muted">L'aperçu de ton application (OneDrive, Teams, courriel…) n'affiche pas le hub. Ouvre-le avec Safari, Chrome ou Edge.</p>
+    </div>
+    <section class="view on" data-v="home">
+      <div class="card" id="card"></div>
+      <div class="box" id="next"></div>
+      <div class="box" id="ready"></div>
+      <div class="box tip" id="tip"></div>
+    </section>
+
+    <section class="view" data-v="exams">
+      <h2>Échéancier de l'année</h2>
+      <div class="tl" id="timeline"></div>
+    </section>
+
+    <section class="view" data-v="notes">
+      <h2>Mes notes de cours <span class="count" id="notesCount"></span></h2>
+      <div class="notes" id="notes"></div>
+    </section>
+
+    <section class="view" data-v="feed">
+      <h2>Quoi de neuf</h2>
+      <div class="box feed" id="feed"></div>
+    </section>
+  </main>
+
+  <footer>Éducation financière · Secondaire 5<br>
+    <b>Confidentialité :</b> aucun compte, aucun cookie, aucune statistique de visite. Tes crochets restent sur ton appareil.
+    Comme tout hébergeur, GitHub garde un journal technique des visites (adresse IP) pour la sécurité de ses serveurs.</footer>
+</div>
+
+<nav class="bottom" id="bottom">
+  <button data-go="home" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Accueil</button>
+  <button data-go="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Examens</button>
+  <button data-go="notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M8 11h8M8 15h6"/></svg>Notes</button>
+  <button data-go="feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M10.3 21a2 2 0 0 0 3.4 0"/></svg>Nouveautés<i class="dot" id="feedDot" hidden></i></button>
+</nav>
+
+<script>
+/* =====================================================================
+   CONTENU DU HUB : c'est ici qu'on modifie les dates et les ressources.
+   Les dates sont au format AAAA-MM-JJ. ⚠ Dates de la bêta = à confirmer.
+   ===================================================================== */
+const HUB = {
+  annee: { debut: "2026-08-27", fin: "2027-06-18" },
+  etapes: [
+    { nom: "Étape 1", debut: "2026-08-27", fin: "2026-11-13" },
+    { nom: "Étape 2", debut: "2026-11-16", fin: "2027-02-05" },
+    { nom: "Étape 3", debut: "2027-02-08", fin: "2027-06-18" }
+  ],
+
+  // Une note de cours apparaît (lien actif) à partir de sa date « dispo ».
+  notes: [
+    { id: "n11", titre: "Notes de cours 1.1 + 1.2", sujet: "Choix de consommation · Publicité",
+      fichier: "notes-1-1-1-2.html", dispo: "2026-09-21", icone: "🛒" },
+    { id: "n13", titre: "Notes de cours 1.3 + 1.4", sujet: "Lois et protection du consommateur · Budget",
+      fichier: null, dispo: "2026-10-30", icone: "🧾" },
+    { id: "n2", titre: "Notes de cours · Chapitre 2", sujet: "Le crédit",
+      fichier: null, dispo: "2026-11-23", icone: "💳" }
+  ],
+
+  examens: [
+    { id: "mi1", titre: "Examen de mi-étape 1", date: "2026-10-29", chapitre: "Chapitre 1 · La consommation",
+      sections: [
+        ["1.1", "Consommer, c'est faire des choix", "p. 4-11"],
+        ["1.2", "La publicité, un mal nécessaire?", "p. 12-15"]
+      ],
+      notes: ["n11"],
+      pret: [
+        "Distinguer un besoin d'un désir, avec un exemple",
+        "Expliquer le coût d'opportunité d'un achat",
+        "Nommer des facteurs économiques, socioculturels et individuels qui influencent mes choix",
+        "Calculer la TPS et la TVQ sur un achat",
+        "Reconnaître la stratégie utilisée dans une publicité"
+      ] },
+    { id: "e1", titre: "Examen d'étape 1", date: "2026-11-12", chapitre: "Chapitre 1 au complet",
+      sections: [
+        ["1.1", "Consommer, c'est faire des choix", "p. 4-11"],
+        ["1.2", "La publicité, un mal nécessaire?", "p. 12-15"],
+        ["1.3", "Des outils pour faire des choix", "p. 16-27"],
+        ["1.4", "Le budget : optimiser ses choix", "p. 28-35"],
+        ["★", "Synthèse du chapitre", "p. 36-37"]
+      ],
+      notes: ["n11", "n13"],
+      pret: [
+        "Tout ce qui est dans la liste de la mi-étape",
+        "Nommer les lois qui encadrent la publicité et la consommation",
+        "Expliquer le rôle de l'Office de la protection du consommateur",
+        "Passer du salaire brut au salaire net",
+        "Bâtir un budget simple : revenus, dépenses fixes et variables"
+      ] },
+    { id: "mi2", titre: "Examen de mi-étape 2", date: "2026-12-17", chapitre: "Chapitres 2 et 3 · Crédit et épargne",
+      sections: [
+        ["2.1", "Le crédit : facile d'accès?", "p. 42-49"],
+        ["2.2", "Le crédit : comment ça marche?", "p. 50-67"],
+        ["3.1", "Épargner : pourquoi et comment?", "p. 72-79"],
+        ["3.2", "Quelques outils d'épargne", "p. 80-95"]
+      ],
+      notes: ["n2"], pret: [] }
+  ],
+
+  // Messages de l'enseignant (s'affichent à partir de leur date).
+  // Les déblocages de notes et les examens s'ajoutent tout seuls au fil.
+  messages: [
+    { date: "2026-10-23", icone: "👋", texte: "Le hub du cours est ouvert", detail: "Reviens ici avant chaque examen." },
+    { date: "2026-10-26", icone: "🎯", texte: "Mi-étape jeudi : relis la liste « Je suis prêt si… »", detail: "Section Accueil" }
+  ],
+
+  // Le truc de la semaine (un par semaine, en boucle).
+  trucs: [
+    { gros: "14,975 %", texte: "TPS (5 %) + TVQ (9,975 %). Pour un achat de 40 $, la facture monte à 45,99 $." },
+    { gros: "Coût d'opportunité", texte: "Ce que tu sacrifies quand tu choisis. Le cell à 1200 $, c'est aussi le voyage que tu ne feras pas." },
+    { gros: "< 13 ans", texte: "Au Québec, la publicité commerciale destinée aux enfants de moins de 13 ans est interdite." },
+    { gros: "Brut ≠ net", texte: "Ton salaire brut, c'est avant les déductions. Ce qui arrive dans ton compte, c'est le net." }
+  ]
+};
+
+/* ============ Outils de date ============ */
+const params = new URLSearchParams(location.search);
+const MODE_PROF = params.has("prof");
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const iso = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const DAY = 864e5;
+const diff = (a, b) => Math.round((parse(iso(b)) - parse(iso(a))) / DAY);
+const fmt = (d, o) => d.toLocaleDateString("fr-CA", o);
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem("hubfin:" + k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem("hubfin:" + k, JSON.stringify(v)); } catch (e) {} }
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const noteById = id => HUB.notes.find(n => n.id === id);
+// Une note est ouverte à sa date de sortie, si son fichier est en ligne (fichier: null = pas encore publiée).
+const ouverte = (n, today) => parse(n.dispo) <= today && !!n.fichier;
+const ICON_PAGE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/></svg>';
+
+let NOW = params.get("date") ? parse(params.get("date")) : new Date();
+
+/* ============ Rendu ============ */
+function render() {
+  document.getElementById("sansjs")?.remove();
+  const today = parse(iso(NOW));
+
+  // En-tête
+  const h = new Date().getHours();
+  document.getElementById("greet").textContent = h < 12 ? "Bon matin 👋" : h < 18 ? "Salut 👋" : "Bonsoir 👋";
+  document.getElementById("today").textContent = fmt(today, { weekday: "long", day: "numeric", month: "long" });
+
+  // Carte : où on est dans l'année
+  const etape = HUB.etapes.find(e => today >= parse(e.debut) && today <= parse(e.fin));
+  let label = "Congé", sous = "Entre deux étapes";
+  if (today < parse(HUB.annee.debut)) { label = "Bientôt la rentrée"; sous = "L'année n'est pas commencée"; }
+  else if (today > parse(HUB.annee.fin)) { label = "Bon été ☀️"; sous = "L'année est terminée"; }
+  else if (etape) {
+    const total = diff(parse(etape.debut), parse(etape.fin));
+    const fait = diff(parse(etape.debut), today);
+    const reste = total - fait;
+    label = etape.nom + " · " + (reste <= 7 ? "dernier droit" : fait / total < .5 ? "1re moitié" : "2e moitié");
+    sous = reste === 0 ? "Dernier jour de l'étape" : "Fin de l'étape dans " + reste + " jour" + (reste > 1 ? "s" : "");
+  }
+  const semTot = Math.ceil(diff(parse(HUB.annee.debut), parse(HUB.annee.fin)) / 7);
+  const sem = Math.min(semTot, Math.max(0, Math.floor(diff(parse(HUB.annee.debut), today) / 7) + 1));
+  const segs = HUB.etapes.map(e => {
+    const len = diff(parse(e.debut), parse(e.fin));
+    const p = Math.max(0, Math.min(1, diff(parse(e.debut), today) / len));
+    return `<div class="seg" style="flex:${len}"><i style="width:${p * 100}%"></i></div>`;
+  }).join("");
+  document.getElementById("card").innerHTML = `
+    <div class="row"><span>Éduc fin · Sec 5</span><span class="chip"></span></div>
+    <div class="period"><small>${esc(sous)}</small><div>${esc(label)}</div></div>
+    <div class="yearbar">${segs}</div>
+    <div class="yearlbl"><span>${HUB.etapes.map(e => e.nom.replace("Étape ", "É")).join(" · ")}</span><span class="num">Semaine ${sem} / ${semTot}</span></div>`;
+
+  // Prochain examen
+  const avenir = HUB.examens.filter(x => parse(x.date) >= today).sort((a, b) => parse(a.date) - parse(b.date));
+  const nx = avenir[0];
+  const nextEl = document.getElementById("next");
+  if (!nx) {
+    nextEl.innerHTML = `<p class="kicker">Prochain examen</p><h3 style="margin-top:6px">Aucun examen à l'horizon</h3><p class="muted">Profites-en.</p>`;
+  } else {
+    const j = diff(today, parse(nx.date));
+    const n = nx.notes.map(noteById).filter(Boolean);
+    const dispo = n.filter(x => ouverte(x, today));
+    const bouton = dispo.length
+      ? dispo.map(x => `<a class="btn" href="${encodeURI(x.fichier)}">${ICON_PAGE} Ouvrir les ${esc(x.titre.replace("Notes de cours", "notes"))}</a>`).join("")
+      : `<span class="btn ghost">🔒 Les notes arrivent bientôt</span>`;
+    nextEl.innerHTML = `
+      <div class="next ${j <= 3 ? "hot" : ""}">
+        <div class="days">${j === 0 ? `<b class="num">!</b><small>Aujourd'hui</small>` : `<b class="num">${j}</b><small>jour${j > 1 ? "s" : ""}</small>`}</div>
+        <div>
+          <p class="kicker">${j === 0 ? "C'est aujourd'hui · bonne chance!" : j <= 3 ? "Prochain examen · ça approche" : "Prochain examen"}</p>
+          <h3>${esc(nx.titre)}</h3>
+          <p class="muted">${esc(fmt(parse(nx.date), { weekday: "long", day: "numeric", month: "long" }))} · ${esc(nx.chapitre)}</p>
+        </div>
+      </div>
+      <div class="secs">${nx.sections.map(s => `<div class="sec"><span class="id num">${esc(s[0])}</span><span class="t">${esc(s[1])}</span><span class="p">${ICON_PAGE}${esc(s[2])}</span></div>`).join("")}</div>
+      ${bouton}`;
+  }
+
+  // Je suis prêt si…
+  const readyEl = document.getElementById("ready");
+  if (nx && nx.pret.length) {
+    const coche = store.get("pret-" + nx.id) || [];
+    const nb = coche.filter(Boolean).length;
+    readyEl.hidden = false;
+    readyEl.innerHTML = `
+      <div class="ready-head"><b>Je suis prêt si je peux…</b><span class="num muted">${nb} / ${nx.pret.length}</span></div>
+      <div class="meter"><i style="width:${nb / nx.pret.length * 100}%"></i></div>
+      ${nx.pret.map((t, i) => `<label class="check"><input type="checkbox" data-ex="${nx.id}" data-i="${i}" ${coche[i] ? "checked" : ""}><span>${esc(t)}</span></label>`).join("")}`;
+  } else readyEl.hidden = true;
+
+  // Truc de la semaine
+  const t = HUB.trucs[(sem - 1 + HUB.trucs.length * 10) % HUB.trucs.length];
+  document.getElementById("tip").innerHTML = `<p class="kicker">Le truc de la semaine</p><div class="big num">${esc(t.gros)}</div><p>${esc(t.texte)}</p>`;
+
+  // Notes
+  const notesHtml = HUB.notes.map(n => {
+    const d = parse(n.dispo), ouvert = ouverte(n, today), j = diff(today, d);
+    const neuf = ouvert && diff(d, today) <= 7;
+    const pill = !ouvert
+      ? `<span class="pill lock">🔒 ${j <= 0 ? "Bientôt" : j <= 7 ? "Dans " + j + " j" : esc(fmt(d, { day: "numeric", month: "short" }))}</span>`
+      : neuf ? `<span class="pill new">Nouveau</span>` : `<span class="pill ok">Dispo</span>`;
+    const inner = `<div class="ic">${ouvert ? n.icone : "🔒"}</div><div class="tx"><b>${esc(n.titre)}</b><span>${esc(n.sujet)}</span></div>${pill}${ouvert ? '<span class="go">›</span>' : ""}`;
+    return ouvert ? `<a class="note" href="${encodeURI(n.fichier)}">${inner}</a>` : `<div class="note locked">${inner}</div>`;
+  }).join("");
+  document.getElementById("notes").innerHTML = notesHtml;
+  document.getElementById("notesCount").textContent = HUB.notes.filter(n => ouverte(n, today)).length + " / " + HUB.notes.length;
+
+  // Échéancier
+  document.getElementById("timeline").innerHTML = HUB.examens.map(x => {
+    const d = parse(x.date), etat = d < today ? "past" : x === nx ? "now" : "";
+    const notes = x.notes.map(noteById).filter(Boolean).map(n => ouverte(n, today)
+      ? `<a class="tag" href="${encodeURI(n.fichier)}" style="background:var(--accent-soft);color:var(--ink);text-decoration:none">📘 ${esc(n.titre)}</a>`
+      : `<span class="tag">🔒 ${esc(n.titre)}</span>`).join("");
+    return `<div class="ev ${etat}">
+      <div class="date"><b class="num">${d.getDate()}</b><small>${esc(fmt(d, { month: "short" }).replace(".", ""))}</small></div>
+      <div class="box"><h4>${esc(x.titre)}${etat === "past" ? " · terminé" : ""}</h4><p class="muted">${esc(x.chapitre)}</p>
+        <div class="tags">${x.sections.map(s => `<span class="tag">${esc(s[0])} · ${esc(s[2])}</span>`).join("")}</div>
+        ${notes ? `<div class="tags">${notes}</div>` : ""}</div></div>`;
+  }).join("");
+
+  // Fil « Quoi de neuf » : messages + déblocages + examens passés, plus récents en haut
+  const items = [
+    ...HUB.messages.map(m => ({ d: parse(m.date), cls: "", ic: m.icone, b: m.texte, s: m.detail, amt: "" })),
+    ...HUB.notes.filter(n => n.fichier).map(n => ({ d: parse(n.dispo), cls: "unlock", ic: "＋", b: n.titre + " débloquées", s: n.sujet, amt: "+1 note" })),
+    ...HUB.examens.map(x => ({ d: parse(x.date), cls: "exam", ic: "✎", b: x.titre, s: x.chapitre, amt: "Examen" }))
+  ].filter(i => i.d <= today).sort((a, b) => b.d - a.d);
+  document.getElementById("feed").innerHTML = items.length
+    ? items.map(i => `<div class="tx-row ${i.cls}"><div class="ic">${i.ic}</div><div class="tx"><b>${esc(i.b)}</b><span>${esc(i.s)} · ${esc(fmt(i.d, { day: "numeric", month: "short" }))}</span></div><span class="amt">${esc(i.amt)}</span></div>`).join("")
+    : `<p class="empty">Rien de neuf pour l'instant.</p>`;
+  const vu = store.get("feed-vu");
+  document.getElementById("feedDot").hidden = !items.length || (vu && parse(vu) >= items[0].d);
+}
+
+/* ============ Navigation ============ */
+const main = document.getElementById("main");
+function go(v) {
+  const wide = matchMedia("(min-width: 900px)").matches;
+  if (wide && v === "all") main.classList.add("dash");
+  else {
+    main.classList.toggle("dash", false);
+    document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.dataset.v === v));
+  }
+  document.querySelectorAll("[data-go]").forEach(b => b.setAttribute("aria-current", b.dataset.go === v));
+  if (v === "feed") { store.set("feed-vu", iso(NOW)); document.getElementById("feedDot").hidden = true; }
+  scrollTo({ top: 0, behavior: "smooth" });
+}
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+matchMedia("(min-width: 900px)").addEventListener("change", e => go(e.matches ? "all" : "home"));
+if (!matchMedia("(min-width: 900px)").matches) main.classList.remove("dash");
+
+document.addEventListener("change", e => {
+  const c = e.target.closest("input[data-ex]");
+  if (!c) return;
+  const k = "pret-" + c.dataset.ex, v = store.get(k) || [];
+  v[+c.dataset.i] = c.checked; store.set(k, v); render();
+});
+
+/* ============ Mode prof : voir le hub à une autre date (?prof) ============ */
+if (MODE_PROF) {
+  const p = document.createElement("div");
+  p.className = "prof";
+  p.innerHTML = `Mode prof · date simulée <input type="date" value="${iso(NOW)}">`;
+  p.querySelector("input").addEventListener("input", e => { if (e.target.value) { NOW = parse(e.target.value); render(); } });
+  document.body.appendChild(p);
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-7yC6QK9TMngTNAnPWUFqoNP/ZanrWhWmhX2rMtlJZNc='; style-src 'unsafe-inline' 'self'; font-src 'self'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Notes de cours 1.1 + 1.2 · Consommation</title>
+<link rel="stylesheet" href="../polices/1c3f06cd32.css">
+<style>
+/* Layout : une circulaire d'épicerie. Bandeau titre, étiquettes de prix pour les définitions, facture pour les taxes, colonne de lecture ~68ch. */
+:root {
+  --paper: #F5F6F8;
+  --card: #FFFFFF;
+  --ink: #15171C;
+  --muted: #5A606E;
+  --line: #D8DBE2;
+  --hi: #FFDC38;
+  --hi-ink: #15171C;
+  --tag: #DD3329;
+  --tag-soft: #FCE5E3;
+  --teal: #0C7383;
+  --teal-soft: #DCF0F2;
+  --display: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", "Consolas", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111317; --card: #1A1D23; --ink: #ECEEF2; --muted: #A2A8B5; --line: #2E333C;
+    --hi: #FFD62E; --hi-ink: #15171C; --tag: #FF6157; --tag-soft: #3A1B19;
+    --teal: #4BC6D6; --teal-soft: #15353B; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #111317; --card: #1A1D23; --ink: #ECEEF2; --muted: #A2A8B5; --line: #2E333C;
+  --hi: #FFD62E; --hi-ink: #15171C; --tag: #FF6157; --tag-soft: #3A1B19;
+  --teal: #4BC6D6; --teal-soft: #15353B; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 860px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; line-height: 1.05; margin: 0; letter-spacing: .01em; }
+h2 { font-size: clamp(2rem, 6vw, 2.8rem); text-transform: uppercase; }
+h3 { font-size: 1.55rem; text-transform: uppercase; }
+p { margin: 0; }
+strong { font-weight: 700; }
+.hl { background: var(--hi); color: var(--hi-ink); padding: 0 .22em; border-radius: 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.muted { color: var(--muted); }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+
+/* ---------- Bandeau ---------- */
+.hero { background: var(--ink); color: var(--paper); }
+.hero .wrap { padding-block: 44px 40px; display: grid; gap: 18px; position: relative; }
+.eyebrow { font-family: var(--mono); font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; }
+.hero .eyebrow { color: var(--hi); }
+.hero h1 { font-size: clamp(3rem, 12vw, 6.2rem); text-transform: uppercase; max-width: 11ch; }
+.hero h1 span { color: var(--hi); }
+.hero p { max-width: 46ch; font-size: 1.1rem; opacity: .9; }
+.sticker { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: 40px; width: 128px; height: 128px; border-radius: 50%; background: var(--tag); color: #fff; display: grid; place-content: center; text-align: center; transform: rotate(10deg); font-family: var(--display); line-height: 1; box-shadow: 0 0 0 5px var(--ink), 0 0 0 7px var(--tag); }
+.sticker b { display: block; font-size: 2.3rem; font-weight: 400; }
+.sticker small { font-size: .95rem; letter-spacing: .05em; }
+@media (max-width: 640px) { .sticker { position: static; transform: rotate(-4deg); width: auto; height: auto; border-radius: 10px; padding: 8px 14px; justify-self: start; display: block; } .sticker b { display: inline; font-size: 1.4rem; margin-right: 6px; } }
+
+/* ---------- Plan de match ---------- */
+.plan { margin-top: -1px; background: var(--hi); color: var(--hi-ink); }
+.plan .wrap { padding-block: 26px; display: grid; gap: 14px; }
+.plan h2 { font-size: 1.9rem; }
+.plan ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px 20px; }
+.plan li { display: flex; gap: 8px; align-items: baseline; }
+.plan li::before { content: "→"; font-weight: 700; }
+.plan a { color: inherit; font-weight: 700; text-underline-offset: 3px; }
+
+/* ---------- Sections ---------- */
+main { display: grid; gap: 0; }
+.section-head { display: flex; align-items: center; gap: 18px; padding-block: 56px 8px; flex-wrap: wrap; }
+.num { font-family: var(--display); font-size: clamp(4rem, 14vw, 6.5rem); line-height: .85; color: transparent; -webkit-text-stroke: 2px var(--ink); }
+.section-head h2 { flex: 1 1 260px; }
+.section-head p { flex-basis: 100%; color: var(--muted); max-width: 60ch; }
+.block { padding-block: 30px; border-top: 2px dashed var(--line); display: grid; gap: 16px; }
+.section-head + .block { border-top: 0; }
+.block > p, .block > ul { max-width: 68ch; }
+.block ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+.star { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--tag); border: 2px solid var(--tag); border-radius: 4px; padding: 2px 8px; transform: rotate(-2deg); justify-self: start; }
+.star::before { content: "★"; font-size: .9rem; }
+.h3row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+/* Étiquette de prix = définition */
+.tag { position: relative; background: var(--card); border: 2px solid var(--ink); border-radius: 6px 14px 14px 6px; padding: 14px 18px 14px 44px; max-width: 68ch; }
+.tag::before { content: ""; position: absolute; left: 15px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; border: 2px solid var(--ink); background: var(--paper); }
+.tag dt { font-family: var(--display); font-size: 1.25rem; text-transform: uppercase; letter-spacing: .02em; }
+.tag dd { margin: 2px 0 0; }
+.tags { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; margin: 0; }
+
+/* Encadrés */
+.tip { background: var(--teal-soft); border-left: 6px solid var(--teal); padding: 14px 18px; border-radius: 0 10px 10px 0; max-width: 68ch; }
+.tip b:first-child { font-family: var(--mono); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); display: block; margin-bottom: 2px; }
+.trap { background: var(--tag-soft); border-left: 6px solid var(--tag); padding: 14px 18px; border-radius: 0 10px 10px 0; max-width: 68ch; }
+.trap b:first-child { font-family: var(--mono); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--tag); display: block; margin-bottom: 2px; }
+
+/* Pyramide de Maslow */
+.pyr { display: grid; gap: 4px; justify-items: center; margin: 4px 0; }
+.pyr div { color: #fff; text-align: center; padding: 10px 12px; clip-path: polygon(4% 0, 96% 0, 100% 100%, 0 100%); line-height: 1.2; min-width: 0; }
+.pyr div b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; letter-spacing: .03em; text-transform: uppercase; display: block; }
+.pyr div span { font-size: .85rem; opacity: .95; }
+.pyr .l5 { width: 44%; background: #6C4AB6; clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%); }
+.pyr .l4 { width: 58%; background: #2F6FB3; }
+.pyr .l3 { width: 72%; background: #0C7383; }
+.pyr .l2 { width: 86%; background: #C2701A; }
+.pyr .l1 { width: 100%; background: #C2362D; }
+@media (max-width: 560px) { .pyr .l5 { width: 62%; } .pyr .l4 { width: 72%; } .pyr .l3 { width: 82%; } .pyr .l2 { width: 91%; } }
+.mnemo { font-family: var(--mono); font-size: .95rem; }
+.mnemo b { background: var(--hi); color: var(--hi-ink); padding: 0 3px; }
+
+/* Offre et demande */
+.od { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px; align-items: center; }
+@media (max-width: 640px) { .od { grid-template-columns: 1fr; } }
+.od svg { width: 100%; max-width: 340px; height: auto; display: block; }
+.od svg text { fill: var(--ink); font-family: var(--body); font-size: 13px; }
+.od svg .axis { stroke: var(--ink); stroke-width: 2; fill: none; }
+.od svg .dem { stroke: var(--teal); stroke-width: 4; fill: none; }
+.od svg .off { stroke: var(--tag); stroke-width: 4; fill: none; }
+.od svg .eq { fill: var(--ink); }
+.od svg .guide { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; fill: none; }
+.rules { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; font-size: .95rem; }
+.rules th, .rules td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+.rules th { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.rules td.arrow { font-weight: 700; font-size: 1.1rem; white-space: nowrap; }
+.up { color: var(--tag); } .down { color: var(--teal); }
+.scroll { overflow-x: auto; min-width: 0; }
+
+/* Facture */
+.taxes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 24px; align-items: start; }
+@media (max-width: 680px) { .taxes { grid-template-columns: 1fr; } }
+.receipt { background: var(--card); color: var(--ink); font-family: var(--mono); font-size: .9rem; padding: 20px 20px 26px; box-shadow: 0 1px 0 var(--line), 0 10px 24px -14px rgba(0,0,0,.35); position: relative; --zig: 10px; -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--zig) 100%; mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--zig) 100%; max-width: 340px; }
+.receipt h4 { margin: 0 0 4px; text-align: center; font-size: .95rem; letter-spacing: .15em; }
+.receipt .sub { text-align: center; color: var(--muted); font-size: .75rem; margin-bottom: 12px; }
+.receipt .row { display: flex; justify-content: space-between; gap: 10px; font-variant-numeric: tabular-nums; }
+.receipt hr { border: 0; border-top: 1px dashed var(--muted); margin: 8px 0; }
+.receipt .tot { font-weight: 600; font-size: 1rem; }
+.rates { display: flex; gap: 12px; flex-wrap: wrap; }
+.rate { background: var(--card); border: 2px solid var(--ink); border-radius: 10px; padding: 10px 14px; min-width: 120px; flex: 1 1 120px; }
+.rate b { font-family: var(--display); font-weight: 400; font-size: 2.1rem; line-height: 1; display: block; }
+.rate span { font-size: .85rem; color: var(--muted); }
+.rate.total { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.rate.total span { color: var(--paper); opacity: .75; }
+.mini { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.mini td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.mini td:first-child { font-weight: 700; white-space: nowrap; }
+
+/* Facteurs */
+.cols3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.card h4 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.3rem; text-transform: uppercase; letter-spacing: .02em; }
+.card .ex { font-size: .9rem; color: var(--muted); }
+
+/* Objectifs de la pub */
+.ips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .ips { grid-template-columns: 1fr; } }
+.ips > div { border-radius: 12px; padding: 16px; display: grid; gap: 4px; align-content: start; }
+.ips .letter { font-family: var(--display); font-size: 3rem; line-height: .9; }
+.ips h4 { margin: 0; font-size: 1.05rem; }
+.ips p { font-size: .92rem; }
+.ips .i { background: var(--teal-soft); } .ips .i .letter { color: var(--teal); }
+.ips .p { background: var(--tag-soft); } .ips .p .letter { color: var(--tag); }
+.ips .s { background: var(--card); border: 1px solid var(--line); } .ips .s .letter { color: var(--ink); }
+
+/* Barres pub numérique */
+.bars { display: grid; gap: 8px; max-width: 520px; }
+.bar { display: grid; grid-template-columns: 48px 1fr; gap: 10px; align-items: center; font-variant-numeric: tabular-nums; }
+.bar .y { font-family: var(--mono); font-size: .85rem; }
+.bar .track { background: var(--line); border-radius: 4px; height: 26px; position: relative; }
+.bar .fill { background: var(--tag); height: 100%; border-radius: 4px; min-width: 4px; }
+.bar .v { position: absolute; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-weight: 600; font-size: .85rem; color: var(--ink); }
+.bar .fill + .v.in { color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bar .fill + .v.in { color: #15171C; } }
+:root[data-theme="dark"] .bar .fill + .v.in { color: #15171C; }
+
+/* Stratégies */
+.strats { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.strat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; align-content: start; }
+.strat b { font-size: 1rem; }
+.strat span { font-size: .9rem; color: var(--muted); }
+
+/* Lois */
+.law { background: var(--card); border: 2px solid var(--ink); border-radius: 12px; overflow: hidden; }
+.law header { background: var(--ink); color: var(--paper); padding: 10px 16px; font-family: var(--display); font-size: 1.25rem; text-transform: uppercase; letter-spacing: .03em; }
+.law .in { padding: 16px; display: grid; gap: 12px; }
+.law ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+.law .big { font-family: var(--display); font-size: 3.4rem; line-height: .9; color: var(--tag); }
+.kid { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center; }
+
+/* Quiz */
+.quiz { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.quiz details { background: var(--card); border: 2px solid var(--ink); border-radius: 12px; padding: 0; }
+.quiz summary { cursor: pointer; list-style: none; padding: 14px 16px; display: grid; gap: 6px; }
+.quiz summary::-webkit-details-marker { display: none; }
+.quiz summary .q-n { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
+.quiz summary .see { font-family: var(--mono); font-size: .75rem; color: var(--teal); }
+.quiz details[open] summary .see { display: none; }
+.quiz details[open] { border-color: var(--teal); }
+.quiz .ans { padding: 0 16px 14px; border-top: 2px dashed var(--line); padding-top: 10px; }
+
+/* Petite vérif : mini-quiz à la fin de chaque thème */
+.pause { display: grid; gap: 8px; margin-top: 4px; }
+.pause-t { font-family: var(--mono); font-size: .78rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); }
+.pause-t::before { content: "✓ "; }
+
+/* Checklist */
+.check { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; max-width: 68ch; }
+.check label { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; cursor: pointer; }
+.check input { width: 20px; height: 20px; margin-top: 3px; accent-color: var(--teal); flex: none; }
+.check input:checked + span { text-decoration: line-through; color: var(--muted); }
+.score { font-family: var(--mono); font-size: .9rem; }
+
+footer { margin-top: 56px; border-top: 2px solid var(--ink); }
+footer .wrap { padding-block: 18px 40px; font-size: .85rem; color: var(--muted); }
+
+/* ---------- Version papier (lettre 8,5 x 11) : questions numérotées, corrigé à la fin ---------- */
+.pq, .key-src, #corrige { display: none; }
+@page {
+  size: letter; margin: .55in .6in .6in;
+  @bottom-center { content: "Notes de cours 1.1 + 1.2 · page " counter(page) " de " counter(pages); font: 8.5pt "IBM Plex Mono", Consolas, monospace; color: #5A606E; }
+}
+@media print {
+  :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+    --paper: #FFFFFF; --card: #FFFFFF; --ink: #15171C; --muted: #5A606E; --line: #C9CDD6;
+    --hi: #FFDC38; --hi-ink: #15171C; --tag: #DD3329; --tag-soft: #FCE5E3;
+    --teal: #0C7383; --teal-soft: #DCF0F2; color-scheme: light;
+  }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-size: 10.5pt; line-height: 1.45; }
+  .wrap { max-width: none; padding: 0; }
+  .hero { background: none; color: var(--ink); border-bottom: 3px solid var(--ink); }
+  .hero .wrap { padding-block: 0 14px; gap: 10px; }
+  .hero h1 { font-size: 40pt; }
+  .hero .eyebrow, .hero h1 span { color: var(--tag); }
+  .sticker { top: 0; right: 0; width: 100px; height: 100px; box-shadow: none; }
+  .sticker b { font-size: 1.5rem; }
+  .plan { background: none; border-bottom: 2px solid var(--ink); }
+  .plan .wrap { padding-block: 12px; gap: 8px; }
+  .plan h2 { font-size: 1.4rem; }
+  .plan a { text-decoration: none; }
+  main { display: block; }
+  .section-head { padding-block: 16px 2px; break-after: avoid; }
+  main > .section-head:not(:first-child) { break-before: page; padding-top: 0; }
+  .pause { display: block; break-inside: avoid; }
+  .pause-t { margin-bottom: 6px; }
+  .section-head .num { font-size: 44pt; line-height: 1.1; }
+  h1, h2, h3 { line-height: 1.15; }
+  .block { padding-block: 14px; display: block; }
+  .block > * + * { margin-top: 10px; }
+  .h3row { display: block; }
+  .h3row > * { display: inline-block; vertical-align: middle; margin-right: 10px; }
+  .star { transform: none; }
+  .scroll { overflow: visible; }
+  h3, .h3row, .pause-t, .star { break-after: avoid; }
+  .tag, .card, .law, .receipt, .rate, .strat, .ips > div, .tip, .trap, .pyr, .od, .rules tr, .bar, .quiz details, .check li, .key li { break-inside: avoid; }
+  p, li { orphans: 3; widows: 3; }
+  .quiz { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .quiz details { border: 1.5px solid var(--teal); border-radius: 8px; }
+  .quiz summary { padding: 8px 10px; gap: 3px; font-size: 10pt; }
+  .quiz summary::after { content: ""; height: 3.1em; background: repeating-linear-gradient(transparent 0 1.5em, var(--line) 1.5em calc(1.5em + 1px)); }
+  .quiz .see, .quiz .ans { display: none !important; }
+  .pq { display: inline; color: var(--teal); font-weight: 600; }
+  #score { display: none; }
+  .check label { padding: 6px 10px; }
+  .check input { appearance: none; -webkit-appearance: none; border: 1.5px solid var(--ink); border-radius: 3px; background: #fff; }
+  #corrige { display: block; break-before: page; }
+  #corrige .section-head { padding-top: 0; }
+  .key { margin: 8px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; font-size: 9pt; line-height: 1.35; }
+  .key h4 { font-family: var(--display); font-weight: 400; font-size: 1.15rem; text-transform: uppercase; margin: 10px 0 4px; break-after: avoid; }
+  .key li { margin-bottom: 4px; }
+  .key li b.n { color: var(--teal); font-family: var(--mono); margin-right: 4px; }
+  footer { display: none; }
+  .key-src { display: block; margin-top: 24px; padding-top: 6px; border-top: 1px solid var(--line); font-size: 8.5pt; color: var(--muted); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Éducation financière · Chapitre 1 · La consommation</div>
+    <h1>Consommer, c'est <span>choisir.</span></h1>
+    <p>Les sections 1.1 et 1.2 en une fiche. Lis un thème, fais sa petite vérif, et continue.</p>
+    <div class="sticker"><b>1.1 + 1.2</b><small>MI-ÉTAPE</small></div>
+  </div>
+</header>
+
+<section class="plan" aria-labelledby="plan-t">
+  <div class="wrap">
+    <h2 id="plan-t">Le plan de match</h2>
+    <p>À l'examen&nbsp;: des vrai ou faux, des « nomme-moi trois… » et des « explique avec un exemple ». Connais tes <strong>définitions</strong>, tes <strong>listes</strong>, et garde des <strong>exemples</strong> en poche. Chaque thème finit par une <strong>petite vérif</strong>.</p>
+    <ul>
+      <li><a href="#besoins">Besoin ou désir</a></li>
+      <li><a href="#maslow">La pyramide de Maslow</a></li>
+      <li><a href="#opportunite">Le coût d'opportunité</a></li>
+      <li><a href="#pouvoir">Le pouvoir d'achat</a></li>
+      <li><a href="#offre">L'offre et la demande</a></li>
+      <li><a href="#taxes">Les taxes (TPS, TVQ, accise)</a></li>
+      <li><a href="#socio">Les facteurs socioculturels</a></li>
+      <li><a href="#objectifs">Les 3 objectifs de la pub</a></li>
+      <li><a href="#supports">Les supports et le data</a></li>
+      <li><a href="#strategies">Les stratégies publicitaires</a></li>
+      <li><a href="#lois">Les lois qui encadrent la pub</a></li>
+    </ul>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <!-- ===================== 1.1 ===================== -->
+  <div class="section-head">
+    <span class="num" aria-hidden="true">1.1</span>
+    <h2>Consommer, c'est faire des choix</h2>
+    <p>Pourquoi on achète ce qu'on achète, et pourquoi on ne peut pas tout avoir.</p>
+  </div>
+
+  <section class="block" id="besoins">
+    <div class="h3row"><h3>Besoin ou désir?</h3><span class="star">À maîtriser</span></div>
+    <dl class="tags">
+      <div class="tag"><dt>Besoin</dt><dd>Une nécessité, <strong>essentielle</strong> à la vie. <span class="muted">Un repas quand tu as faim.</span></dd></div>
+      <div class="tag"><dt>Désir</dt><dd>Une envie&nbsp;: ce n'est pas essentiel, mais ça fait <strong>plaisir</strong>. <span class="muted">Des vacances dans le Sud.</span></dd></div>
+    </dl>
+    <p><span class="hl">La grosse idée&nbsp;: ça dépend de la personne et de la situation.</span> Une auto est un désir pour Émilie, qui habite à deux pas du métro, mais un besoin pour Pierre, qui vit en région éloignée.</p>
+    <div class="trap"><b>Piège</b>Dans un vrai ou faux, méfie-toi des mots <strong>toujours</strong> et <strong>jamais</strong>.</div>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Vrai ou faux</span>Un manteau d'hiver, c'est toujours un besoin.<span class="see">Voir la réponse →</span></summary><div class="ans"><strong>Faux.</strong> Si tu n'as rien de chaud, c'est un besoin. Un troisième manteau griffé quand le tien est encore bon, c'est un désir.</div></details>
+        <details><summary><span class="q-n">Besoin ou désir?</span>Marie achète un frigo neuf parce que le sien est brisé. Laetitia en achète un parce qu'elle veut un modèle plus récent.<span class="see">Voir la réponse →</span></summary><div class="ans">Besoin pour <strong>Marie</strong>, désir pour <strong>Laetitia</strong>. Même produit, situations différentes.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="maslow">
+    <div class="h3row"><h3>La pyramide de Maslow</h3><span class="star">À maîtriser</span></div>
+    <p>Le psychologue Abraham Maslow a classé les besoins humains en <strong>5 étages</strong>. On remplit ceux du bas avant de monter.</p>
+    <div class="pyr" role="list" aria-label="Pyramide de Maslow, du sommet à la base">
+      <div class="l5" role="listitem"><b>5. Accomplissement</b><span>Se réaliser, s'épanouir</span></div>
+      <div class="l4" role="listitem"><b>4. Estime</b><span>Confiance en soi, respect, reconnaissance des autres</span></div>
+      <div class="l3" role="listitem"><b>3. Appartenance</b><span>Amour, amitié, affection des autres</span></div>
+      <div class="l2" role="listitem"><b>2. Sécurité</b><span>Un environnement stable, sans crise ni anxiété</span></div>
+      <div class="l1" role="listitem"><b>1. Physiologiques</b><span>Manger, boire, dormir, respirer…</span></div>
+    </div>
+    <p class="mnemo">De la base au sommet&nbsp;: « <b>P</b>as <b>S</b>ûr, <b>A</b>ppelle <b>E</b>ncore <b>A</b>lex »</p>
+    <div class="trap"><b>Piège</b>La pyramide nomme de <strong>grandes catégories</strong> de besoins, pas des produits ni des activités. « Besoin d'un cellulaire » ou « besoin de magasiner », ce n'est pas un étage.</div>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Choix multiples</span>Lequel a sa place dans la pyramide&nbsp;: besoin de voyager, besoin d'estime, besoin d'Internet?<span class="see">Voir la réponse →</span></summary><div class="ans">Le <strong>besoin d'estime</strong>. Les deux autres sont des produits ou des activités, pas des catégories de besoins.</div></details>
+        <details><summary><span class="q-n">Réflexion</span>Une personne affamée est prête à risquer sa sécurité pour trouver à manger. Qu'est-ce que ça montre?<span class="see">Voir la réponse →</span></summary><div class="ans">Les besoins <strong>physiologiques</strong> passent avant la <strong>sécurité</strong>&nbsp;: on comble le bas de la pyramide d'abord.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="opportunite">
+    <div class="h3row"><h3>Ressources limitées et coût d'opportunité</h3><span class="star">À maîtriser</span></div>
+    <p>Tes envies sont illimitées, mais ton <strong>temps</strong>, ton <strong>argent</strong> et ton <strong>énergie</strong> ne le sont pas. Choisir, c'est renoncer.</p>
+    <dl class="tags"><div class="tag"><dt>Coût d'opportunité <span class="muted" style="font-family:var(--body);font-size:.9rem;text-transform:none">(ou coût d'option)</span></dt><dd>Ce à quoi tu <strong>renonces</strong> quand tu choisis autre chose.</dd></div></dl>
+    <p>Samedi soir&nbsp;: un quart de travail payé 80&nbsp;$ ou le party chez ton ami. Tu vas au party. Coût d'opportunité&nbsp;: <span class="hl">les 80&nbsp;$</span>.</p>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Coût d'opportunité</span>Ruby reçoit 600&nbsp;$. Elle hésite entre un téléphone et de l'équipement de ski, et prend le téléphone. Son coût d'opportunité?<span class="see">Voir la réponse →</span></summary><div class="ans">L'<strong>équipement de ski</strong>, ce à quoi elle a renoncé.</div></details>
+        <details><summary><span class="q-n">Liste</span>Nomme les trois ressources limitées qui nous obligent à faire des choix.<span class="see">Voir la réponse →</span></summary><div class="ans">Le <strong>temps</strong>, l'<strong>argent</strong> et l'<strong>énergie</strong>.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="pouvoir">
+    <div class="h3row"><h3>Les facteurs économiques</h3><span class="star">À maîtriser</span></div>
+    <dl class="tags"><div class="tag"><dt>Pouvoir d'achat</dt><dd>La <strong>quantité de biens et de services</strong> que ton argent te permet d'acheter. Il dépend de ton <strong>revenu</strong>, des <strong>prix</strong> et des <strong>taxes</strong>.</dd></div></dl>
+    <div class="cols3">
+      <div class="card"><h4>Le revenu</h4><p>On consomme selon nos moyens. Moins on gagne, plus le logement et la nourriture prennent de place dans le budget.</p></div>
+      <div class="card"><h4>Le prix</h4><p>Le prix monte → on achète moins. Il baisse → on achète plus.</p><p class="ex">Chou-fleur trop cher en hiver? On prend des carottes.</p></div>
+      <div class="card"><h4>Les taxes</h4><p>Elles s'ajoutent au prix, donc elles réduisent ce que tu peux acheter.</p></div>
+    </div>
+    <div class="tip"><b>Bonus&nbsp;: l'inflation</b>C'est la <strong>hausse générale des prix</strong> avec le temps. Avec le même 20&nbsp;$, tu achètes moins qu'avant&nbsp;: ton pouvoir d'achat baisse.</div>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Définition</span>En une phrase&nbsp;: c'est quoi, le pouvoir d'achat?<span class="see">Voir la réponse →</span></summary><div class="ans">La <strong>quantité de biens et de services</strong> qu'on peut acheter avec son revenu.</div></details>
+        <details><summary><span class="q-n">Pouvoir d'achat</span>Tu as une augmentation de salaire et les prix ne bougent pas. Que fait ton pouvoir d'achat?<span class="see">Voir la réponse →</span></summary><div class="ans">Il <strong>monte</strong>&nbsp;: tu peux acheter plus avec ton revenu.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="offre">
+    <div class="h3row"><h3>La loi de l'offre et de la demande</h3><span class="star">À maîtriser</span></div>
+    <div class="od">
+      <svg viewBox="0 0 320 250" role="img" aria-label="Graphique : la courbe de demande descend, la courbe d'offre monte, elles se croisent au point d'équilibre.">
+        <path class="axis" d="M40 10 V210 H310"/>
+        <text x="8" y="20">Prix</text>
+        <text x="250" y="232">Quantité</text>
+        <path class="dem" d="M58 30 C120 120, 190 170, 295 195"/>
+        <path class="off" d="M58 195 C150 175, 220 110, 290 32"/>
+        <path class="guide" d="M171 144 H40 M171 144 V210"/>
+        <circle class="eq" cx="171" cy="144" r="7"/>
+        <text x="182" y="163">Équilibre</text>
+        <text x="70" y="38" style="fill:var(--teal);font-weight:700">Demande</text>
+        <text x="236" y="40" style="fill:var(--tag);font-weight:700">Offre</text>
+      </svg>
+      <dl class="tags" style="grid-template-columns:1fr">
+        <div class="tag"><dt>Offre</dt><dd>Ce que les <strong>vendeurs</strong> veulent vendre.</dd></div>
+        <div class="tag"><dt>Demande</dt><dd>Ce que les <strong>acheteurs</strong> veulent acheter.</dd></div>
+      </dl>
+    </div>
+    <p>Le prix se fixe là où l'offre et la demande <span class="hl">s'équilibrent</span>.</p>
+    <div class="scroll">
+      <table class="rules">
+        <thead><tr><th>Si…</th><th>et…</th><th>alors le prix…</th></tr></thead>
+        <tbody>
+          <tr><td>la demande <span class="up">↑</span></td><td>l'offre reste pareille</td><td class="arrow up">↑ monte</td></tr>
+          <tr><td>la demande <span class="down">↓</span></td><td>l'offre reste pareille</td><td class="arrow down">↓ baisse</td></tr>
+          <tr><td>l'offre <span class="up">↑</span></td><td>la demande reste pareille</td><td class="arrow down">↓ baisse</td></tr>
+          <tr><td>l'offre <span class="down">↓</span></td><td>la demande reste pareille</td><td class="arrow up">↑ monte</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tip"><b>Exemple à savoir expliquer</b>Au bal des finissants, plein d'élèves veulent louer une limousine (demande <span class="up">↑</span>), mais il n'y en a pas plus (offre =). Le prix de location <strong>monte</strong>.</div>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Offre et demande</span>Une usine produit deux fois plus de barres de chocolat, mais les gens n'en veulent pas plus. Que fait le prix?<span class="see">Voir la réponse →</span></summary><div class="ans">Offre <span class="up">↑</span>, demande =, donc le prix <strong class="down">baisse</strong>.</div></details>
+        <details><summary><span class="q-n">Explique</span>Pourquoi les voyages dans le Sud coûtent plus cher pendant la relâche?<span class="see">Voir la réponse →</span></summary><div class="ans">Tout le monde veut partir en même temps (demande <span class="up">↑</span>), mais il n'y a pas plus de places (offre =). Le prix <strong class="up">monte</strong>.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="taxes">
+    <div class="h3row"><h3>Les taxes à la consommation</h3><span class="star">À maîtriser</span></div>
+    <div class="rates">
+      <div class="rate"><b>5&nbsp;%</b><span><strong>TPS</strong>, taxe fédérale sur les produits et services</span></div>
+      <div class="rate"><b>9,975&nbsp;%</b><span><strong>TVQ</strong>, taxe de vente du Québec</span></div>
+      <div class="rate total"><b>≈&nbsp;15&nbsp;%</b><span>Les deux ensemble (14,975&nbsp;%)</span></div>
+    </div>
+    <div class="taxes">
+      <div style="display:grid;gap:14px;min-width:0">
+        <p><strong>Tout n'est pas taxé!</strong> Le gouvernement protège l'accès aux produits et services de base.</p>
+        <table class="mini">
+          <tr><td>Pas taxé</td><td>Aliments de base (fruits, légumes, viande, pain), soins de santé (médecin, dentiste)</td></tr>
+          <tr><td>Taxé</td><td>Ce qui est transformé, emballé ou en format individuel (chips, boisson gazeuse…)</td></tr>
+          <tr><td>Nouveau</td><td>Depuis le 15 juillet 2026, Québec a retiré la <strong>TVQ</strong> (pas la TPS) sur quelques collations&nbsp;: muffins et viennoiseries à l'unité, barres granola, noix salées, fruits coupés.</td></tr>
+        </table>
+      </div>
+      <div class="receipt" aria-label="Exemple de facture">
+        <h4>RESTO LA FONDUE</h4>
+        <div class="sub">Souper pour 4 · exemple du manuel</div>
+        <div class="row"><span>Repas</span><span>150,00</span></div>
+        <hr>
+        <div class="row"><span>TPS 5 %</span><span>7,50</span></div>
+        <div class="row"><span>TVQ 9,975 %</span><span>14,96</span></div>
+        <hr>
+        <div class="row tot"><span>TOTAL</span><span>172,46 $</span></div>
+      </div>
+    </div>
+    <dl class="tags"><div class="tag"><dt>Taxe d'accise</dt><dd>Une taxe <strong>cachée dans le prix</strong>&nbsp;: elle n'apparaît pas sur ta facture. Elle vise surtout l'<strong>essence</strong>, l'<strong>alcool</strong>, le <strong>tabac</strong> et les véhicules énergivores.</dd></div></dl>
+    <p><strong>Pourquoi des taxes?</strong> Pour <strong>payer les services publics</strong> (école, santé, environnement) et pour <strong>influencer ce qu'on achète</strong>&nbsp;: taxer moins l'essentiel, taxer plus ce qu'on veut décourager (pollution, tabac, alcool).</p>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Taxe d'accise</span>Pourquoi tu ne vois jamais la taxe d'accise sur ta facture d'essence?<span class="see">Voir la réponse →</span></summary><div class="ans">Parce qu'elle est <strong>cachée dans le prix</strong> affiché, contrairement à la TPS et la TVQ.</div></details>
+        <details><summary><span class="q-n">Objectifs</span>Pourquoi le gouvernement taxe-t-il plus le tabac et l'alcool que le pain?<span class="see">Voir la réponse →</span></summary><div class="ans">Pour <strong>décourager</strong> la consommation de produits nuisibles et protéger l'accès aux produits <strong>essentiels</strong>. L'argent sert aussi à payer les services publics.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="socio">
+    <div class="h3row"><h3>Les facteurs socioculturels</h3><span class="star">À maîtriser</span></div>
+    <p>L'argent n'explique pas tout. <strong>Trois</strong> autres facteurs influencent ce que tu achètes&nbsp;:</p>
+    <div class="cols3">
+      <div class="card"><h4>La culture</h4><p>Les valeurs, traditions et habitudes de ton groupe (langue, musique, bouffe).</p><p class="ex">Popcorn au cinéma au Québec, réglisse salée aux Pays-Bas.</p></div>
+      <div class="card"><h4>Les groupes sociaux</h4><p>Famille, amis, équipe, collègues. On achète parfois pour <strong>appartenir</strong> au groupe.</p><p class="ex">Porter le chandail de son équipe.</p></div>
+      <div class="card"><h4>Les facteurs individuels</h4><p>Ce qui t'est propre&nbsp;: personnalité, histoire, <strong>valeurs</strong>.</p><p class="ex">Acheter local, recycler, éviter l'inutile.</p></div>
+    </div>
+    <div class="tip"><b>Prépare-toi</b>Trouve <strong>deux exemples de ta propre vie</strong> pour chacun. Un exemple personnel vaut plus qu'une définition récitée.</div>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Quel facteur?</span>Tous tes amis portent la même marque d'espadrilles, alors tu l'achètes aussi.<span class="see">Voir la réponse →</span></summary><div class="ans">Les <strong>groupes sociaux</strong>&nbsp;: tu veux appartenir au groupe.</div></details>
+        <details><summary><span class="q-n">Quel facteur?</span>Tu achètes des légumes du marché local parce que l'environnement te tient à cœur.<span class="see">Voir la réponse →</span></summary><div class="ans">Les <strong>facteurs individuels</strong>&nbsp;: ce sont tes valeurs.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 1.2 ===================== -->
+  <div class="section-head">
+    <span class="num" aria-hidden="true">1.2</span>
+    <h2>La publicité, un mal nécessaire?</h2>
+    <p>Ce que la pub veut de toi, les trucs qu'elle utilise, et les règles qu'elle doit respecter.</p>
+  </div>
+
+  <section class="block" id="objectifs">
+    <div class="h3row"><h3>Les 3 objectifs de la pub</h3><span class="star">À maîtriser</span></div>
+    <div class="ips">
+      <div class="i"><span class="letter">I</span><h4>Informer</h4><p><strong>Pub informative.</strong> Elle décrit le produit, son prix, où l'acheter.</p></div>
+      <div class="p"><span class="letter">P</span><h4>Persuader</h4><p><strong>Pub persuasive.</strong> Elle veut te convaincre que le produit va te rendre heureux ou populaire.</p></div>
+      <div class="s"><span class="letter">S</span><h4>Sensibiliser</h4><p><strong>Pub sociétale.</strong> Un gouvernement ou un organisme veut changer un comportement&nbsp;: ceinture, alcool au volant.</p></div>
+    </div>
+    <p class="mnemo">Retiens <b>I·P·S</b>&nbsp;: Informer, Persuader, Sensibiliser.</p>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Quel objectif?</span>Une pub de boisson gazeuse montre des amis qui rient à la plage, sans jamais parler du sucre.<span class="see">Voir la réponse →</span></summary><div class="ans"><strong>Persuader</strong>&nbsp;: elle vend une image de bonheur, pas des faits sur le produit.</div></details>
+        <details><summary><span class="q-n">Quel objectif?</span>Une circulaire montre le prix, la taille et les fonctions d'un nouveau grille-pain.<span class="see">Voir la réponse →</span></summary><div class="ans"><strong>Informer</strong>. C'est une pub informative.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="supports">
+    <div class="h3row"><h3>Les supports&nbsp;: le web a tout mangé</h3><span class="star">À maîtriser</span></div>
+    <p>Journaux, radio et télé sont en déclin&nbsp;: leur public est parti sur le web.</p>
+    <div class="bars" aria-label="Part de la publicité numérique (réseaux sociaux et plateformes) au Québec">
+      <p class="muted" style="font-size:.9rem">Part de la pub au Québec qui passe par les réseaux sociaux et plateformes numériques</p>
+      <div class="bar"><span class="y">2003</span><div class="track"><div class="fill" style="width:1%"></div><span class="v" style="left:calc(1% + 8px)">1&nbsp;%</span></div></div>
+      <div class="bar"><span class="y">2012</span><div class="track"><div class="fill" style="width:20%"></div><span class="v" style="left:calc(20% + 8px)">20&nbsp;%</span></div></div>
+      <div class="bar"><span class="y">2021</span><div class="track"><div class="fill" style="width:73%"></div><span class="v in" style="left:calc(73% - 46px)">73&nbsp;%</span></div></div>
+    </div>
+    <dl class="tags"><div class="tag"><dt>Les données (le « data »)</dt><dd>Les traces que tu laisses en ligne&nbsp;: achats, recherches, clics, concours. Les entreprises les compilent pour <strong>te connaître</strong> et te montrer des pubs <strong>ciblées</strong>, faites juste pour toi.</dd></div></dl>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Vrai ou faux</span>La télé est encore le support principal de la pub au Québec.<span class="see">Voir la réponse →</span></summary><div class="ans"><strong>Faux.</strong> En 2021, les réseaux sociaux et plateformes numériques captent 73&nbsp;% de la pub, contre environ 15&nbsp;% pour la télé.</div></details>
+        <details><summary><span class="q-n">Data</span>Nomme deux traces que tu laisses en ligne et qui deviennent des données.<span class="see">Voir la réponse →</span></summary><div class="ans">Au choix&nbsp;: tes <strong>achats</strong>, tes <strong>recherches</strong>, tes <strong>clics</strong>, les <strong>concours</strong> auxquels tu participes.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="strategies">
+    <div class="h3row"><h3>Les stratégies publicitaires</h3><span class="star">À maîtriser</span></div>
+    <p>Les trucs des pubs pour te convaincre. Toutes sont <strong>permises</strong>, tant que la pub ne ment pas.</p>
+    <div class="strats">
+      <div class="strat"><b>Le culte de l'idéal</b><span>Des gens beaux dans un monde parfait.</span></div>
+      <div class="strat"><b>Les données factuelles</b><span>Des faits&nbsp;: provenance, fabrication.</span></div>
+      <div class="strat"><b>La vérité</b><span>On peut « jouer » avec la vérité, sans mentir.</span></div>
+      <div class="strat"><b>La popularité</b><span>Achète-le et tu auras plus d'amis.</span></div>
+      <div class="strat"><b>La notoriété</b><span>Une vedette ou un influenceur vante le produit.</span></div>
+      <div class="strat"><b>L'émotion</b><span>Te faire rire ou pleurer pour que tu t'en souviennes.</span></div>
+      <div class="strat"><b>La concurrence</b><span>Se comparer à la marque rivale pour paraître meilleur.</span></div>
+      <div class="strat"><b>La mémorisation et la répétition</b><span>Slogans et jingles qui restent dans la tête.</span></div>
+      <div class="strat"><b>Le témoignage</b><span>Des « vrais » clients satisfaits.</span></div>
+      <div class="strat"><b>Les promesses</b><span>Le produit va combler tes besoins ou tes désirs.</span></div>
+      <div class="strat"><b>La nouveauté</b><span>Piquer ta curiosité avec du jamais vu.</span></div>
+    </div>
+    <div class="tip"><b>Stratégie d'étude</b>Il y en a 11. Apprends-en <strong>au moins 5</strong>&nbsp;: si une question t'interdit ta préférée, tu en auras d'autres en réserve.</div>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Quelle stratégie?</span>Une boîte de céréales annonce&nbsp;: « Nouvelle saveur, jamais vue! »<span class="see">Voir la réponse →</span></summary><div class="ans">La <strong>nouveauté</strong>.</div></details>
+        <details><summary><span class="q-n">Quelle stratégie?</span>Des clients ordinaires racontent devant la caméra à quel point le produit a changé leur vie.<span class="see">Voir la réponse →</span></summary><div class="ans">Le <strong>témoignage</strong>.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="lois">
+    <div class="h3row"><h3>Les lois qui encadrent la pub</h3><span class="star">À maîtriser</span></div>
+    <p>Au Québec, l'<strong>Office de la protection du consommateur (OPC)</strong> surveille les pubs et applique la loi.</p>
+    <div class="law">
+      <header>La Loi sur la protection du consommateur</header>
+      <div class="in">
+        <p><strong>Elle interdit&nbsp;:</strong> les déclarations mensongères, les fausses promesses et le fait de cacher la vérité sur un produit.</p>
+        <ul>
+          <li>Une vidéo où quelqu'un prétend faussement être médecin.</li>
+          <li>Un vendeur qui « oublie » de dire que l'auto usagée a été accidentée.</li>
+        </ul>
+        <div class="kid">
+          <span class="big">-13</span>
+          <p><strong>Pub destinée aux enfants&nbsp;: interdite pour les moins de 13 ans.</strong> On regarde le produit, la façon de présenter le message, et le moment et l'endroit où la pub est diffusée.</p>
+        </div>
+        <p><strong>Si tu as été trompé&nbsp;:</strong> porter plainte à l'OPC, faire annuler le contrat ou poursuivre le commerçant.</p>
+      </div>
+    </div>
+    <p class="muted">Au fédéral, la <strong>Loi sur l'emballage et l'étiquetage</strong> exige une info exacte sur l'emballage&nbsp;: nom du produit, quantité, fournisseur.</p>
+    <div class="trap"><b>Piège</b>Une pub qui joue sur tes émotions, c'est <strong>légal</strong>. Ce qui est illégal, c'est de <strong>mentir</strong> ou de <strong>cacher</strong> quelque chose.</div>
+    <div class="tip"><b>Une revue fiable</b><strong><em>Protégez-Vous</em></strong>, une revue québécoise qui teste et compare les produits. Bon réflexe avant un gros achat.</div>
+    <div class="pause">
+      <span class="pause-t">Petite vérif</span>
+      <div class="quiz">
+        <details><summary><span class="q-n">Recours</span>Un commerçant t'a menti sur un produit. Nomme deux recours.<span class="see">Voir la réponse →</span></summary><div class="ans">Au choix&nbsp;: <strong>porter plainte à l'OPC</strong>, <strong>faire annuler le contrat</strong>, <strong>poursuivre</strong> le commerçant.</div></details>
+        <details><summary><span class="q-n">Vrai ou faux</span>La pub destinée aux enfants est permise à partir de 10 ans.<span class="see">Voir la réponse →</span></summary><div class="ans"><strong>Faux.</strong> Elle est interdite pour les <strong>moins de 13 ans</strong>.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== QUIZ ===================== -->
+  <div class="section-head" id="quiz">
+    <span class="num" aria-hidden="true">?!</span>
+    <h2>Teste-toi</h2>
+    <p>Réponds dans ta tête (ou sur une feuille), puis clique sur la carte pour vérifier.</p>
+  </div>
+  <div class="quiz">
+    <details><summary><span class="q-n">Vrai ou faux</span>Un cellulaire, c'est toujours un désir.<span class="see">Voir la réponse →</span></summary><div class="ans"><strong>Faux.</strong> Ça dépend de la situation. Pour quelqu'un qui en a besoin pour travailler ou pour sa sécurité, ça peut être un besoin.</div></details>
+    <details><summary><span class="q-n">Maslow</span>Place dans l'ordre, de la base au sommet&nbsp;: estime, physiologiques, accomplissement, sécurité, appartenance.<span class="see">Voir la réponse →</span></summary><div class="ans">Physiologiques → sécurité → appartenance → estime → accomplissement. (« Pas Sûr, Appelle Encore Alex »)</div></details>
+    <details><summary><span class="q-n">Coût d'opportunité</span>Tu as 60&nbsp;$. Tu achètes un billet de spectacle au lieu d'un jeu vidéo. Quel est ton coût d'opportunité?<span class="see">Voir la réponse →</span></summary><div class="ans">Le <strong>jeu vidéo</strong>&nbsp;: c'est ce à quoi tu as renoncé.</div></details>
+    <details><summary><span class="q-n">Offre et demande</span>Ton artiste préféré annonce un seul spectacle dans une petite salle. Que font la demande, l'offre et le prix?<span class="see">Voir la réponse →</span></summary><div class="ans">Demande <span class="up">↑</span>, offre = (pas plus de places), prix <span class="up">↑</span>.</div></details>
+    <details><summary><span class="q-n">Taxes</span>Un chandail coûte 40&nbsp;$. Combien de TPS, de TVQ, et quel total?<span class="see">Voir la réponse →</span></summary><div class="ans">TPS&nbsp;: 2,00&nbsp;$. TVQ&nbsp;: 3,99&nbsp;$. Total&nbsp;: <strong>45,99&nbsp;$</strong>.</div></details>
+    <details><summary><span class="q-n">Taxes</span>Lesquels ne sont pas taxés&nbsp;: pommes, croustilles, rendez-vous chez le dentiste, boisson gazeuse?<span class="see">Voir la réponse →</span></summary><div class="ans">Les <strong>pommes</strong> (aliment de base) et le <strong>dentiste</strong> (soin de santé).</div></details>
+    <details><summary><span class="q-n">Pouvoir d'achat</span>Ton salaire reste le même, mais tout coûte plus cher qu'avant. Qu'arrive-t-il à ton pouvoir d'achat?<span class="see">Voir la réponse →</span></summary><div class="ans">Il <strong>baisse</strong>&nbsp;: tu peux acheter moins de choses avec le même argent. (C'est l'effet de l'inflation.)</div></details>
+    <details><summary><span class="q-n">Objectifs de la pub</span>Une pub du gouvernement contre l'alcool au volant. Quel est son objectif?<span class="see">Voir la réponse →</span></summary><div class="ans"><strong>Sensibiliser</strong>. C'est une pub sociétale.</div></details>
+    <details><summary><span class="q-n">Stratégies</span>Un joueur de hockey connu dit qu'il boit seulement cette marque de boisson sportive. Quelle stratégie?<span class="see">Voir la réponse →</span></summary><div class="ans">La <strong>notoriété</strong> (une personnalité connue).</div></details>
+    <details><summary><span class="q-n">Vrai ou faux</span>Une pub qui te fait pleurer est illégale au Québec.<span class="see">Voir la réponse →</span></summary><div class="ans"><strong>Faux.</strong> L'émotion est une stratégie permise. Ce qui est interdit, c'est mentir, faire de fausses promesses ou cacher la vérité.</div></details>
+    <details><summary><span class="q-n">Data</span>Pourquoi tu vois des pubs de souliers juste après avoir cherché des souliers en ligne?<span class="see">Voir la réponse →</span></summary><div class="ans">Tes recherches laissent des <strong>données</strong>. Les entreprises les utilisent pour te montrer des pubs <strong>ciblées</strong>.</div></details>
+    <details><summary><span class="q-n">Lois</span>Au Québec, quel organisme surveille la pub et applique la Loi sur la protection du consommateur?<span class="see">Voir la réponse →</span></summary><div class="ans">L'<strong>Office de la protection du consommateur (OPC)</strong>.</div></details>
+  </div>
+
+  <!-- ===================== CHECKLIST ===================== -->
+  <div class="section-head" id="pret">
+    <span class="num" aria-hidden="true">OK</span>
+    <h2>Je suis prêt si je peux…</h2>
+    <p class="score" id="score" aria-live="polite">0 sur 10</p>
+  </div>
+  <ul class="check" id="checklist">
+    <li><label for="c1"><input type="checkbox" id="c1"><span>Expliquer pourquoi une même chose peut être un besoin <em>ou</em> un désir, avec un exemple.</span></label></li>
+    <li><label for="c2"><input type="checkbox" id="c2"><span>Nommer les 5 étages de Maslow dans l'ordre.</span></label></li>
+    <li><label for="c3"><input type="checkbox" id="c3"><span>Définir le coût d'opportunité et donner un exemple de ma vie.</span></label></li>
+    <li><label for="c4"><input type="checkbox" id="c4"><span>Définir le pouvoir d'achat et nommer ce qui l'influence (revenu, prix, taxes).</span></label></li>
+    <li><label for="c5"><input type="checkbox" id="c5"><span>Expliquer l'offre et la demande avec un exemple, et dire ce qui arrive au prix.</span></label></li>
+    <li><label for="c6"><input type="checkbox" id="c6"><span>Nommer la TPS et la TVQ, leurs taux, des produits non taxés, et ce qu'est une taxe d'accise.</span></label></li>
+    <li><label for="c7"><input type="checkbox" id="c7"><span>Nommer les 3 facteurs socioculturels avec deux exemples personnels chacun.</span></label></li>
+    <li><label for="c8"><input type="checkbox" id="c8"><span>Nommer les 3 objectifs de la pub (I·P·S).</span></label></li>
+    <li><label for="c9"><input type="checkbox" id="c9"><span>Nommer au moins 5 stratégies publicitaires.</span></label></li>
+    <li><label for="c10"><input type="checkbox" id="c10"><span>Expliquer ce que la Loi sur la protection du consommateur interdit, la règle des 13 ans, et quoi faire si je suis trompé.</span></label></li>
+  </ul>
+</main>
+
+<footer>
+  <div class="wrap">Synthèse des sections 1.1 et 1.2 du cahier <em>Éducation financière</em>, chapitre 1 (p. 4 à 16). Marché publicitaire&nbsp;: Centre d'études sur les médias, 2023.</div>
+</footer>
+
+<script>
+(function () {
+  var KEY = "fiche-c1-pret";
+  var boxes = Array.prototype.slice.call(document.querySelectorAll("#checklist input"));
+  var score = document.getElementById("score");
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
+  function update() {
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    score.textContent = n + " sur " + boxes.length + (n === boxes.length ? " · Prêt pour l'examen!" : "");
+  }
+  boxes.forEach(function (b) {
+    if (saved[b.id]) b.checked = true;
+    b.addEventListener("change", function () {
+      saved[b.id] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+      update();
+    });
+  });
+  update();
+
+  // Version papier : numérote les questions (Q1, Q2…) et bâtit le corrigé, visible seulement à l'impression.
+  var key = document.createElement("section");
+  key.id = "corrige";
+  key.innerHTML = '<div class="section-head"><span class="num" aria-hidden="true">✎</span><h2>Corrigé</h2><p>Les réponses aux questions, dans l\'ordre. Essaie d\'abord, vérifie ensuite.</p></div>';
+  var list = null, group = "", n = 0;
+  document.querySelectorAll(".section-head h2, .quiz details").forEach(function (el) {
+    if (el.tagName === "H2") {
+      list = null;
+      group = el.textContent;
+      return;
+    }
+    n++;
+    var tag = el.querySelector(".q-n");
+    var pq = document.createElement("b");
+    pq.className = "pq";
+    pq.textContent = "✎ Q" + n + " · ";
+    tag.insertBefore(pq, tag.firstChild);
+    if (!list) {
+      var h = document.createElement("h4");
+      h.textContent = group;
+      list = document.createElement("ol");
+      list.className = "key";
+      key.appendChild(h);
+      key.appendChild(list);
+    }
+    var li = document.createElement("li");
+    li.innerHTML = '<b class="n">Q' + n + "</b>" + el.querySelector(".ans").innerHTML;
+    list.appendChild(li);
+  });
+  var src = document.createElement("p");
+  src.className = "key-src";
+  src.innerHTML = document.querySelector("footer .wrap").innerHTML;
+  document.querySelector("main").appendChild(src);
+  document.querySelector("main").appendChild(key);
+})();
+</script>
+</body>
+</html>
