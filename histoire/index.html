@@ -113,6 +113,12 @@ header b{font-family:var(--titre);font-size:20px;font-weight:800;letter-spacing:
 .act.large b{color:var(--bg);font-size:20px;margin:0}
 .act.large small{color:var(--bg);opacity:.75;font-size:14px}
 .act.large > span:not(.ic):not(.fait){display:flex;flex-direction:column;gap:2px}
+/* Mini-tests par dossier */
+.tests{margin-top:16px}
+.tests-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.act.test{min-height:auto;border-color:color-mix(in srgb,var(--ink) 22%,transparent)}
+.act.test b{margin-top:0;font-size:18px}
+.act.test small{font-weight:600;line-height:1.3}
 
 /* Feuille plein écran */
 .sheet{position:fixed;inset:0;z-index:30;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);visibility:hidden}
@@ -244,6 +250,14 @@ header b{font-family:var(--titre);font-size:20px;font-weight:800;letter-spacing:
 footer{color:var(--ink-3);font-size:12px;text-align:center;padding:26px 0 8px}
 #sansjs{padding:20px 0}
 
+/* Avant ou après : une ligne du temps, le repère au milieu, les deux côtés sont les boutons */
+.choix.frise{grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;position:relative}
+.choix.frise::before{content:"";position:absolute;left:4%;right:4%;top:50%;height:5px;margin-top:-2px;border-radius:3px;background:var(--bord-bas)}
+.choix.frise button{position:relative;text-align:center;font-family:var(--titre);font-size:20px;padding:18px 6px}
+.repere-f{position:relative;text-align:center;padding:8px 10px;border-radius:14px;background:var(--a);color:#fff;max-width:130px;line-height:1.15}
+.repere-f b{display:block;font-family:var(--titre);font-size:21px;margin:2px 0}
+.repere-f small{display:block;font-size:12px;font-weight:700}
+.repere-f small:first-child{text-transform:uppercase;letter-spacing:.06em;opacity:.8;font-size:10.5px}
 /* Sur la carte : la carte, la question, les réponses. Au cellulaire, l'un sous l'autre; au TBI, côte à côte. */
 .avec-carte{display:grid;grid-template-areas:"q" "carte" "rep"}
 .avec-carte > .q-carte{grid-area:q}
@@ -306,6 +320,13 @@ footer{color:var(--ink-3);font-size:12px;text-align:center;padding:26px 0 8px}
   .paires{gap:14px}
   .paires button{min-height:120px;font-size:21px;padding:14px;border-radius:20px;border-width:3px;border-bottom-width:7px}
   .paires button.terme{font-size:27px}
+  .tests-g{grid-template-columns:repeat(4,1fr)}
+  .choix.frise{gap:16px}
+  .choix.frise button{font-size:34px;padding:26px 10px}
+  .repere-f{max-width:240px;padding:12px 18px;border-radius:18px}
+  .repere-f b{font-size:36px}
+  .repere-f small{font-size:18px}
+  .repere-f small:first-child{font-size:14px}
   .avec-carte{grid-template-areas:"carte q" "carte rep";grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:32px;align-items:start}
   .avec-carte .astuce{font-size:16px}
   .fin{padding:36px}
@@ -369,7 +390,7 @@ const OIS = [
   { id: "relation", fam: "Relier", nom: "Mettre en relation des faits", desc: "Chaque élément au bon endroit", a: "#b0417a" },
   { id: "differences", fam: "Relier", nom: "Différences et similitudes", desc: "Pareil ou différent?", a: "#2e7d4f" },
   { id: "changements", fam: "Relier", nom: "Changements et continuités", desc: "Ce qui change, ce qui reste", a: "#6b4bb3" },
-  { id: "causes", fam: "Expliquer", nom: "Causes et conséquences", desc: "Avant ou après le fait?", a: "#c0392b" },
+  { id: "causes", fam: "Expliquer", nom: "Causes et conséquences", desc: "Parce que… ou alors…?", a: "#c0392b" },
   { id: "causalite", fam: "Expliquer", nom: "Liens de causalité", desc: "Trois faits, liés dans l'ordre", a: "#a86a12" }
 ];
 const ACTIVITES = [
@@ -388,18 +409,20 @@ const ACTIVITES = [
   { id: "chaine", oi: "causalite", nom: "La chaîne", ic: "⛓️" }
 ].map(a => ({ ...a, a: OIS.find(o => o.id === a.oi).a }));
 const SERIE = 5; // questions par série : 5 étoiles à remplir
+// Les dossiers du cahier : un mini-test de 5 questions par dossier, comme les mini-tests de l'enseignant.
+const DOSSIERS = { 1: "Les premiers occupants du territoire", 2: "Les rapports sociaux chez les Autochtones", 3: "Les activités économiques, les alliances et les croyances", 4: "Les contacts entre les Autochtones et les Européens" };
 
 /* ============ Banques de questions ============ */
 // [année, événement, page, dossier, approximatif]
 const EVENEMENTS = [[-30000, "Premiers humains en Amérique", 4, 1], [-15000, "Recul des glaciers : passage vers le sud", 4, 1], [-12000, "Premiers humains au Québec", 4, 1], [1000, "Les Vikings à l'Anse aux Meadows", 14, 4, 1], [1492, "Christophe Colomb atteint l'Amérique", 14, 4], [1497, "Jean Cabot explore pour l'Angleterre", 14, 4], [1500, "Trois grandes familles se partagent le territoire", 5, 1, 1], [1534, "1er voyage de Cartier : une croix à Gaspé", 15, 4], [1535, "2e voyage de Cartier : Hochelaga", 15, 4], [1541, "3e voyage de Cartier : Charlesbourg-Royal", 15, 4], [1600, "Un poste de traite à Tadoussac", 16, 4, 1], [1603, "L'alliance franco-amérindienne", 16, 4], [1608, "La fondation de Québec", 14, 4]];
-const REPERES = [[1492, "l'arrivée de Colomb"], [1534, "le 1er voyage de Cartier"], [1603, "l'alliance franco-amérindienne"], [1000, "l'arrivée des Vikings"], [1541, "le 3e voyage de Cartier"], [-12000, "l'arrivée des premiers humains au Québec"]];
+const REPERES = [[-12000, "Premiers humains au Québec"], [1000, "Les Vikings à l'Anse aux Meadows"], [1492, "Colomb atteint l'Amérique"], [1534, "1er voyage de Cartier"], [1541, "3e voyage de Cartier"], [1603, "Alliance franco-amérindienne"], [1608, "Fondation de Québec"]];
 const FAMILLES = ["Algonquiens", "Iroquoiens", "Inuits"];
 
-const VF = [["Les Iroquoiens sont nomades.", false, "Les Iroquoiens sont sédentaires : ils cultivent la terre.", 5, 1], ["Le Bouclier canadien a un sol fertile.", false, "Le sol du Bouclier canadien est pauvre et rocheux.", 3, 1], ["Les premiers humains sont venus d'Asie par la Béringie.", true, "", 4, 1], ["Chez les Inuits, les décisions se prennent par consensus.", true, "", 8, 2], ["Les Algonquiens sont matrilinéaires.", false, "Les Algonquiens sont patrilinéaires : la nation est gérée par les hommes.", 9, 2], ["Les Autochtones possédaient des biens individuels.", false, "Il n'existe aucune possession individuelle : tout appartient à la communauté.", 10, 2], ["Le troc se fait avec de la monnaie.", false, "Le troc est un échange de biens, sans monnaie.", 11, 3], ["On scelle une alliance en échangeant un wampum.", true, "", 12, 3], ["Cartier fonde Charlesbourg-Royal lors de son 1er voyage.", false, "Il fonde Charlesbourg-Royal lors de son 3e voyage, en 1541.", 15, 4], ["Les « richesses » rapportées par Cartier n'étaient que de la pyrite et du quartz.", true, "", 15, 4], ["Jean Cabot explore au nom de la France.", false, "Jean Cabot explore au nom de l'Angleterre, en 1497.", 14, 4], ["L'alliance franco-amérindienne est signée en 1603.", true, "", 16, 4],
+const VF = [["Les Iroquoiens sont nomades.", false, "Les Iroquoiens sont sédentaires : ils cultivent la terre.", 5, 1], ["Le Bouclier canadien a un sol fertile.", false, "Le sol du Bouclier canadien est pauvre et rocheux.", 3, 1], ["Les premiers humains sont venus d'Asie par la Béringie.", true, "", 4, 1], ["Chez les Inuits, les décisions se prennent par consensus.", true, "", 8, 2], ["Les Algonquiens sont matrilinéaires.", false, "Les Algonquiens sont patrilinéaires : la nation est gérée par les hommes.", 9, 2], ["Les Autochtones possédaient des biens individuels.", false, "Il n'existe aucune possession individuelle : tout appartient à la communauté.", 10, 2], ["Le troc se fait avec de la monnaie.", false, "Le troc est un échange de biens, sans monnaie.", 11, 3], ["On scelle une alliance en échangeant un wampum.", true, "", 12, 3], ["Cartier fonde Charlesbourg-Royal lors de son 1er voyage.", false, "Il fonde Charlesbourg-Royal lors de son 3e voyage, en 1541.", 15, 4], ["Les « richesses » rapportées par Cartier n'étaient que de la pyrite et du quartz.", true, "", 15, 4], ["Jean Cabot explore au nom de la France.", false, "Jean Cabot explore au nom de l'Angleterre, en 1497.", 14, 4], ["L'alliance franco-amérindienne est conclue en 1603.", true, "", 16, 4], ["Une guerre peut éclater pour le contrôle de produits commerciaux.", true, "", 12, 3], ["Créer un empire colonial est un des objectifs des explorations.", true, "", 14, 4],
   ["Le Bouclier canadien est vaste et rocheux.", true, "", 3, 1], ["Les Basses-terres du Saint-Laurent sont fertiles.", true, "", 3, 1], ["Les Appalaches sont des montagnes jeunes et très hautes.", false, "Les Appalaches sont une chaîne de montagnes ancienne et usée.", 3, 1], ["Le fleuve Saint-Laurent sert de voie de circulation et de source de nourriture.", true, "", 3, 1], ["Les premiers humains sont nés en Amérique.", false, "Ils sont venus d'Asie, par la Béringie.", 4, 1], ["Les premiers humains arrivent au Québec vers −12 000.", true, "", 4, 1], ["La migration côtière est une des deux hypothèses du peuplement de l'Amérique.", true, "", 4, 1], ["Les Inuits vivent dans des maisons longues.", false, "Les Inuits vivent dans des igloos. La maison longue est iroquoienne.", 5, 1], ["Les Algonquiens cultivent le maïs, la courge et le haricot.", false, "Ce sont les Iroquoiens. Les Algonquiens vivent de la chasse, de la pêche et de la cueillette.", 5, 1], ["Chez les Iroquoiens, les mères de clan désignent les chefs.", true, "", 8, 2], ["Chez les Algonquiens, une seule personne prend toutes les décisions.", false, "Les chefs prennent les décisions simples, et le conseil, les décisions complexes.", 8, 2], ["La personne qui rapporte la nourriture dirige la nation.", true, "", 9, 2], ["Les Autochtones transmettent leur culture par l'écriture.", false, "Ils ne connaissaient pas l'écriture : la culture passe par la tradition orale.", 9, 2], ["Le chaman connaît bien les plantes médicinales.", true, "", 9, 2], ["Le don et contre-don sert à renforcer les liens entre amis et alliés.", true, "", 10, 2], ["Les nations autochtones commerçaient entre elles avant l'arrivée des Européens.", true, "", 11, 3], ["Les échanges ont lieu aux confluents, là où deux cours d'eau se rejoignent.", true, "", 11, 3], ["Une alliance sert seulement à faire du commerce.", false, "Elle sert aussi à se défendre, à combattre un ennemi commun et à entretenir des liens politiques.", 12, 3], ["Tous les prisonniers de guerre étaient torturés jusqu'à la mort.", false, "Certains étaient adoptés pour remplacer un membre défunt de la famille.", 12, 3], ["Le totem est l'esprit protecteur d'une personne.", true, "", 13, 3], ["À la fête des Morts, on nettoie et on honore les ossements des ancêtres.", true, "", 13, 3], ["Les Vikings accostent à l'Anse aux Meadows vers l'an 1000.", true, "", 14, 4], ["Christophe Colomb atteint l'Amérique en 1534.", false, "Colomb atteint l'Amérique en 1492. En 1534, c'est le 1er voyage de Cartier.", 14, 4], ["Évangéliser les Autochtones est un des objectifs des explorations.", true, "", 14, 4], ["Lors de son 2e voyage, Cartier se rend jusqu'à Hochelaga.", true, "", 15, 4], ["Donnacona est le chef d'Hochelaga.", false, "Donnacona est le chef de Stadaconé, le futur Québec.", 15, 4], ["Au début, les Français viennent surtout pour pêcher la baleine et la morue.", true, "", 16, 4], ["Les Européens donnent des fourrures aux Autochtones.", false, "C'est l'inverse : les Autochtones donnent des fourrures, et les Européens des objets en métal, des fusils, des miroirs et de l'alcool.", 16, 4], ["Les tentatives de colonisation réussissent du premier coup.", false, "Pendant un demi-siècle, plusieurs tentatives échouent (île de Sable, Sainte-Croix, Port-Royal).", 16, 4]];
 
 const MOTS = [["Les premiers humains sont venus d'Asie par la ___.", "Béringie", ["Laurentie", "Gaspésie", "Acadie"], 4, 1], ["Les Iroquoiens vivent dans des ___ palissadées.", "maisons longues", ["tipis", "igloos", "wigwams"], 5, 1], ["Chez les Iroquoiens, les ___ désignent les chefs.", "mères de clan", ["chamans", "aînés", "guerriers"], 8, 2], ["La culture se transmet par la ___.", "tradition orale", ["écriture", "peinture", "musique"], 9, 2], ["On échange les marchandises aux ___, là où deux cours d'eau se rejoignent.", "confluents", ["portages", "rapides", "baies"], 11, 3], ["Chaque personne a un esprit protecteur : son ___.", "totem", ["wampum", "chaman", "conseil"], 13, 3], ["La religion des Autochtones est l'___.", "animisme", ["christianisme", "islam", "judaïsme"], 13, 3], ["En 1534, Cartier plante une croix à ___.", "Gaspé", ["Tadoussac", "Hochelaga", "Stadaconé"], 15, 4], ["Au début des années 1600, un poste de traite est établi à ___.", "Tadoussac", ["Gaspé", "Hochelaga", "Charlesbourg-Royal"], 16, 4], ["Les Européens donnent des objets en métal en échange de ___.", "fourrures", ["maïs", "wampums", "canots"], 16, 4],
-  ["Région vaste et rocheuse, au sol pauvre : ___.", "le Bouclier canadien", ["les Basses-terres du Saint-Laurent", "les Appalaches", "le Nord-du-Québec"], 3, 1], ["Région fertile, propice à l'agriculture : ___.", "les Basses-terres du Saint-Laurent", ["le Bouclier canadien", "les Appalaches", "le Nord-du-Québec"], 3, 1], ["Chaîne de montagnes ancienne et usée : ___.", "les Appalaches", ["le Bouclier canadien", "les Basses-terres du Saint-Laurent", "les Rocheuses"], 3, 1], ["L'artère principale du territoire est le fleuve ___.", "Saint-Laurent", ["Saguenay", "Richelieu", "Outaouais"], 3, 1], ["Les humains auraient longé les côtes en bateau : c'est l'hypothèse de la ___.", "migration côtière", ["Béringie", "traversée de l'Atlantique", "route de l'Asie"], 4, 1], ["Les premiers humains arrivent au Québec vers ___.", "−12 000", ["−30 000", "−15 000", "1492"], 4, 1], ["Les Algonquiens vivent dans des tipis ou des ___.", "wigwams", ["maisons longues", "igloos", "forts"], 5, 1], ["Les Iroquoiens cultivent le maïs, la courge et le ___.", "haricot", ["blé", "riz", "tabac"], 5, 1], ["Territoire des Inuits : ___.", "le Nord-du-Québec", ["les Basses-terres du Saint-Laurent", "les Appalaches", "la Gaspésie"], 5, 1], ["Les Algonquiens sont ___ : ils se déplacent pour chasser.", "nomades", ["sédentaires", "agriculteurs", "matrilinéaires"], 5, 1], ["Chez les Inuits, les décisions se prennent par ___.", "consensus", ["vote", "tirage au sort", "ordre du chef"], 8, 2], ["Chez les Algonquiens, le ___ prend les décisions complexes.", "conseil", ["chaman", "totem", "roi"], 8, 2], ["Une nation gérée par les femmes est ___.", "matrilinéaire", ["patrilinéaire", "nomade", "animiste"], 9, 2], ["Une nation gérée par les hommes est ___.", "patrilinéaire", ["matrilinéaire", "sédentaire", "animiste"], 9, 2], ["Le ___ est un guérisseur qui interprète les rêves.", "chaman", ["totem", "wampum", "conseil"], 9, 2], ["Les contes et les légendes sont racontés par les ___.", "aînés", ["enfants", "guerriers", "pêcheurs"], 9, 2], ["Entre amis et alliés, on se fait des présents mutuels : c'est le ___.", "don et contre-don", ["troc", "wampum", "consensus"], 10, 2], ["Le ___ est l'échange d'un bien contre un autre, sans monnaie.", "troc", ["wampum", "totem", "conseil"], 11, 3], ["Les Iroquoiens échangent leur maïs contre les ___ des Algonquiens.", "fourrures", ["canots", "wampums", "igloos"], 11, 3], ["Pour sceller une alliance, on échange un ___.", "wampum", ["totem", "tipi", "chaman"], 12, 3], ["Pour s'attirer les faveurs des esprits, on leur fait des ___.", "offrandes", ["impôts", "messes", "contrats"], 13, 3], ["Vers l'an 1000, les Vikings accostent à Terre-Neuve, à ___.", "l'Anse aux Meadows", ["Tadoussac", "Gaspé", "Hochelaga"], 14, 4], ["En 1497, Jean Cabot explore au nom de ___.", "l'Angleterre", ["la France", "l'Espagne", "le Portugal"], 14, 4], ["Les Européens espèrent trouver des ___ précieux.", "métaux", ["bois", "tissus", "animaux"], 14, 4], ["En 1535, Cartier remonte le fleuve jusqu'à ___, le futur Montréal.", "Hochelaga", ["Stadaconé", "Tadoussac", "Gaspé"], 15, 4], ["Stadaconé, le village de Donnacona, deviendra ___.", "Québec", ["Montréal", "Trois-Rivières", "Gaspé"], 15, 4], ["En 1541, Cartier fonde ___ avec 400 colons.", "Charlesbourg-Royal", ["Port-Royal", "Québec", "Tadoussac"], 15, 4], ["Les « diamants » de Cartier n'étaient que du ___.", "quartz", ["verre", "sel", "cuivre"], 15, 4], ["Les pêcheurs font sécher la ___ sur la terre.", "morue", ["fourrure", "viande", "truite"], 16, 4], ["En 1603, les Français signent l'alliance ___.", "franco-amérindienne", ["franco-anglaise", "franco-espagnole", "franco-viking"], 16, 4]];
+  ["Région vaste et rocheuse, au sol pauvre : ___.", "le Bouclier canadien", ["les Basses-terres du Saint-Laurent", "les Appalaches", "le Nord-du-Québec"], 3, 1], ["Région fertile, propice à l'agriculture : ___.", "les Basses-terres du Saint-Laurent", ["le Bouclier canadien", "les Appalaches", "le Nord-du-Québec"], 3, 1], ["Chaîne de montagnes ancienne et usée : ___.", "les Appalaches", ["le Bouclier canadien", "les Basses-terres du Saint-Laurent", "les Rocheuses"], 3, 1], ["L'artère principale du territoire est le fleuve ___.", "Saint-Laurent", ["Saguenay", "Richelieu", "Outaouais"], 3, 1], ["Les humains auraient longé les côtes en bateau : c'est l'hypothèse de la ___.", "migration côtière", ["Béringie", "traversée de l'Atlantique", "route de l'Asie"], 4, 1], ["Les premiers humains arrivent au Québec vers ___.", "−12 000", ["−30 000", "−15 000", "1492"], 4, 1], ["Les Algonquiens vivent dans des tipis ou des ___.", "wigwams", ["maisons longues", "igloos", "forts"], 5, 1], ["Les Iroquoiens cultivent le maïs, la courge et le ___.", "haricot", ["blé", "riz", "tabac"], 5, 1], ["Territoire des Inuits : ___.", "le Nord-du-Québec", ["les Basses-terres du Saint-Laurent", "les Appalaches", "la Gaspésie"], 5, 1], ["Les Algonquiens sont ___ : ils se déplacent pour chasser.", "nomades", ["sédentaires", "agriculteurs", "matrilinéaires"], 5, 1], ["Chez les Inuits, les décisions se prennent par ___.", "consensus", ["vote", "tirage au sort", "ordre du chef"], 8, 2], ["Chez les Algonquiens, le ___ prend les décisions complexes.", "conseil", ["chaman", "totem", "roi"], 8, 2], ["Une nation gérée par les femmes est ___.", "matrilinéaire", ["patrilinéaire", "nomade", "animiste"], 9, 2], ["Une nation gérée par les hommes est ___.", "patrilinéaire", ["matrilinéaire", "sédentaire", "animiste"], 9, 2], ["Le ___ est un guérisseur qui interprète les rêves.", "chaman", ["totem", "wampum", "conseil"], 9, 2], ["Les contes et les légendes sont racontés par les ___.", "aînés", ["enfants", "guerriers", "pêcheurs"], 9, 2], ["Entre amis et alliés, on se fait des présents mutuels : c'est le ___.", "don et contre-don", ["troc", "wampum", "consensus"], 10, 2], ["Le ___ est l'échange d'un bien contre un autre, sans monnaie.", "troc", ["wampum", "totem", "conseil"], 11, 3], ["Les Iroquoiens échangent leur maïs contre les ___ des Algonquiens.", "fourrures", ["canots", "wampums", "igloos"], 11, 3], ["Pour sceller une alliance, on échange un ___.", "wampum", ["totem", "tipi", "chaman"], 12, 3], ["Pour s'attirer les faveurs des esprits, on leur fait des ___.", "offrandes", ["impôts", "messes", "contrats"], 13, 3], ["Vers l'an 1000, les Vikings accostent à Terre-Neuve, à ___.", "l'Anse aux Meadows", ["Tadoussac", "Gaspé", "Hochelaga"], 14, 4], ["En 1497, Jean Cabot explore au nom de ___.", "l'Angleterre", ["la France", "l'Espagne", "le Portugal"], 14, 4], ["Les Européens espèrent trouver des ___ précieux.", "métaux", ["bois", "tissus", "animaux"], 14, 4], ["En 1535, Cartier remonte le fleuve jusqu'à ___, le futur Montréal.", "Hochelaga", ["Stadaconé", "Tadoussac", "Gaspé"], 15, 4], ["Stadaconé, le village de Donnacona, deviendra ___.", "Québec", ["Montréal", "Trois-Rivières", "Gaspé"], 15, 4], ["En 1541, Cartier fonde ___ avec 400 colons.", "Charlesbourg-Royal", ["Port-Royal", "Québec", "Tadoussac"], 15, 4], ["Les « diamants » de Cartier n'étaient que du ___.", "quartz", ["verre", "sel", "cuivre"], 15, 4], ["Les pêcheurs font sécher la ___ sur la terre.", "morue", ["fourrure", "viande", "truite"], 16, 4], ["En 1603, les Français concluent l'alliance ___.", "franco-amérindienne", ["franco-anglaise", "franco-espagnole", "franco-iroquoise"], 16, 4], ["En revendiquant de nouveaux territoires, les Européens veulent créer un ___ colonial.", "empire", ["royaume", "marché", "village"], 14, 4]];
 
 const PERSOS = [["J'atteins l'Amérique en 1492 en cherchant une route vers l'Asie.", "Christophe Colomb", 14, 4], ["J'explore en 1497 au nom de l'Angleterre.", "Jean Cabot", 14, 4], ["Je fais trois voyages pour le roi de France.", "Jacques Cartier", 15, 4], ["Chef de Stadaconé, je suis enlevé et amené en France.", "Donnacona", 15, 4], ["Je suis un guérisseur : j'interprète les rêves et je parle aux esprits.", "Le chaman", 9, 2], ["Chez les Iroquoiens, je désigne les chefs.", "Une mère de clan", 8, 2], ["Nous accostons à l'Anse aux Meadows vers l'an 1000.", "Les Vikings", 14, 4], ["Je raconte les contes et les légendes aux plus jeunes.", "Un aîné", 9, 2],
   ["En 1534, je plante une croix à Gaspé.", "Jacques Cartier", 15, 4], ["En 1541, je fonde Charlesbourg-Royal avec 400 colons.", "Jacques Cartier", 15, 4], ["En 1534, je rencontre Cartier. Je suis le chef du futur Québec.", "Donnacona", 15, 4], ["Je connais les plantes médicinales et je soigne les malades.", "Le chaman", 9, 2], ["Chez les Iroquoiens, je dirige seulement en temps de guerre.", "Le chef de guerre", 8, 2], ["Nous sommes des chefs réunis pour prendre les décisions complexes.", "Le conseil", 8, 2], ["Je suis l'esprit protecteur de chaque personne.", "Le totem", 13, 3], ["Nous venons pêcher la morue et nous débarquons pour la faire sécher.", "Les pêcheurs français", 16, 4], ["Nous donnons des fourrures en échange d'objets en métal.", "Les Autochtones", 16, 4], ["Nous donnons des fusils, des miroirs et de l'alcool contre des fourrures.", "Les Européens", 16, 4], ["Grâce à moi, les savoirs passent d'une génération à l'autre, sans écriture.", "Un aîné", 9, 2], ["Les mères de clan me désignent, et je dirige en temps de paix.", "Le chef civil", 8, 2]];
@@ -426,9 +449,9 @@ const CHANGE = [
   ["Ce que cherchent les explorateurs", "1492, Colomb", "Une route vers l'Asie.", "1534, Cartier", "Une route vers l'Asie.", false, "Les Européens cherchent toujours la route de l'Asie.", 14, 4],
   ["La grande route pour se déplacer", "Avant les Européens", "Les Autochtones voyagent sur le fleuve Saint-Laurent.", "1535", "Cartier remonte le fleuve Saint-Laurent jusqu'à Hochelaga.", false, "Le fleuve reste la grande voie de circulation.", 15, 4],
   ["La vie des Autochtones", "Avant les Européens", "Ils vivent sans objets européens.", "Après les échanges", "Les objets européens rendent leur vie plus facile.", true, "Leur niveau de vie s'améliore.", 16, 4],
-  ["La chasse", "Avant les Européens", "Les Autochtones chassent pour se nourrir et se vêtir.", "Après les échanges", "Ils chassent aussi pour échanger des fourrures avec les Européens.", true, "Leurs habitudes de chasse changent.", 16, 4],
+  ["La chasse", "Avant les Européens", "Les Autochtones chassent surtout pour se nourrir et se vêtir.", "Après les échanges", "Ils chassent beaucoup plus d'animaux à fourrure, pour les Européens.", true, "Leurs habitudes de chasse changent.", 16, 4],
   ["Les pêcheurs français", "Au début", "Ils pêchent la morue en mer.", "Dans les années 1500", "Ils débarquent pour faire sécher la morue et rencontrent les Autochtones.", true, "Ils viennent maintenant sur la terre, et les échanges commencent.", 16, 4],
-  ["Les tentatives de colonie", "1541, Charlesbourg-Royal", "La colonie de Cartier échoue.", "Début des années 1600", "Un poste de traite s'installe à Tadoussac et réussit.", true, "Après 50 ans d'échecs, les premiers succès arrivent.", 16, 4]
+  ["Les Français en Amérique", "De 1541 à 1600", "Leurs tentatives de colonie échouent.", "Début des années 1600", "Ils réussissent enfin à s'installer : un poste de traite à Tadoussac, puis Québec en 1608.", true, "Après 50 ans d'échecs, les premiers succès arrivent.", 16, 4]
 ];
 
 // Cause ou conséquence : [le fait, la suite de la phrase, cause?, page, dossier]. Se lit « fait parce que suite » (cause) ou « fait, alors suite » (conséquence).
@@ -441,6 +464,7 @@ const CAUSES = [
   ["Les femmes iroquoiennes rapportent l'essentiel de la nourriture", "ce sont elles qui gèrent la nation", false, 9, 2],
   ["Les Algonquiens échangent leurs fourrures contre du maïs", "ils ne peuvent pas cultiver sur leur sol", true, 11, 3],
   ["Une guerre éclate entre deux nations", "elles se disputent le même territoire de chasse", true, 12, 3],
+  ["Une guerre éclate entre deux nations", "elles veulent contrôler les mêmes produits commerciaux", true, 12, 3],
   ["Une guerre éclate entre deux nations", "des prisonniers sont adoptés ou torturés", false, 12, 3],
   ["Les Européens traversent l'Atlantique", "ils arrivent sur un continent qu'ils ne connaissaient pas", false, 14, 4],
   ["Colomb traverse l'Atlantique", "il cherche une route plus courte vers l'Asie", true, 14, 4],
@@ -464,7 +488,7 @@ const CHAINES = [
   [["Une nation exige un droit de passage", "Une guerre éclate", "Des prisonniers sont adoptés ou torturés"], 12, 3],
   [["Les Algonquiens ne peuvent pas cultiver", "Ils échangent leurs fourrures contre le maïs des Iroquoiens", "Chacun obtient ce qu'il ne produit pas"], 11, 3],
   [["Les glaciers reculent", "Un passage s'ouvre vers le sud", "Les humains peuplent le continent"], 4, 1],
-  [["Le roi veut maintenant coloniser le territoire", "Cartier fonde Charlesbourg-Royal avec 400 colons", "L'hiver amène des conflits avec les Iroquois"], 15, 4],
+  [["Le roi veut maintenant coloniser le territoire", "Cartier fonde Charlesbourg-Royal avec 400 colons", "L'hiver amène des conflits avec les Iroquoiens de Stadaconé"], 15, 4],
   [["Deux nations veulent combattre un ennemi commun", "Elles forment une alliance", "Elles la scellent en échangeant un wampum"], 12, 3]
 ];
 
@@ -488,7 +512,8 @@ const store = {
   set(k, v) { try { localStorage.setItem("hubhqc:" + k, JSON.stringify(v)); } catch (e) {} }
 };
 const page = (p, d) => `<span class="page">📒 Cahier p. ${p}${d ? " · Dossier " + d : ""}</span>`;
-const actDe = id => ACTIVITES.find(a => a.id === id) || { id, nom: "Mini-examen", oi: "Tout le chapitre", ic: "📝", a: "#1f1611" };
+const actDe = id => ACTIVITES.find(a => a.id === id)
+  || (/^test\d$/.test(id) ? { id, nom: "Mini-test · Dossier " + id[4], oi: DOSSIERS[id[4]], ic: "✏️", a: "#1f1611" } : { id, nom: "Mini-examen", oi: "Tout le chapitre", ic: "📝", a: "#1f1611" });
 const oiDe = id => OIS.find(o => o.id === id);
 const BRAVO = ["Exact!", "Oui!", "Bien vu!", "C'est ça!", "Parfait!"];
 const LETTRES = "ABCDE";
@@ -510,7 +535,8 @@ function render() {
     h += `<div class="oi-bloc" style="--a:${o.a}"><div class="oi-tete"><span class="picto"><i style="--m:url(${PICTOS[o.id]})"></i></span><div><h3>${esc(o.nom)}</h3><p>${esc(o.desc)}</p></div></div>
       <div class="acts">${ACTIVITES.filter(a => a.oi === o.id).map(a => `<button class="act" data-act="${a.id}"><span class="ic">${a.ic}</span><b>${esc(a.nom)}</b><small>★ 5 questions</small>${faits[a.id] ? '<span class="fait" title="Déjà essayée">✓</span>' : ""}</button>`).join("")}</div></div>`;
   });
-  h += `</div><button class="act large" data-act="examen"><span class="ic">📝</span><span><b>Mini-examen</b><small>10 questions mélangées, toutes les OI</small></span>${faits.examen ? '<span class="fait">✓</span>' : ""}</button>`;
+  h += `</div><button class="act large" data-act="examen"><span class="ic">📝</span><span><b>Mini-examen</b><small>10 questions mélangées, toutes les OI</small></span>${faits.examen ? '<span class="fait">✓</span>' : ""}</button>`
+    + `<div class="tests"><p class="eyebrow">Mini-test · 5 questions sur un dossier du cahier</p><div class="tests-g">${Object.entries(DOSSIERS).map(([d, t]) => `<button class="act test" data-act="test${d}"><b>Dossier ${d}</b><small>${esc(t)}</small>${faits["test" + d] ? '<span class="fait">✓</span>' : ""}</button>`).join("")}</div></div>`;
   $("ois").innerHTML = h;
 }
 
@@ -576,9 +602,16 @@ const Q = {
   qui: () => QUI.map(([q, r, p, d]) => ({ q, r, choix: FAMILLES, p, d, consigne: "Qui parle? Choisis la famille." })),
   perso: () => { const noms = [...new Set(PERSOS.map(x => x[1]))];
     return PERSOS.map(([q, r, p, d]) => ({ q, r, choix: melange([r, ...melange(noms.filter(n => n !== r)).slice(0, 3)]), p, d, consigne: "Qui parle?" })); },
-  avant: () => { const [y0, t0] = REPERES[Math.floor(Math.random() * REPERES.length)];
-    return EVENEMENTS.filter(e => e[0] !== y0 && !(e[4] && Math.abs(e[0] - y0) < 30)).map(([y, t, p, d, ap]) => ({ q: t, r: y < y0 ? "Avant" : "Après", choix: ["Avant", "Après"], corr: an(y, ap), p, d,
-      consigne: `Avant ou après ${an(y0)}?`, ctx: `<span class="etiq">Le repère</span><span class="repere">${an(y0)} · ${esc(maj(t0))}</span><hr><span class="etiq">L'événement</span>` })); },
+  // Avant ou après : une petite ligne du temps. Le repère est au milieu, l'élève touche le côté où va l'événement.
+  // Un repère différent à chaque question, choisi pour que « avant » et « après » sortent à parts égales.
+  avant: () => EVENEMENTS.map(([y, t, p, d, ap]) => {
+    const ok = REPERES.filter(([y0]) => y0 !== y && !(ap && Math.abs(y - y0) < 30));
+    const plusTard = ok.filter(([y0]) => y0 > y), plusTot = ok.filter(([y0]) => y0 < y);
+    const cote = !plusTot.length || (plusTard.length && Math.random() < .5) ? plusTard : plusTot;
+    const [y0, t0] = cote[Math.floor(Math.random() * cote.length)];
+    return { q: t, r: y < y0 ? "Avant" : "Après", choix: ["Avant", "Après"], p, d, consigne: "Avant ou après le repère?", ctx: `<span class="etiq">L'événement</span>`,
+      frise: [an(y0), t0], corr: `${t} : ${an(y, ap).replace("Vers", "vers")}.` };
+  }),
   pareil: () => PAREIL.map(([g1, g2, pt, sim, corr, p, d]) => ({ q: pt, rev: `${g1} et ${g2} : ${pt.toLowerCase()}`, r: sim ? "Similitude" : "Différence", choix: ["Similitude", "Différence"], sous: { Similitude: "c'est pareil", Différence: "ce n'est pas pareil" }, corr, p, d,
     consigne: "Pareil ou différent?", ctx: `<span class="etiq">On compare</span><p class="ctx">${esc(g1)} et ${esc(g2)}</p><hr><span class="etiq">Sur ce point</span>` })),
   change: () => CHANGE.map(([pt, qAv, av, qAp, ap, ch, corr, p, d]) => ({ q: pt, rev: `${pt} : ${ap}`, r: ch ? "Changement" : "Continuité", choix: ["Changement", "Continuité"], sous: { Changement: "ce n'est plus pareil", Continuité: "ça reste pareil" }, corr, p, d,
@@ -616,20 +649,31 @@ function piger(id, taille, n = SERIE) {
 }
 const marquer = (x, id, i) => Array.isArray(x) ? Object.assign([...x], { _i: i, _src: id }) : { ...x, _i: i, _src: id };
 const tirage = (id, banque) => piger(id, banque.length).map(i => marquer(banque[i], id, i));
+// Mini-test d'un dossier : 5 questions de ce dossier, en variant les types de questions.
+function miniTest(d) {
+  const parType = {};
+  for (const k of ["vf", "mot", "perso", "qui", "pareil", "change", "cause", "carte", "avant"])
+    Q[k]().forEach((m, i) => { if (m.d === d) (parType[k] ||= []).push(marquer(m, k, i)); });
+  Object.keys(parType).forEach(k => parType[k] = melange(parType[k]));
+  const out = [], types = melange(Object.keys(parType));
+  while (out.length < SERIE && types.some(k => parType[k].length))
+    for (const k of types) if (out.length < SERIE && parType[k].length) out.push(parType[k].pop());
+  return out;
+}
 let run = null;
 function lancer(id, opts = {}) {
   const act = actDe(id);
   let items;
   if (opts.items) items = opts.items;
   else if (id === "examen") items = melange(["vf", "vf", "mot", "perso", "avant", "carte", "qui", "pareil", "change", "cause"].map(k => { const b = Q[k](), i = Math.floor(Math.random() * b.length); return marquer(b[i], k === "avant" ? null : k, i); }));
-  else if (id === "avant") items = melange(Q.avant()).slice(0, SERIE); // le repère change à chaque série
+  else if (/^test\d$/.test(id)) items = miniTest(+id[4]);
   else if (Q[id]) items = tirage(id, Q[id]());
   const o = oiDe(act.oi);
   run = { id, opts, act, items, k: 0, rates: [], etat: [] };
   history.pushState(null, "", "#" + id);
   const picto = o ? `<span class="picto"><i style="--m:url(${PICTOS[o.id]})"></i></span>` : `<span class="picto emoji">${act.ic}</span>`;
   ouvrir(`${barreRetour(act.nom, o ? o.nom : act.oi, picto)}<div id="zone"></div>`, act.a);
-  if (Q[id] || id === "examen" || opts.items) return question();
+  if (Q[id] || id === "examen" || /^test\d$/.test(id) || opts.items) return question();
   ({ ordre, tri, paires, chaine })[id]();
 }
 const etoiles = (etat, n, neuf) => `<div class="prog${n > 5 ? " dix" : ""}">${Array.from({ length: n }, (_, j) => `<i class="${etat[j] === 1 ? "f" : etat[j] === 0 ? "x" : ""}${j === neuf ? " neuf" : ""}"></i>`).join("")}</div>`;
@@ -641,7 +685,8 @@ function question() {
   const texte = m.trou ? esc(m.q).replace("___", '<span class="trou">?</span>') : esc(m.q);
   const classe = (m.carte ? "lettres" : m.choix.length === 2 ? "deux" : m.trou ? "tuiles" : "") + " n" + m.choix.length;
   const carteQ = `<div class="q-carte">${m.ctx || ""}<p class="q-jeu">${texte}</p>${m.ctx2 || ""}</div>`;
-  const reps = `<div class="choix ${classe}"${m.carte ? ` style="grid-template-columns:repeat(${m.choix.length},1fr)"` : ""}>${m.choix.map(c => `<button data-rep="${esc(c)}">${esc(c)}${m.sous?.[c] ? `<small>${esc(m.sous[c])}</small>` : ""}</button>`).join("")}</div><div id="retro"></div>`;
+  const reps = m.frise ? `<div class="choix frise"><button data-rep="Avant">⬅ Avant</button><div class="repere-f"><small>Le repère</small><b>${esc(m.frise[0])}</b><small>${esc(m.frise[1])}</small></div><button data-rep="Après">Après ➡</button></div><div id="retro"></div>`
+    : `<div class="choix ${classe}"${m.carte ? ` style="grid-template-columns:repeat(${m.choix.length},1fr)"` : ""}>${m.choix.map(c => `<button data-rep="${esc(c)}">${esc(c)}${m.sous?.[c] ? `<small>${esc(m.sous[c])}</small>` : ""}</button>`).join("")}</div><div id="retro"></div>`;
   $("zone").innerHTML = `${barreProg()}<p class="demande">${esc(m.consigne)}</p>` + (m.carte
     ? `<div class="avec-carte">${carteQ}<div class="col-carte">${carteSvg(m.carte, m.lettres)}</div><div class="col-rep">${reps}</div></div>`
     : carteQ + reps);
@@ -768,7 +813,7 @@ function fin(bons, total, cible = "zone", note = "") {
   const sous = pct === 1 ? "Toutes les étoiles. Tu maîtrises!" : pct >= .6 ? "Encore une série pour aller chercher toutes les étoiles?" : "Relis les pages ci-dessous, puis retente ta chance.";
   const idx = ACTIVITES.findIndex(a => a.id === run.id);
   const prochaine = ACTIVITES.find((a, i) => i > idx && !faits[a.id]) || ACTIVITES.find(a => !faits[a.id] && a.id !== run.id) || ACTIVITES[(idx + 1) % ACTIVITES.length];
-  const refaire = run.rates.length && (Q[run.id] || run.id === "examen");
+  const refaire = run.rates.length && (Q[run.id] || run.id === "examen" || run.id.startsWith("test"));
   const html = `<div class="fin" style="margin-top:14px">${etoiles(Array.from({ length: total }, (_, j) => run.etat[j] ?? (j < bons ? 1 : 0)), total)}<h3>${titre}</h3><p>${bons} sur ${total} · ${esc(sous)}</p>
     ${note ? `<p>${esc(note)}</p>` : ""}
     ${run.rates.length && cible === "zone" ? `<div class="revoir"><p class="eyebrow" style="padding:10px 0 2px">À revoir dans ton cahier</p>${run.rates.map(m => `<div><span>${esc((m.rev || m.q).replace("___", "…"))} <b>→ ${esc(m.rAff || m.r)}</b></span>${page(m.p)}</div>`).join("")}</div>` : ""}
@@ -814,7 +859,7 @@ obsFeuille = new MutationObserver(reajuster);
 obsFeuille.observe($("sheetIn"), { childList: true, subtree: true });
 // Lien direct : #vf, #carte… ouvre une activité
 const h = location.hash.slice(1);
-if (ACTIVITES.some(a => a.id === h) || h === "examen") lancer(h);
+if (ACTIVITES.some(a => a.id === h) || h === "examen" || /^test[1-4]$/.test(h)) lancer(h);
 </script>
 </body>
 </html>
