@@ -6,35 +6,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ressources de cours</title>
 <style>
-:root{--bg:#f4f3ef;--surface:#fff;--line:#dedcd4;--ink:#141513;--ink-2:#5b5e57;--fin:#1f7a45;--fin-soft:#dcefe2;--monde:#2f5fa8;--monde-soft:#dfe8f6}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0e0f0d;--surface:#181a17;--line:#2b2e29;--ink:#eeefe9;--ink-2:#a5a99f;--fin:#c6f432;--fin-soft:#263015;--monde:#8fb4f0;--monde-soft:#18233a}}
-:root[data-theme="dark"]{--bg:#0e0f0d;--surface:#181a17;--line:#2b2e29;--ink:#eeefe9;--ink-2:#a5a99f;--fin:#c6f432;--fin-soft:#263015;--monde:#8fb4f0;--monde-soft:#18233a}
+/* Le portail : tout le contenu de Sec 3 et de Sec 5 sur une seule page, sans avoir à entrer dans un hub.
+   Le contenu (DONNEES) est tiré des hubs par publier.js au moment de publier. */
+:root{--bg:#f4f3ef;--surface:#fff;--line:#dedcd4;--ink:#141513;--ink-2:#5b5e57;
+  --hist:#b4541a;--hist-soft:#f6e3d3;--fin:#1f7a45;--fin-soft:#dcefe2;--monde:#2f5fa8;--monde-soft:#dfe8f6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0e0f0d;--surface:#181a17;--line:#2b2e29;--ink:#eeefe9;--ink-2:#a5a99f;
+  --hist:#ff9a5c;--hist-soft:#33200f;--fin:#c6f432;--fin-soft:#263015;--monde:#8fb4f0;--monde-soft:#18233a}}
+:root[data-theme="dark"]{--bg:#0e0f0d;--surface:#181a17;--line:#2b2e29;--ink:#eeefe9;--ink-2:#a5a99f;
+  --hist:#ff9a5c;--hist-soft:#33200f;--fin:#c6f432;--fin-soft:#263015;--monde:#8fb4f0;--monde-soft:#18233a}
 *{box-sizing:border-box;margin:0}
-body{background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px 16px}
-main{width:100%;max-width:560px;display:grid;gap:14px}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:28px 16px 40px}
+main{max-width:980px;margin:0 auto;display:grid;gap:28px}
+a{color:inherit}
 .eyebrow{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
-h1{font-size:clamp(30px,8vw,42px);line-height:1.05;letter-spacing:-.03em;margin:4px 0 10px}
-a.c{display:flex;align-items:center;gap:16px;padding:18px;border-radius:22px;background:var(--surface);border:1px solid var(--line);text-decoration:none;color:inherit}
-a.c:active{transform:scale(.98)}
-.ic{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:26px;flex:none}
-.c b{display:block;font-size:18px;letter-spacing:-.01em}
-.c span{color:var(--ink-2);font-size:14px}
-.go{margin-left:auto;font-size:22px;color:var(--ink-2)}
-.fin .ic{background:var(--fin-soft)} .fin b{color:var(--ink)}
-.monde .ic{background:var(--monde-soft)}
-.pill{margin-left:auto;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:4px 9px;border-radius:999px;background:var(--line);color:var(--ink-2)}
-footer{color:var(--ink-2);font-size:12px;margin-top:10px}
+h1{font-size:clamp(30px,8vw,42px);line-height:1.05;letter-spacing:-.03em;margin-top:4px}
+
+.niv{display:grid;gap:12px}
+.niv-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.niv-h h2{font-size:clamp(22px,5vw,28px);letter-spacing:-.02em;line-height:1.1}
+.niv-h span{color:var(--ink-2);font-size:14px}
+
+.carte{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px;display:grid;gap:14px;align-content:start}
+.carte-h{display:flex;align-items:center;gap:14px}
+.ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:24px;flex:none;background:var(--soft)}
+.carte-h b{display:block;font-size:18px;letter-spacing:-.01em;line-height:1.2}
+.carte-h small{color:var(--ink-2);font-size:13.5px}
+.ouvrir{margin-left:auto;flex:none;font-size:13.5px;font-weight:700;color:var(--acc);text-decoration:none;white-space:nowrap}
+.ouvrir:hover{text-decoration:underline}
+.hist{--acc:var(--hist);--soft:var(--hist-soft)} .monde{--acc:var(--monde);--soft:var(--monde-soft)} .fin{--acc:var(--fin);--soft:var(--fin-soft)}
+
+/* Sec 3 : activités par famille d'OI */
+.fam{display:grid;gap:6px}
+.fam p{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:14px;background:var(--bg);border:1px solid var(--line);text-decoration:none;min-width:0}
+.chip:hover,.ligne:hover{border-color:var(--acc)}
+.chip b{font-size:14.5px;font-weight:650}
+.chip small{display:block;font-size:12px;color:var(--ink-2);line-height:1.2}
+.chip.fort{background:var(--soft);border-color:transparent}
+
+/* Sec 5 : deux matières côte à côte */
+.duo{display:grid;gap:12px}
+@media (min-width:760px){.duo{grid-template-columns:1fr 1fr}}
+.exam{border-radius:14px;padding:10px 13px;background:var(--soft);font-size:14px}
+.exam b{display:block}
+.liste{display:grid;gap:8px}
+.ligne{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:14px;background:var(--bg);border:1px solid var(--line);text-decoration:none}
+.ligne .e{font-size:20px;flex:none}
+.ligne b{display:block;font-size:14.5px;line-height:1.25}
+.ligne small{color:var(--ink-2);font-size:12.5px}
+.ligne .go{margin-left:auto;color:var(--acc);font-weight:800}
+.ligne.bientot{border-style:dashed;opacity:.75}
+footer{color:var(--ink-2);font-size:12px}
 </style>
 </head>
 <body>
 <main>
   <div>
-    <p class="eyebrow">Secondaire 5</p>
+    <p class="eyebrow">Sec 3 et Sec 5</p>
     <h1>Ressources de cours</h1>
   </div>
-  <a class="c fin" href="finances/"><div class="ic">💸</div><div><b>Éducation financière</b><span>Notes de cours, examens à venir, quoi étudier</span></div><span class="go">›</span></a>
-  <a class="c monde" href="monde/"><div class="ic">🌍</div><div><b>Monde contemporain</b><span>Le Fil : dossiers, examens à venir, quoi étudier</span></div><span class="go">›</span></a>
+  <section class="niv" id="sec3"></section>
+  <section class="niv" id="sec5"></section>
   <footer>Aucun compte, aucun cookie, aucune statistique de visite.</footer>
 </main>
+<script>
+const DONNEES = {"finances":{"slug":"finances","notes":[{"titre":"Notes de cours 1.1 + 1.2","sujet":"Choix de consommation · Publicité","icone":"🛒","dispo":"2026-09-21","url":"finances/notes-1-1-1-2.html"},{"titre":"Notes de cours 1.3 + 1.4","sujet":"Lois et protection du consommateur · Budget","icone":"🧾","dispo":"2026-10-30","url":null},{"titre":"Notes de cours · Chapitre 2","sujet":"Le crédit","icone":"💳","dispo":"2026-11-23","url":null}],"examens":[{"titre":"Examen de mi-étape 1","semaine":"2026-10-26"},{"titre":"Examen d'étape 1","semaine":"2026-11-09"},{"titre":"Examen de mi-étape 2","semaine":"2026-12-14"}]},"monde":{"slug":"monde","notes":[{"titre":"Huit milliards de trajectoires","sujet":"Population · sections 1 à 3 : évolution, caractéristiques, migrants","icone":"","dispo":"2026-10-05","url":"monde/population-s1-s3.html"},{"titre":"Partir, travailler, s'installer","sujet":"Population · sections 4 et 5 : migrations, travail, villes","icone":"","dispo":"2026-10-30","url":null},{"titre":"La richesse","sujet":"Disparités, Nord-Sud, mondialisation, OI et ONG","icone":"","dispo":"2026-11-30","url":null},{"titre":"Les tensions et les conflits","sujet":"Relations internationales, ONU, alliances, ONG","icone":"","dispo":"2027-02-22","url":null}],"examens":[{"titre":"Examen de mi-étape 1","semaine":"2026-10-26"},{"titre":"Examen d'étape 1","semaine":"2026-11-09"},{"titre":"Examen d'étape 2","semaine":"2027-01-25"},{"titre":"Examen d'étape 3","semaine":"2027-06-07"}]},"histoire":{"ch":{"titre":"L'expérience des Autochtones et le projet de colonie","per":"Des origines à 1608"},"ois":[{"id":"faits","fam":"Repérer","nom":"Établir des faits","desc":"Un nom, un lieu, un fait précis","a":"#0f7c80"},{"id":"temps","fam":"Repérer","nom":"Situer dans le temps","desc":"L'ordre chronologique, avant ou après","a":"#d9600f"},{"id":"espace","fam":"Repérer","nom":"Situer dans l'espace","desc":"La bonne lettre sur la carte","a":"#1d7fa8"},{"id":"relation","fam":"Relier","nom":"Mettre en relation des faits","desc":"Chaque élément au bon endroit","a":"#b0417a"},{"id":"differences","fam":"Relier","nom":"Différences et similitudes","desc":"Pareil ou différent?","a":"#2e7d4f"},{"id":"changements","fam":"Relier","nom":"Changements et continuités","desc":"Ce qui change, ce qui reste","a":"#6b4bb3"},{"id":"causes","fam":"Expliquer","nom":"Causes et conséquences","desc":"Parce que… ou alors…?","a":"#c0392b"},{"id":"causalite","fam":"Expliquer","nom":"Liens de causalité","desc":"Trois faits, liés dans l'ordre","a":"#a86a12"}],"activites":[{"id":"vf","oi":"faits","nom":"Vrai ou faux?","ic":"⚖️","a":"#0f7c80"},{"id":"mot","oi":"faits","nom":"Le mot manquant","ic":"🧩","a":"#0f7c80"},{"id":"perso","oi":"faits","nom":"Qui est-ce?","ic":"👤","a":"#0f7c80"},{"id":"ordre","oi":"temps","nom":"Mets en ordre","ic":"⏳","a":"#d9600f"},{"id":"avant","oi":"temps","nom":"Avant ou après?","ic":"⚓","a":"#d9600f"},{"id":"carte","oi":"espace","nom":"Sur la carte","ic":"🗺️","a":"#1d7fa8"},{"id":"paires","oi":"relation","nom":"Les paires","ic":"🃏","a":"#b0417a"},{"id":"tri","oi":"relation","nom":"Le grand tri","ic":"🗂️","a":"#b0417a"},{"id":"qui","oi":"differences","nom":"Qui suis-je?","ic":"🏕️","a":"#2e7d4f"},{"id":"pareil","oi":"differences","nom":"Pareil ou pas?","ic":"🔍","a":"#2e7d4f"},{"id":"change","oi":"changements","nom":"Ça change?","ic":"🔄","a":"#6b4bb3"},{"id":"cause","oi":"causes","nom":"Cause ou conséquence?","ic":"💥","a":"#c0392b"},{"id":"chaine","oi":"causalite","nom":"La chaîne","ic":"⛓️","a":"#a86a12"}],"dossiers":{"1":"Les premiers occupants du territoire","2":"Les rapports sociaux chez les Autochtones","3":"Les activités économiques, les alliances et les croyances","4":"Les contacts entre les Autochtones et les Européens"}}};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const auj = new Date(); auj.setHours(0, 0, 0, 0);
+const jour = d => new Date(d + "T00:00");
+const mois = d => jour(d).toLocaleDateString("fr-CA", { day: "numeric", month: "long" });
+
+// Sec 3 : chaque activité ouvre directement le hub sur elle (histoire/#id)
+const H = DONNEES.histoire;
+if (H) {
+  const oi = Object.fromEntries(H.ois.map(o => [o.id, o]));
+  const familles = [...new Set(H.ois.map(o => o.fam))];
+  $("sec3").innerHTML = `
+    <div class="niv-h"><h2>Secondaire 3</h2><span>Histoire du Québec et du Canada</span></div>
+    <div class="carte hist">
+      <div class="carte-h"><div class="ic">⏳</div><div><b>Remonter le temps</b><small>Chapitre 1 · ${esc(H.ch.titre)}</small></div><a class="ouvrir" href="histoire/">Ouvrir le hub ›</a></div>
+      ${familles.map(f => `<div class="fam"><p>${esc(f)}</p><div class="chips">${H.activites.filter(a => oi[a.oi].fam === f).map(a =>
+        `<a class="chip" href="histoire/#${a.id}"><span>${a.ic}</span><span><b>${esc(a.nom)}</b><small>${esc(oi[a.oi].nom)}</small></span></a>`).join("")}</div></div>`).join("")}
+      <div class="fam"><p>Me tester</p><div class="chips">
+        <a class="chip fort" href="histoire/#examen"><span>📝</span><span><b>Mini-examen</b><small>10 questions, toutes les OI</small></span></a>
+        ${Object.entries(H.dossiers).map(([d, t]) => `<a class="chip" href="histoire/#test${d}"><span>✏️</span><span><b>Mini-test · Dossier ${d}</b><small>${esc(t)}</small></span></a>`).join("")}
+      </div></div>
+    </div>`;
+}
+
+// Sec 5 : les notes sorties, les prochaines et le prochain examen (en semaine, jamais en date précise)
+function matiere(c, cls, ic, nom, hub) {
+  if (!c) return "";
+  const exam = c.examens.find(e => (jour(e.semaine) - auj) / 864e5 > -7);
+  return `<div class="carte ${cls}">
+    <div class="carte-h"><div class="ic">${ic}</div><div><b>${nom}</b><small>${hub}</small></div><a class="ouvrir" href="${c.slug}/">Ouvrir ›</a></div>
+    ${exam ? `<div class="exam"><b>Prochain examen : ${esc(exam.titre)}</b>Semaine du ${mois(exam.semaine)} · le jour dépend de ton groupe</div>` : ""}
+    <div class="liste">${c.notes.map(n => n.url
+      ? `<a class="ligne" href="${encodeURI(n.url)}"><span class="e">${n.icone || "📘"}</span><span><b>${esc(n.titre)}</b><small>${esc(n.sujet)}</small></span><span class="go">›</span></a>`
+      : `<div class="ligne bientot"><span class="e">${n.icone || "📘"}</span><span><b>${esc(n.titre)}</b><small>${jour(n.dispo) > auj ? "Disponible le " + mois(n.dispo) : "Bientôt"}</small></span></div>`).join("")}</div>
+  </div>`;
+}
+$("sec5").innerHTML = `
+  <div class="niv-h"><h2>Secondaire 5</h2><span>Monde contemporain · Éducation financière</span></div>
+  <div class="duo">${matiere(DONNEES.monde, "monde", "🌍", "Monde contemporain", "Le Fil : dossiers et examens")}${matiere(DONNEES.finances, "fin", "💸", "Éducation financière", "Notes de cours et examens")}</div>`;
+</script>
 </body>
 </html>
