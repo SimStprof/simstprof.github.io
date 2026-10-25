@@ -316,6 +316,7 @@ footer .wrap { padding-block: 22px 40px; font-size: .85rem; }
 @media (prefers-reduced-motion: reduce) { .hero-route .mov { display: none; } }
 </style>
 
+<link rel="stylesheet" href="../polices/d2b6d1b6a0.css">
 </head>
 <body>
 
@@ -995,5 +996,451 @@ footer .wrap { padding-block: 22px 40px; font-size: .85rem; }
 })();
 </script>
 
+<!-- retour-tdb -->
+<script>
+/* Retour au tableau de bord : seulement si la page a été ouverte depuis le tableau de bord (?tdb=…). Outil : retour-tdb.js */
+document.addEventListener("DOMContentLoaded", function () {
+  var vieux = document.getElementById("retour-tdb"); if (vieux) vieux.remove();
+  var u = new URLSearchParams(location.search).get("tdb");
+  if (!u || !/^file:/i.test(u)) return;
+  var s = document.createElement("style");
+  s.textContent = "#retour-tdb{position:fixed;top:12px;left:12px;z-index:8000;display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;" +
+    "border-radius:999px;background:rgba(255,255,255,.94);color:#1D1B17;border:1px solid rgba(0,0,0,.12);box-shadow:0 4px 14px rgba(0,0,0,.14);" +
+    "font:700 16px/1 system-ui,'Segoe UI',sans-serif;text-decoration:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:padding .25s}" +
+    "#retour-tdb b{font-size:20px}#retour-tdb span{max-width:12em;overflow:hidden;white-space:nowrap;transition:max-width .3s,opacity .3s}" +
+    "#retour-tdb.court{padding:0 13px}#retour-tdb.court span{max-width:0;opacity:0}#retour-tdb.court:hover span,#retour-tdb.court:focus span{max-width:12em;opacity:1}" +
+    "#retour-tdb:hover{background:#fff}@media print{#retour-tdb{display:none}}";
+  var a = document.createElement("a");
+  a.id = "retour-tdb"; a.href = u; a.title = "Revenir au tableau de bord";
+  a.innerHTML = "<b>←</b><span>Tableau de bord</span>";
+  a.appendChild(s);
+  document.body.appendChild(a);
+  setTimeout(function () { a.classList.add("court"); }, 3000);
+});
+</script>
+<!-- /retour-tdb -->
+<script>window.LF_COURS = "monde";
+/* Lecture facilitée : un bouton « Aa » sur chaque note publiée (publier.js l'ajoute ; source : lecture-facilitee.js dans les coulisses du site).
+   Une fois activée : texte plus gros et aéré, police très lisible, mots difficiles expliqués d'un toucher, lecture à voix haute
+   par le navigateur (aucune donnée ne sort de l'appareil), règle de lecture qui suit le doigt ou la souris.
+   Seuls les réglages de l'élève sont gardés, sur son appareil (localStorage). window.LF_COURS choisit le glossaire. */
+(function () {
+  "use strict";
+
+  // ---------- Les mots expliqués, par cours : [mot tel qu'affiché, motif reconnu, explication simple] ----------
+  var GLOSSAIRE = {
+    monde: [
+      ["démographie", "démographi(?:e|que|ques)", "L'étude des populations : combien de gens, les naissances, les décès, les migrations."],
+      ["natalité", "natalité", "Le nombre de naissances dans une population."],
+      ["mortalité", "mortalité", "Le nombre de décès dans une population."],
+      ["fécondité", "fécondité", "Le nombre moyen d'enfants qu'une femme a dans sa vie."],
+      ["espérance de vie", "espérance de vie", "Le nombre moyen d'années qu'une personne peut s'attendre à vivre."],
+      ["accroissement", "accroissement", "Une augmentation, une croissance."],
+      ["solde migratoire", "solde migratoire", "Les immigrants qui arrivent, moins les émigrants qui partent."],
+      ["seuil de renouvellement", "seuil de renouvellement", "2,1 enfants par femme : ce qu'il faut pour qu'une population ne diminue pas."],
+      ["densité", "densité", "Le nombre d'habitants par kilomètre carré."],
+      ["millénaire", "millénaires?", "Une période de mille ans."],
+      ["stagner", "stagn(?:e|ent|er|ation)", "Ne presque plus bouger : ni hausse, ni baisse."],
+      ["industrialisé", "industrialisé(?:e|s|es)?", "Qui a beaucoup d'usines et d'industries."],
+      ["émergent", "émergents?", "Un pays qui se développe vite, comme la Chine ou l'Inde."],
+      ["proportion", "proportion(?:s|nelle|nel)?", "La part d'un tout. Exemple : 1 personne sur 4."],
+      ["indicateur", "indicateurs?", "Un chiffre qui sert à mesurer quelque chose."],
+      ["vieillissement", "vieillissement|vieillissante", "Quand la part des personnes âgées augmente dans une population."],
+      ["nataliste", "natalistes?", "Qui encourage les gens à avoir des enfants."],
+      ["allocation", "allocations?", "Une somme d'argent versée régulièrement par le gouvernement."],
+      ["allègement fiscal", "allègements? fiscaux|allègements?", "Une baisse d'impôt."],
+      ["contraceptive", "contraceptive", "Qui empêche une grossesse."],
+      ["émancipation", "émancipation", "Le fait de devenir libre et autonome."],
+      ["immigrant", "immigrante?s?", "Une personne qui arrive dans un pays pour y vivre."],
+      ["émigrant", "émigrante?s?", "Une personne qui quitte son pays."],
+      ["diaspora", "diaspora", "Les gens d'un même pays qui vivent dispersés ailleurs dans le monde."],
+      ["perméabilité", "perméabilité", "Quand une frontière se laisse traverser facilement."],
+      ["persécution", "persécutions?|persécutée?s?", "De mauvais traitements répétés contre des gens, à cause de leur religion, de leur origine ou de leurs idées."],
+      ["réfugié", "réfugiée?s?", "Une personne qui fuit son pays parce que sa vie est en danger."],
+      ["asile", "asile", "La protection qu'un pays donne à une personne en danger."],
+      ["clandestin", "clandestine?s?", "En cachette, sans autorisation."],
+      ["mondialisation", "mondialisation", "Les liens de plus en plus forts entre les pays : commerce, voyages, communications."],
+      ["pénurie", "pénurie", "Un manque. Exemple : pas assez de travailleurs."],
+      ["main-d'œuvre", "main-d['’]œuvre", "Les travailleurs."],
+      ["souverain", "souverain", "Qui décide seul, sans recevoir d'ordres d'un autre pays."],
+      ["intégration", "intégration|intégrer", "Devenir membre de la société d'accueil : apprendre la langue, travailler, participer, tout en gardant sa culture."],
+      ["surqualifié", "surqualifiée?s?", "Qui a plus de diplômes ou de compétences que son emploi n'en demande."],
+      ["ordre professionnel", "ordres? professionnels?", "L'organisme qui décide qui peut exercer une profession, comme médecin ou ingénieur."],
+      ["réglementé", "réglementée?s?", "Encadré par des règles officielles."],
+      ["discrimination", "discrimination", "Traiter quelqu'un moins bien à cause de son origine, de son sexe ou d'un handicap."],
+      ["stigmatiser", "stigmatiser|stigmatisée?s?", "Coller une étiquette négative à quelqu'un."],
+      ["exode", "exode", "Le départ d'un grand nombre de personnes."],
+      ["urbanisation", "urbanisation|urbanisée?s?", "La croissance des villes : de plus en plus de gens vivent en ville."],
+      ["citadin", "citadins?", "Une personne qui vit en ville."],
+      ["agglomération", "agglomération", "Une ville et ses banlieues."],
+      ["mégapole", "mégapoles?", "Une très grande ville : plus de 10 millions d'habitants."],
+      ["bidonville", "bidonvilles?", "Un quartier de maisons fragiles, sans eau courante ni égouts."],
+      ["insalubre", "insalubres?", "Sale et mauvais pour la santé."],
+      ["précaire", "précaires?", "Fragile, pas solide, qui peut se perdre facilement."],
+      ["périphérie", "périphérie", "Le tour, la bordure d'une ville."],
+      ["passeur", "passeurs?", "Une personne payée pour faire traverser une frontière en cachette."],
+      ["charges sociales", "charges sociales", "Les sommes qu'un employeur verse au gouvernement pour ses employés (retraite, assurance-emploi)."],
+      ["exploiter", "exploiter", "Profiter de quelqu'un en abusant de sa situation : salaire très bas, travail forcé, menaces."],
+      ["antécédents judiciaires", "antécédents judiciaires", "Les crimes pour lesquels une personne a déjà été condamnée."],
+      ["paradoxe", "paradoxe", "Une situation qui semble se contredire."],
+      ["hostile", "hostile", "Qui n'est pas accueillant : difficile ou dangereux pour y vivre."]
+    ],
+    finances: [
+      ["nécessité", "nécessité", "Une chose dont on ne peut pas se passer."],
+      ["physiologique", "physiologiques?", "Qui concerne le corps : manger, boire, dormir, respirer."],
+      ["accomplissement", "accomplissement", "Réaliser ses rêves et devenir la personne qu'on veut être."],
+      ["coût d'opportunité", "coût d['’]opportunité", "Ce à quoi tu renonces quand tu fais un choix."],
+      ["renoncer", "renonce(?:r|s|z)?|renoncé", "Abandonner, laisser tomber."],
+      ["pouvoir d'achat", "pouvoir d['’]achat", "Ce que ton argent te permet d'acheter."],
+      ["inflation", "inflation", "La hausse générale des prix avec le temps."],
+      ["accise", "accise", "Une taxe cachée dans le prix (essence, alcool, tabac)."],
+      ["socioculturel", "socioculturels?", "Qui vient de la société et de la culture autour de toi."],
+      ["persuader", "persuader|persuasive", "Convaincre."],
+      ["sensibiliser", "sensibiliser", "Faire prendre conscience d'un problème pour changer un comportement."],
+      ["sociétal", "sociétale?s?", "Qui concerne toute la société. Une pub sociétale veut changer un comportement pour le bien de tous."],
+      ["notoriété", "notoriété", "Le fait d'être connu."],
+      ["mensonger", "mensong(?:er|ère)s?", "Qui ment, qui est faux."],
+      ["objectif", "objective", "Basée sur des faits, pas sur une opinion."],
+      ["impartial", "impartial(?:e|es|aux)?", "Qui ne favorise personne."],
+      ["fiable", "fiables?", "En qui ou en quoi on peut avoir confiance."],
+      ["démystifier", "démystifient|démystifier", "Expliquer simplement quelque chose qui semblait compliqué."],
+      ["bail", "bail", "Le contrat de location d'un logement."],
+      ["conformité", "conformité", "Être pareil à ce qui était annoncé."],
+      ["défaut caché", "défauts? cachés?|vices? cachés?", "Un problème grave qu'on ne pouvait pas voir au moment de l'achat."],
+      ["hameçonnage", "hameçonnage", "Un faux message (texto, courriel) qui essaie de voler tes informations."],
+      ["mise en demeure", "mise en demeure", "Une lettre officielle qui demande de régler un problème, sinon on ira en justice."],
+      ["médiation", "médiation|médiateur", "Une personne neutre aide les deux côtés à s'entendre. Elle ne décide pas."],
+      ["arbitrage", "arbitrage|arbitre", "Une personne neutre écoute les deux côtés et décide qui a raison."],
+      ["litige", "litiges?", "Un conflit, un désaccord."],
+      ["recours", "recours", "Un moyen de faire respecter tes droits."],
+      ["impulsif", "impulsifs?|impulsives?", "Fait sur un coup de tête, sans réfléchir."],
+      ["épargne", "épargne|épargner", "L'argent qu'on met de côté."],
+      ["endettement", "endettement", "Le fait de devoir de l'argent. Pas un problème en soi."],
+      ["surendettement", "surendettement|surendettée?s?", "Devoir plus d'argent qu'on est capable d'en rembourser."],
+      ["excédentaire", "excédentaire", "Il reste de l'argent : on gagne plus qu'on dépense."],
+      ["déficitaire", "déficitaire", "Il manque de l'argent : on dépense plus qu'on gagne."],
+      ["compressible", "compressibles?|incompressibles?", "Compressible : qu'on peut couper ou réduire vite. Incompressible : qu'on ne peut pas couper à court terme."],
+      ["différé", "différé", "Remis à plus tard."],
+      ["solvabilité", "solvabilité|solvable|insolvable", "Solvable : capable de rembourser ses dettes. Insolvable : incapable de les rembourser."],
+      ["ratio", "ratio", "Une comparaison entre deux nombres, souvent en pourcentage."],
+      ["brut", "brut", "Avant qu'on enlève les impôts et les déductions."],
+      ["actif", "actifs?", "Ce que tu possèdes et qui a de la valeur (maison, auto, épargne)."],
+      ["passif", "passifs?", "Toutes tes dettes."],
+      ["caution", "caution|endosseur|cautionnement", "La personne qui promet de payer la dette si l'emprunteur ne paie plus."],
+      ["capital", "capital", "Le montant emprunté, sans les intérêts."],
+      ["intérêt", "intérêts?", "Ce qu'on paie au prêteur pour utiliser son argent."],
+      ["échéance", "échéance|échéancier", "Échéance : la date limite pour payer. Échéancier : le calendrier des paiements."],
+      ["hypothécaire", "hypothécaire|hypothèques?", "Un prêt pour acheter une maison. La maison sert de garantie."],
+      ["à tempérament", "tempérament", "Payer petit à petit, en plusieurs versements. On devient propriétaire à la fin."],
+      ["créancier", "créanciers?", "La personne ou l'entreprise à qui on doit de l'argent."],
+      ["recouvrement", "recouvrement", "Récupérer l'argent qu'une personne doit."],
+      ["syndic", "syndic", "Un professionnel qui aide les personnes très endettées et s'occupe des faillites."],
+      ["faillite", "faillites?", "Quand on ne peut plus payer ses dettes : on remet ses biens pour s'en libérer."],
+      ["insolvabilité", "insolvabilité", "Ne plus être capable de payer ses dettes."],
+      ["consolidation", "consolidation", "Regrouper plusieurs dettes en un seul prêt."],
+      ["saisissable", "saisissables?|saisir", "Que le prêteur peut prendre pour se rembourser."],
+      ["marge de manœuvre", "marge de manœuvre", "L'argent qui te reste pour faire des choix."],
+      ["prolongée", "prolongée", "Qui dure plus longtemps."],
+      ["sans provision", "sans provision", "Un chèque sans assez d'argent dans le compte."],
+      ["émettrice", "émettrice", "Qui crée et fournit la carte."]
+    ]
+  };
+
+  var NOM = "lf-reglages", TAILLES = [1, 1.15, 1.3], VITESSES = [0.8, 1, 1.15];
+  var r = { on: false, taille: 1, vitesse: 1, regle: false };
+  try { var lu = JSON.parse(localStorage.getItem(NOM)); if (lu) for (var k in r) if (k in lu) r[k] = lu[k]; } catch (e) {}
+  function garder() { try { localStorage.setItem(NOM, JSON.stringify(r)); } catch (e) {} }
+
+  var voix = "speechSynthesis" in window ? window.speechSynthesis : null;
+
+  // ---------- Habillage ----------
+  var css = [
+    ".lf-ui{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));z-index:7999;display:flex;align-items:center;gap:6px;",
+    "font:700 16px/1.1 'Atkinson Hyperlegible',system-ui,'Segoe UI',sans-serif;color:#101820}",
+    ".lf-ui button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;-webkit-tap-highlight-color:transparent}",
+    ".lf-ouvrir{display:flex;align-items:center;gap:8px;height:50px;padding:0 18px 0 14px;border-radius:999px;background:#FFF6D6;border:2px solid #101820 !important;",
+    "box-shadow:4px 4px 0 #101820;transition:transform .15s}.lf-ouvrir:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #101820}",
+    ".lf-ouvrir b{font-size:22px;letter-spacing:-.02em}.lf-ouvrir span{max-width:10em;overflow:hidden;white-space:nowrap;transition:max-width .35s,opacity .35s}",
+    ".lf-ui.court .lf-ouvrir span{max-width:0;opacity:0}.lf-ui.court .lf-ouvrir{padding:0 14px}",
+    ".lf-barre{display:none;align-items:stretch;gap:4px;padding:5px;border-radius:20px;background:#FFF6D6;border:2px solid #101820;box-shadow:4px 4px 0 #101820}",
+    ".lf-barre button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:58px;height:58px;padding:0 8px;border-radius:14px}",
+    ".lf-barre button i{font-style:normal;font-size:21px;line-height:1}.lf-barre button small{font-size:13px;font-weight:700}",
+    ".lf-barre button:hover{background:rgba(16,24,32,.08)}.lf-barre button[aria-pressed=true]{background:#101820;color:#FFF6D6}",
+    "html.lf-on .lf-ouvrir{display:none}html.lf-on .lf-barre{display:flex}",
+    "@media (max-width:420px){.lf-ui{left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));justify-content:flex-end}",
+    ".lf-barre{width:100%;justify-content:space-between}.lf-barre button{min-width:0;flex:1;padding:0 2px}}",
+    "@media print{.lf-ui,.lf-bulle,.lf-regle{display:none !important}}",
+    // Le texte : plus gros, plus aéré, plus lisible
+    "html.lf-on body>*:not(.lf-ui):not(.lf-bulle):not(.lf-regle){zoom:var(--lf-zoom,1)}",
+    // Les graphiques gardent leur taille (sinon ils débordent du cellulaire), et rien ne dépasse sur le côté
+    "html.lf-on :is(.viz,figure,svg,canvas,img,video,iframe){zoom:calc(1 / var(--lf-zoom,1))}",
+    "html.lf-on :is(.viz,figure) :is(figure,svg,canvas,img){zoom:1}",
+    "html.lf-on,html.lf-on body{overflow-x:clip}",
+    "html.lf-on body :is(p,li,dd,dt,td,th,summary,blockquote,figcaption,label,span,b,strong,em,small,div){font-family:'Atkinson Hyperlegible',system-ui,'Segoe UI',sans-serif !important}",
+    "html.lf-on body :is(p,li,dd,td,summary,blockquote,.ans){line-height:1.75 !important;letter-spacing:.02em;word-spacing:.12em;text-align:left !important}",
+    "html.lf-on body{padding-bottom:96px}",
+    // Les mots expliqués
+    // (all:unset : le mot ne prend jamais le style d'une pastille ou d'un badge de la page qui vise « span »)
+    "span.lf-mot.lf-mot{all:unset;display:inline !important;border-bottom:2.5px dotted currentColor !important;cursor:help;border-radius:2px}",
+    "span.lf-mot.lf-mot:hover,span.lf-mot.lf-mot:focus{background:rgba(255,214,0,.45) !important;outline:none}",
+    ".lf-bulle{position:fixed;z-index:8001;max-width:min(340px,calc(100vw - 24px));padding:14px 16px 12px;border-radius:16px;background:#101820;color:#FFF6D6;",
+    "font:400 18px/1.5 'Atkinson Hyperlegible',system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);animation:lf-pop .18s ease-out}",
+    ".lf-bulle b{display:block;font-size:19px;color:#FFD84D;margin-bottom:4px}",
+    ".lf-bulle button{display:block;margin-top:10px;font-family:inherit;font-weight:700;font-size:16px;line-height:1;color:#101820;background:#FFD84D;border:0;border-radius:999px;padding:10px 14px;cursor:pointer}",
+    "@keyframes lf-pop{from{opacity:0;transform:translateY(6px) scale(.97)}}",
+    // La lecture à voix haute : le passage lu est surligné
+    ".lf-lu{background:rgba(255,214,0,.38) !important;box-shadow:0 0 0 6px rgba(255,214,0,.38);border-radius:6px;transition:background .2s}",
+    // La règle de lecture
+    ".lf-regle{position:fixed;left:0;right:0;height:3.2em;z-index:7998;pointer-events:none;display:none;",
+    "box-shadow:0 0 0 100vmax rgba(16,24,32,.28);border-top:2px solid #FFD84D;border-bottom:2px solid #FFD84D}",
+    "html.lf-regle-on .lf-regle{display:block}",
+    "@media (prefers-reduced-motion:reduce){.lf-bulle{animation:none}}"
+  ].join("");
+
+  function el(tag, attrs, html) { var e = document.createElement(tag); for (var a in attrs) e.setAttribute(a, attrs[a]); if (html != null) e.innerHTML = html; return e; }
+
+  function demarrer() {
+    var style = el("style"); style.textContent = css; document.head.appendChild(style);
+
+    var ui = el("div", { "class": "lf-ui" });
+    var ouvrir = el("button", { "class": "lf-ouvrir", type: "button", "aria-label": "Lecture facilitée : texte plus gros, mots expliqués, lecture à voix haute" }, "<b>Aa</b><span>Lecture facilitée</span>");
+    var barre = el("div", { "class": "lf-barre", role: "toolbar", "aria-label": "Lecture facilitée" });
+    bEcouter = el("button", { type: "button", "aria-pressed": "false" }, "<i>🔊</i><small>Écouter</small>");
+    var bTaille = el("button", { type: "button", "aria-label": "Taille du texte" }, "<i>A+</i><small>Taille</small>");
+    var bVitesse = el("button", { type: "button" }, "<i>🐢</i><small>Vitesse</small>");
+    var bRegle = el("button", { type: "button", "aria-pressed": "false" }, "<i>📏</i><small>Règle</small>");
+    var bFermer = el("button", { type: "button", "aria-label": "Revenir au texte normal" }, "<i>✕</i><small>Fermer</small>");
+    if (voix) { barre.appendChild(bEcouter); barre.appendChild(bVitesse); }
+    barre.appendChild(bTaille); barre.appendChild(bRegle); barre.appendChild(bFermer);
+    ui.appendChild(ouvrir); ui.appendChild(barre);
+    document.body.appendChild(ui);
+    setTimeout(function () { ui.classList.add("court"); }, 5000);
+
+    var regle = el("div", { "class": "lf-regle", "aria-hidden": "true" });
+    document.body.appendChild(regle);
+
+    function afficher() {
+      var h = document.documentElement;
+      h.classList.toggle("lf-on", r.on);
+      h.classList.toggle("lf-regle-on", r.on && r.regle);
+      h.style.setProperty("--lf-zoom", r.on ? r.taille : 1);
+      var it = TAILLES.indexOf(r.taille);
+      bTaille.querySelector("i").textContent = ["A", "A+", "A++"][it < 0 ? 0 : it];
+      bVitesse.querySelector("i").textContent = r.vitesse < 1 ? "🐢" : r.vitesse > 1 ? "🐇" : "🚶";
+      bVitesse.setAttribute("aria-label", "Vitesse de la voix : " + (r.vitesse < 1 ? "lente" : r.vitesse > 1 ? "rapide" : "normale"));
+      bRegle.setAttribute("aria-pressed", r.regle ? "true" : "false");
+      if (r.on) marquerMots();
+    }
+
+    ouvrir.addEventListener("click", function () { r.on = true; if (r.taille === 1) r.taille = TAILLES[1]; garder(); afficher(); });
+    bFermer.addEventListener("click", function () { arreter(); fermerBulle(); r.on = false; garder(); afficher(); });
+    bTaille.addEventListener("click", function () { r.taille = TAILLES[(TAILLES.indexOf(r.taille) + 1) % TAILLES.length]; garder(); afficher(); });
+    bVitesse.addEventListener("click", function () {
+      r.vitesse = VITESSES[(VITESSES.indexOf(r.vitesse) + 1) % VITESSES.length]; garder(); afficher();
+      if (enCours) lireDepuis(position);   // la nouvelle vitesse s'applique tout de suite
+    });
+    bRegle.addEventListener("click", function () { r.regle = !r.regle; garder(); afficher(); });
+    bEcouter.addEventListener("click", function () { if (enCours) arreter(); else lireDepuis(premierVisible()); });
+
+    // La règle suit la souris ou le doigt
+    function placerRegle(y) { regle.style.top = (y - regle.offsetHeight / 2) + "px"; }
+    document.addEventListener("pointermove", function (e) { if (r.regle) placerRegle(e.clientY); }, { passive: true });
+    document.addEventListener("touchmove", function (e) { if (r.regle && e.touches[0]) placerRegle(e.touches[0].clientY); }, { passive: true });
+    placerRegle(window.innerHeight * 0.4);
+
+    afficher();
+  }
+
+  // ---------- Les mots expliqués ----------
+  var motsFaits = false, bulle = null;
+  var EXCLUS = "script,style,svg,button,a,input,select,textarea,label,nav,h1,h2,h3,h4,h5,h6,dt,summary,code,.term>b,.lf-ui,.lf-bulle,[aria-hidden=true]";
+
+  function marquerMots() {
+    if (motsFaits) return; motsFaits = true;
+    var liste = GLOSSAIRE[window.LF_COURS] || [];
+    if (!liste.length) return;
+    var motif;
+    try { motif = new RegExp("(?<![\\p{L}\\-])(" + liste.map(function (m) { return m[1]; }).join("|") + ")(?![\\p{L}])", "giu"); }
+    catch (e) { return; }   // vieux navigateur : on garde le reste de la lecture facilitée
+    var dejaVu = new Map();   // zone de la page → mots déjà expliqués dans cette zone (un mot n'est souligné qu'une fois par zone)
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue.trim() || !n.parentElement || n.parentElement.closest(EXCLUS)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var textes = []; while (walker.nextNode()) textes.push(walker.currentNode);
+    textes.forEach(function (n) {
+      var zone = n.parentElement.closest("section,article,details,.topic,.mod") || document.body;
+      var vus = dejaVu.get(zone); if (!vus) { vus = {}; dejaVu.set(zone, vus); }
+      var t = n.nodeValue, frag = null, dernier = 0, m;
+      motif.lastIndex = 0;
+      while ((m = motif.exec(t))) {
+        var entree = trouver(liste, m[1]);
+        if (!entree || vus[entree[0]]) continue;
+        vus[entree[0]] = true;
+        frag = frag || document.createDocumentFragment();
+        frag.appendChild(document.createTextNode(t.slice(dernier, m.index)));
+        var s = el("span", { "class": "lf-mot", tabindex: "0", role: "button", "data-mot": entree[0], "aria-label": m[1] + " : voir l'explication" });
+        s.textContent = m[1];
+        frag.appendChild(s);
+        dernier = m.index + m[1].length;
+      }
+      if (frag) { frag.appendChild(document.createTextNode(t.slice(dernier))); n.parentNode.replaceChild(frag, n); }
+    });
+  }
+  function trouver(liste, mot) {
+    for (var i = 0; i < liste.length; i++) if (new RegExp("^(?:" + liste[i][1] + ")$", "iu").test(mot)) return liste[i];
+    return null;
+  }
+
+  function ouvrirBulle(s) {
+    fermerBulle();
+    var entree = (GLOSSAIRE[window.LF_COURS] || []).filter(function (m) { return m[0] === s.getAttribute("data-mot"); })[0];
+    if (!entree) return;
+    bulle = el("div", { "class": "lf-bulle", role: "dialog", "aria-label": "Explication du mot " + entree[0] });
+    bulle.innerHTML = "<b></b><span></span>";
+    bulle.querySelector("b").textContent = entree[0];
+    bulle.querySelector("span").textContent = entree[2];
+    if (voix) {
+      var ecoute = el("button", { type: "button" }, "🔊 Écouter");
+      ecoute.addEventListener("click", function (e) { e.stopPropagation(); dire(entree[0] + ". " + entree[2]); });
+      bulle.appendChild(ecoute);
+    }
+    document.body.appendChild(bulle);
+    var b = s.getBoundingClientRect(), w = bulle.offsetWidth, hh = bulle.offsetHeight;
+    var x = Math.min(Math.max(12, b.left), window.innerWidth - w - 12);
+    var y = b.bottom + 10; if (y + hh > window.innerHeight - 90) y = Math.max(12, b.top - hh - 10);
+    bulle.style.left = x + "px"; bulle.style.top = y + "px";
+    bulleY = window.scrollY;
+  }
+  var bulleY = 0;
+  function fermerBulle() { if (bulle) { bulle.remove(); bulle = null; } }
+
+  document.addEventListener("click", function (e) {
+    var s = e.target.closest && e.target.closest(".lf-mot");
+    if (s && r.on) { e.preventDefault(); e.stopPropagation(); ouvrirBulle(s); return; }
+    if (bulle && !e.target.closest(".lf-bulle")) fermerBulle();
+    // Pendant la lecture, toucher un passage fait reprendre la lecture à cet endroit
+    if (enCours && !e.target.closest(".lf-ui,a,button,summary,input,label")) {
+      var i = unites().indexOf(uniteDe(e.target));
+      if (i >= 0) lireDepuis(i);
+    }
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { fermerBulle(); if (enCours) arreter(); }
+    if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("lf-mot")) { e.preventDefault(); ouvrirBulle(e.target); }
+  });
+  // La bulle se ferme quand on défile vraiment (pas au petit glissement d'un doigt qui touche le mot)
+  window.addEventListener("scroll", function () { if (bulle && Math.abs(window.scrollY - bulleY) > 60) fermerBulle(); }, { passive: true });
+
+  // ---------- La lecture à voix haute ----------
+  // Une « unité » = le bloc qui contient un bout de texte (paragraphe, puce, case, réponse révélée…), dans l'ordre de la page.
+  // Ce qui est caché (réponses pas encore révélées) n'est jamais lu.
+  var enCours = false, position = 0, cache = null, bEcouter = null;
+  var MUETS = /^(Révéler|Voir la réponse →|La réalité →|→|←|·)$/;
+
+  function blocDe(n) {
+    var e = n.nodeType === 1 ? n : n.parentElement;
+    while (e && e !== document.body) {
+      var d = getComputedStyle(e).display;
+      if (d !== "inline" && d !== "contents") return e;
+      e = e.parentElement;
+    }
+    return document.body;
+  }
+  function uniteDe(cible) {
+    var liste = unites();
+    for (var e = cible; e && e !== document.body; e = e.parentElement) if (liste.indexOf(e) >= 0) return e;
+    return null;
+  }
+  function unites() {
+    if (cache) return cache;
+    var vus = new Set(), liste = [];
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        var p = n.parentElement;
+        if (!p || !n.nodeValue.trim() || p.closest("script,style,svg,nav,.lf-ui,.lf-bulle,[aria-hidden=true],#retour-tdb")) return NodeFilter.FILTER_REJECT;
+        if (MUETS.test(n.nodeValue.trim())) return NodeFilter.FILTER_REJECT;
+        if (!p.getClientRects().length) return NodeFilter.FILTER_REJECT;   // caché
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    while (walker.nextNode()) {
+      var b = blocDe(walker.currentNode);
+      if (!vus.has(b)) { vus.add(b); liste.push(b); }
+    }
+    cache = liste;
+    return liste;
+  }
+  function texteDe(b) {
+    var morceaux = [];
+    var walker = document.createTreeWalker(b, NodeFilter.SHOW_TEXT, null);
+    while (walker.nextNode()) {
+      var n = walker.currentNode, p = n.parentElement;
+      if (MUETS.test(n.nodeValue.trim()) || !p.getClientRects().length || p.closest("svg,script,style,[aria-hidden=true]")) continue;
+      if (blocDe(n) !== b) continue;   // un bloc enfant sera lu à son tour
+      morceaux.push(n.nodeValue);
+    }
+    return prononcer(morceaux.join(""));
+  }
+  // Ce que la voix lit mal : symboles, siècles en chiffres romains, unités
+  function prononcer(t) {
+    var romains = { I: 1, V: 5, X: 10 };
+    return t.replace(/\b([IVX]{1,5})e\b/g, function (m, r) {
+      var n = 0; for (var i = 0; i < r.length; i++) { var v = romains[r[i]], s = romains[r[i + 1]] || 0; n += v < s ? -v : v; } return n + "e";
+    })
+      .replace(/\s−\s/g, " moins ").replace(/−(\d)/g, "moins $1")
+      .replace(/×/g, " fois ").replace(/÷/g, " divisé par ").replace(/≈/g, " environ ").replace(/≤/g, " moins de ou égal à ").replace(/>/g, " plus que ").replace(/</g, " moins que ")
+      .replace(/km²/g, " kilomètre carré").replace(/[→↓↑]/g, ", ").replace(/[«»"]/g, "").replace(/\s+/g, " ").trim();
+  }
+  function premierVisible() {
+    var liste = unites();
+    for (var i = 0; i < liste.length; i++) { var b = liste[i].getBoundingClientRect(); if (b.bottom > 80 && b.height > 0) return i; }
+    return 0;
+  }
+  function choisirVoix() {
+    var toutes = voix.getVoices();
+    return toutes.filter(function (v) { return /^fr[-_]CA/i.test(v.lang); })[0] || toutes.filter(function (v) { return /^fr/i.test(v.lang); })[0] || null;
+  }
+  function dire(texte, fin) {
+    voix.cancel();
+    var u = new SpeechSynthesisUtterance(texte);
+    var v = choisirVoix(); if (v) u.voice = v;
+    u.lang = v ? v.lang : "fr-CA";
+    u.rate = r.vitesse;
+    if (fin) { u.onend = fin; u.onerror = function (e) { if (e.error !== "interrupted" && e.error !== "canceled") fin(); }; }
+    setTimeout(function () { voix.speak(u); }, 60);   // Chrome ignore parfois un speak() collé sur un cancel()
+  }
+  function surligner(b) {
+    document.querySelectorAll(".lf-lu").forEach(function (x) { x.classList.remove("lf-lu"); });
+    if (!b) return;
+    b.classList.add("lf-lu");
+    var box = b.getBoundingClientRect();
+    if (box.top < 70 || box.bottom > window.innerHeight - 110) b.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+  function lireDepuis(i) {
+    cache = null;   // une réponse a peut-être été révélée depuis
+    var liste = unites();
+    if (i >= liste.length) return arreter();
+    enCours = true; position = i;
+    if (bEcouter) { bEcouter.setAttribute("aria-pressed", "true"); bEcouter.innerHTML = "<i>⏸</i><small>Arrêter</small>"; }
+    var t = texteDe(liste[i]);
+    if (!t) return lireDepuis(i + 1);
+    surligner(liste[i]);
+    dire(t, function () { if (enCours && position === i) lireDepuis(i + 1); });
+  }
+  function arreter() {
+    enCours = false;
+    if (voix) voix.cancel();
+    surligner(null);
+    if (bEcouter) { bEcouter.setAttribute("aria-pressed", "false"); bEcouter.innerHTML = "<i>🔊</i><small>Écouter</small>"; }
+  }
+  if (voix) { voix.getVoices(); if ("onvoiceschanged" in voix) voix.onvoiceschanged = function () {}; }
+  window.addEventListener("pagehide", function () { if (voix) voix.cancel(); });
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", demarrer); else demarrer();
+})();
+</script>
 </body>
 </html>
