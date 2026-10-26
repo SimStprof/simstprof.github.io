@@ -173,6 +173,172 @@ nav.bottom button[aria-current="true"] svg{color:var(--red)}
 }
 </style>
 
+<style id="teste-toi">
+/* ============ Teste-toi : l'entraînement de l'enjeu Population (bêta, 2026-10-26) ============ */
+/* Direction : les rubriques d'un journal. Pas de <span> dans un <div> ici : « texte-lisible » les forcerait à 15 px. */
+main.dash .view[data-v="train"]{display:none}
+nav.bottom{padding-left:2px;padding-right:2px}
+nav.bottom button{flex:1;min-width:0;padding:6px 1px;white-space:nowrap}
+nav.bottom .dot{right:calc(50% - 20px)}
+
+.tease{display:block;width:100%;text-align:left;border-top:3px solid var(--ink);border-bottom:1px solid var(--rule);padding:14px 0 16px}
+.tease i,.tease strong,.tease em,.tease b{display:block;font-style:normal}
+.tease-k{color:var(--red);font-size:15px}
+.tease-t{font-family:var(--serif);font-size:26px;font-weight:800;line-height:1.1;letter-spacing:-.01em;margin:6px 0}
+.tease-d{color:var(--ink-2);font-size:16px}
+.tease-go{margin-top:12px;display:inline-block !important;background:var(--ink);color:var(--paper);padding:11px 16px;border-radius:3px;font-weight:700;font-size:16px}
+
+#train{gap:20px}
+#train i,#train em{font-style:normal}
+#train .rub-t{font-style:italic}
+.suite{margin-top:12px}
+.t-tete{border-bottom:3px double var(--ink);padding-bottom:12px}
+.t-kick{color:var(--red);font-size:15px !important}
+.t-titre{font-family:var(--serif);font-weight:800;font-size:clamp(46px,13vw,72px);line-height:.95;letter-spacing:-.035em;margin:6px 0 8px}
+.t-titre i{font-style:normal;color:var(--red)}
+.t-deck{font-family:var(--serif);font-size:19px;line-height:1.35;color:var(--ink-2)}
+.t-lab{font-size:15px !important;color:var(--ink-3);margin-bottom:8px;display:block}
+.secs-g{display:flex;flex-wrap:wrap;gap:8px}
+.sx{border:1.5px solid var(--ink);border-radius:999px;padding:7px 13px;font-weight:700;font-size:15px}
+.sx.on{background:var(--ink);color:var(--paper)}
+.sx-exam{display:block;width:100%;margin-top:10px;padding:11px 12px;border:1.5px dashed var(--red);border-radius:4px;color:var(--red);font-weight:700;text-align:left}
+
+/* Le sommaire des rubriques */
+.sommaire{border-top:1px solid var(--ink)}
+.rub{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;padding:14px 0;border-bottom:1px solid var(--rule)}
+.rub:disabled{opacity:.4;cursor:default}
+.rub-n{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--pop);border:1.5px solid var(--pop);border-radius:3px;text-align:center;padding:3px 0}
+.rub-t{display:block;font-family:var(--serif);font-weight:800;font-size:22px;line-height:1.1;letter-spacing:-.01em}
+.rub-d{display:block;color:var(--ink-3);font-size:15px;margin-top:2px}
+.rub-q{font-family:var(--mono);font-size:15px;color:var(--ink-3);white-space:nowrap}
+.rub-q.fait{color:var(--pop)}
+.exam-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gros{display:flex;align-items:center;justify-content:center;width:100%;padding:15px;border-radius:3px;background:var(--ink);color:var(--paper);font-weight:700;font-size:17px !important}
+.gros.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.gros:disabled{opacity:.35;cursor:default}
+.t-note{color:var(--ink-3);font-size:15px;text-align:center}
+
+/* Le joueur */
+.jeu{width:100%;max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.jeu-h{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--ink);padding-bottom:10px}
+.retour{border:1.5px solid var(--ink);border-radius:999px;padding:7px 13px;font-weight:700}
+.jeu-t{flex:1;min-width:0}
+.jeu-t strong{display:block;font-family:var(--serif);font-size:22px;font-weight:800;line-height:1.1}
+.jeu-t em{display:block;font-style:normal;color:var(--ink-3);font-size:15px}
+.seg-bar{display:flex;gap:4px}
+.seg-bar i{flex:1;height:4px;background:var(--rule)}
+.seg-bar i.cur{background:var(--ink-3)}
+.seg-bar i.ok{background:var(--pop)}
+.seg-bar i.ko{background:var(--red)}
+.q-kick{color:var(--red);font-size:15px !important}
+.q-txt{font-size:18px;font-weight:700}
+.scene{display:flex;flex-direction:column;gap:14px}
+.choix{display:grid;gap:9px}
+.choix.deux{grid-template-columns:1fr 1fr}
+.ch{padding:14px 15px;border:1.5px solid var(--rule);border-radius:4px;background:var(--surface);font-weight:600;font-size:17px !important;text-align:left;line-height:1.3}
+.choix.deux .ch{text-align:center;font-weight:800}
+.ch:not(:disabled):hover{border-color:var(--ink)}
+.ch.ok{border-color:var(--pop);background:color-mix(in srgb,var(--pop) 14%,var(--surface))}
+.ch.ko{border-color:var(--red);background:var(--red-soft)}
+.ch:disabled{cursor:default}
+.retro{border-left:4px solid var(--pop);background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:4px;font-size:16px;animation:monte .25s ease-out}
+.retro.faux{border-color:var(--red)}
+.retro strong{font-size:17px}
+.renvoi{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--ink-2)}
+@keyframes monte{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Vérification des faits */
+.fc{position:relative;background:var(--surface);border:1px solid var(--rule);border-top:4px solid var(--ink);padding:18px 18px 22px}
+.fc-k{display:block;color:var(--ink-3);font-size:15px}
+.fc-q{display:block;font-family:var(--serif);font-size:25px;font-weight:700;line-height:1.25;margin-top:8px;letter-spacing:-.01em}
+.fc-q::before{content:"« "}.fc-q::after{content:" »"}
+.tampon{position:absolute;right:14px;bottom:-14px;font-family:var(--mono);font-weight:600;font-size:22px;padding:4px 12px;border:3px solid currentColor;border-radius:4px;background:var(--paper);transform:rotate(-7deg);animation:tampon .3s cubic-bezier(.2,1.6,.4,1)}
+.tampon.v{color:var(--pop)}.tampon.f{color:var(--red)}
+@keyframes tampon{from{transform:rotate(-7deg) scale(2.2);opacity:0}}
+
+/* La dépêche */
+.dp{border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:14px 0}
+.dp-l{display:block;color:var(--red);font-size:15px}
+.dp-t{font-family:var(--serif);font-size:23px;line-height:1.35;margin-top:6px}
+.trou{display:inline-block;min-width:110px;border-bottom:2px solid var(--ink);color:transparent}
+.trou.rempli{color:var(--pop);font-weight:800;min-width:0;padding:0 2px;background:color-mix(in srgb,var(--pop) 12%,transparent)}
+
+/* Le graphique du jour */
+.gr{background:var(--surface);border:1px solid var(--rule);padding:14px}
+.gr-k{display:block;color:var(--red);font-size:15px}
+.gr-t{display:block;font-family:var(--serif);font-size:20px;font-weight:800;line-height:1.15;margin:4px 0 10px}
+.gr svg{width:100%;height:auto;display:block;margin-bottom:6px}
+.gr svg text{fill:var(--ink);font-family:var(--sans)}
+.gr svg .v{font-family:var(--mono);font-weight:600}
+.gr svg .b{fill:var(--pop)}.gr svg .b.n{fill:var(--red)}
+.gr svg .ax{stroke:var(--ink-3)}
+.gr-s{display:block;color:var(--ink-3);font-size:15px}
+
+/* Deux mondes / Partir ou venir */
+.dm{font-family:var(--serif);font-size:24px;font-weight:700;line-height:1.25;text-align:center;padding:22px 10px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1.5px solid var(--ink)}
+.col{padding:18px 10px;font-weight:800;font-size:17px !important;text-align:center;line-height:1.2;background:var(--surface)}
+.col+.col{border-left:1.5px solid var(--ink)}
+.col small{display:block;font-family:var(--mono);font-weight:600;color:var(--ink-3);margin-top:4px}
+.col.ok{background:color-mix(in srgb,var(--pop) 16%,var(--surface))}
+.col.ko{background:var(--red-soft)}
+
+/* L'entrevue */
+.iv{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:start}
+.iv-av{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-weight:800;font-size:26px;color:#fff;background:hsl(var(--h) 45% 38%)}
+.iv-n{display:block;font-weight:800;font-size:17px}
+.iv-r{display:block;color:var(--ink-3);font-size:15px}
+.iv-q{grid-column:1/-1;font-family:var(--serif);font-size:23px;line-height:1.35;font-style:italic;border-left:4px solid var(--pop);padding-left:14px}
+
+/* Le démographe */
+.fp{border:1.5px solid var(--ink);background:var(--surface)}
+.fp-h{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--ink);color:var(--paper);font-family:var(--mono);font-weight:600;font-size:15px}
+.fp-l{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--rule);font-size:17px}
+.fp-l b{font-family:var(--mono);font-weight:600;white-space:nowrap}
+.fp-l.cible{border-top:1.5px solid var(--ink);font-weight:800}
+.fp-l.cible b{color:var(--red)}
+.fp-l.cible b.vu{color:var(--pop)}
+
+/* La ligne du temps */
+.lt{list-style:none;position:relative;display:flex;flex-direction:column;gap:8px;padding-left:22px}
+.lt::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--ink)}
+.slot{position:relative;display:flex;align-items:center;gap:10px;min-height:50px;padding:8px 12px;border:1.5px dashed var(--rule);border-radius:4px;cursor:pointer;background:var(--paper)}
+.slot::before{content:"";position:absolute;left:-20px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--ink)}
+.slot b{font-family:var(--mono);font-weight:600;color:var(--ink-3);font-size:15px}
+.slot em{font-style:normal;font-weight:700;font-size:17px}
+.slot.plein{border-style:solid;border-color:var(--ink);background:var(--surface)}
+.slot.ok{border-color:var(--pop)}.slot.ok::before{background:var(--pop);border-color:var(--pop)}
+.slot.ko{border-color:var(--red)}.slot.ko::before{background:var(--red);border-color:var(--red)}
+.pile{display:flex;flex-wrap:wrap;gap:8px}
+.pc{padding:10px 14px;border:1.5px solid var(--ink);border-radius:999px;background:var(--surface);font-weight:700;font-size:16px !important}
+
+/* Édition spéciale (fin) */
+.ed{border:1.5px solid var(--ink);background:var(--surface);padding:16px 16px 18px}
+.ed-m{display:block;text-align:center;font-family:var(--serif);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.03em;border-bottom:3px double var(--ink);padding-bottom:8px}
+.ed-m i{font-style:normal;color:var(--red)}
+.ed-d{display:block;text-align:center;color:var(--ink-3);font-size:15px;padding:6px 0;border-bottom:1px solid var(--rule)}
+.ed-k{display:block;color:var(--red);font-size:15px;margin-top:14px}
+.ed-h{display:block;font-family:var(--serif);font-weight:800;font-size:38px;line-height:1;letter-spacing:-.02em;margin:4px 0 6px}
+.ed-p{display:block;font-family:var(--serif);font-size:19px;color:var(--ink-2)}
+.ed ol{list-style:none;margin-top:12px;border-top:1px solid var(--ink)}
+.ed li{display:grid;grid-template-columns:1fr auto;gap:10px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:16px}
+.ed li i{font-style:normal;font-family:var(--mono);font-weight:600}
+.ed li.ko{color:var(--red)}
+.ed-r{display:block;margin-top:12px;font-family:var(--mono);font-weight:600;font-size:15px}
+.fin-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+@media (min-width: 900px){
+  #train{max-width:1000px;margin:0 auto;width:100%}
+  .sommaire{display:grid;grid-template-columns:1fr 1fr;column-gap:40px}
+}
+@media (min-width: 1600px){
+  #train{zoom:1.35}
+}
+@media (prefers-reduced-motion: reduce){
+  .retro,.tampon{animation:none}
+}
+</style>
+
 <style id="texte-lisible">
 /* Texte lisible (2026-10-25) : étiquettes ≥ 15 px, texte courant ≥ 16 px, au cell et à l'ordi seulement (le TBI et l'impression gardent leurs tailles). */
 @media screen and (max-width: 1400px) {
@@ -222,6 +388,7 @@ nav.bottom button[aria-current="true"] svg{color:var(--red)}
       <button data-go="agenda">Agenda</button>
       <button data-go="dossiers">Dossiers</button>
       <button data-go="depeches">Dépêches</button>
+      <button data-go="train">Teste-toi</button>
     </nav>
   </header>
   <div class="live" id="live"></div>
@@ -236,6 +403,12 @@ nav.bottom button[aria-current="true"] svg{color:var(--red)}
 
     <section class="view on" data-v="une">
       <article class="une" id="une"></article>
+      <button class="tease e-pop" data-go="train">
+        <i class="tease-k mono">Nouveau · bêta · Teste-toi</i>
+        <strong class="tease-t">Es-tu prêt pour la population?</strong>
+        <em class="tease-d">8 rubriques et des mini-examens. Une erreur? La bonne réponse et la page du manuel.</em>
+        <b class="tease-go">Commencer →</b>
+      </button>
       <div class="ready" id="ready"></div>
       <div class="fig" id="fig"></div>
     </section>
@@ -254,6 +427,8 @@ nav.bottom button[aria-current="true"] svg{color:var(--red)}
       <div class="sec-t"><h2>L'agenda de l'année</h2></div>
       <div id="agenda"></div>
     </section>
+
+    <section class="view" data-v="train" id="train"></section>
   </main>
 
   <footer>Monde contemporain · Secondaire 5<br>
@@ -266,6 +441,7 @@ nav.bottom button[aria-current="true"] svg{color:var(--red)}
   <button data-go="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button>
   <button data-go="dossiers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Dossiers</button>
   <button data-go="depeches"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5"/></svg>Dépêches<i class="dot" id="wireDot" hidden></i></button>
+  <button data-go="train"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Teste-toi</button>
 </nav>
 
 <script>
@@ -539,6 +715,406 @@ if (params.has("prof")) {
 }
 
 render();
+</script>
+
+<script>
+/* =====================================================================
+   TESTE-TOI : l'entraînement de l'enjeu Population (bêta, 2026-10-26).
+   Même principe que le site Histoire et l'onglet de Finances : on choisit ses sections, une rubrique, 5 questions ;
+   une erreur donne la bonne réponse et les pages du manuel. Visuel propre au Fil : les rubriques d'un journal.
+   Source : les notes de cours Population S1 à S5 (manuel p. 36 à 67). Jamais une question d'examen recopiée.
+   ===================================================================== */
+const SECTIONS = { "1": "L'évolution", "2": "Les caractéristiques", "3": "Les migrants", "4": "Le travail", "5": "Les villes" };
+const PAGES_SEC = { "1": "36-38", "2": "39-43", "3": "45-49", "4": "52-61", "5": "64-67" };
+// Les sections de chaque examen (HUB.examens, par id)
+const SECTIONS_EXAMEN = { mi1: ["1", "2", "3"], e1: ["1", "2", "3", "4", "5"] };
+const SERIE = 5;
+
+// Vérification des faits : [affirmation, vraie?, explication, section]
+const FAITS = [
+  ["Pendant la transition démographique, la natalité baisse avant la mortalité.", false, "C'est l'inverse : la mortalité baisse d'abord. C'est ce qui fait exploser la population.", "1"],
+  ["Au XIXe siècle, l'hygiène, l'alimentation et la médecine font baisser la mortalité.", true, "Les naissances dépassent alors les décès : la croissance décolle.", "1"],
+  ["L'Asie est la région qui grandit le plus vite depuis 1990.", false, "C'est l'Afrique (+113 %). L'Asie, elle, est la plus peuplée.", "1"],
+  ["De 1990 à 2020, la population de l'Europe n'a augmenté que d'environ 3 %.", true, "L'Europe stagne. Elle devrait même diminuer d'ici 2030.", "1"],
+  ["La population mondiale gagne environ 80 millions de personnes par année.", true, "Environ deux fois la population du Canada, chaque année (ONU, 2022).", "1"],
+  ["Un taux de natalité, c'est le nombre total de naissances dans un pays.", false, "Un taux se calcule par 1 000 habitants. Le total, c'est un nombre.", "1"],
+  ["Près de 60 % de l'humanité vit en Asie.", true, "59 %, soit environ 4,7 milliards de personnes.", "2"],
+  ["La plupart des pays développés ont moins de 2,1 enfants par femme.", true, "Ils sont sous le seuil de renouvellement.", "2"],
+  ["L'accroissement naturel tient compte de l'immigration.", false, "Il compte seulement les naissances et les décès. Avec les migrations, c'est l'accroissement total.", "2"],
+  ["Un pays où il meurt plus de gens qu'il en naît perd forcément de la population.", false, "L'immigration peut compenser. C'est le cas de l'Europe.", "2"],
+  ["Dans les pays en développement, la fécondité augmente.", false, "Elle baisse. Mais il y a encore plus de naissances que de décès, donc la population augmente.", "2"],
+  ["L'Australie est au sud, donc c'est un pays en développement.", false, "Nord et Sud parlent du niveau de développement, pas des hémisphères.", "2"],
+  ["Une amende au 2e enfant est une mesure nataliste.", false, "Une mesure nataliste encourage les naissances. L'amende, c'est du contrôle : le contraire.", "2"],
+  ["Depuis 2008, plus de la moitié de l'humanité vit en ville.", true, "Et la part des citadins continue de monter.", "2"],
+  ["La plupart des migrants internationaux sont des retraités.", false, "Environ 73 % ont de 20 à 64 ans : ils sont en âge de travailler.", "3"],
+  ["Les grands flux migratoires vont surtout du Sud vers le Nord.", true, "Des pays en développement vers les pays développés.", "3"],
+  ["Une sécheresse dans ton pays est un facteur d'attraction.", false, "Elle pousse à partir, mais elle n'attire vers aucun pays précis.", "3"],
+  ["Un étudiant étranger devient résident permanent simplement en restant au pays.", false, "Il doit faire une demande officielle et être accepté. Sinon, il devient sans-papiers.", "3"],
+  ["La Convention de Genève (1951) oblige les pays signataires à accorder l'asile.", true, "Le réfugié doit, en retour, respecter les lois du pays.", "3"],
+  ["L'espace Schengen supprime les contrôles aux frontières entre plusieurs pays européens.", true, "Il a été créé en 1995.", "3"],
+  ["Ce sont les Nations unies qui décident combien d'immigrants le Canada accepte.", false, "Chaque pays est souverain : il fixe ses critères et son plafond.", "4"],
+  ["Au Québec, les personnes nées ailleurs sont plus souvent diplômées de l'université.", true, "65 %, contre 45 % chez les personnes nées au Québec.", "4"],
+  ["S'intégrer, c'est abandonner sa culture.", false, "C'est devenir membre de la société d'accueil et en partager les règles, tout en gardant sa culture.", "4"],
+  ["La discrimination positive cherche à contrer la discrimination à l'embauche.", true, "Elle favorise les groupes qui ont moins accès à l'emploi.", "4"],
+  ["Les migrants envoient à leur famille plus d'argent que l'aide internationale des pays développés.", true, "Environ trois fois plus.", "4"],
+  ["Un employeur qui embauche au noir paie quand même ses charges sociales.", false, "Non : c'est justement une des raisons pour lesquelles il le fait.", "4"],
+  ["La majorité des professions au Canada sont réglementées par un ordre professionnel.", false, "Environ 20 % seulement. Pour les autres, c'est l'employeur qui juge.", "4"],
+  ["Dans les pays développés, les villes grandissent surtout grâce à l'exode rural.", false, "Surtout grâce aux immigrants internationaux. L'exode rural, c'est surtout au Sud.", "5"],
+  ["L'Afrique est la région la moins urbanisée, mais ses villes grossissent le plus vite.", true, "43 % de citadins en 2018, et une croissance urbaine très rapide.", "5"],
+  ["La part des citadins qui vivent en bidonville baisse, mais leur nombre augmente.", true, "Un plus petit pourcentage d'une population urbaine beaucoup plus grande, ça fait plus de monde.", "5"]
+];
+
+// La dépêche : [phrase avec ___, mot qui manque, autres choix, explication, section]
+const DEPECHES = [
+  ["Le ___ est le nombre de décès par 1 000 habitants dans une année.", "taux de mortalité", ["taux de natalité", "solde migratoire", "indice de fécondité"], "", "1"],
+  ["Une population où la proportion d'aînés augmente chaque année est une population ___.", "vieillissante", ["jeune", "stable", "en explosion"], "Deux causes : moins de naissances, et on vit plus longtemps.", "2"],
+  ["Le passage d'une société où tout est haut (naissances, décès) à une société où tout est bas s'appelle la ___.", "transition démographique", ["explosion démographique", "mondialisation", "urbanisation"], "", "1"],
+  ["Avec 2,1 enfants par femme, un pays atteint son ___.", "seuil de renouvellement", ["indice de fécondité", "accroissement total", "taux de natalité"], "En dessous, la population vieillit.", "2"],
+  ["Une ville compte 4 000 habitants au km² : c'est sa ___.", "densité de population", ["population urbaine", "démographie", "superficie"], "", "2"],
+  ["La ___ est la science qui étudie les populations.", "démographie", ["économie", "météorologie", "densité"], "", "2"],
+  ["Les Haïtiens établis à Montréal font partie de la ___ haïtienne.", "diaspora", ["perméabilité", "migration temporaire", "densité"], "Un peuple dispersé à travers le monde, ou cette communauté elle-même.", "3"],
+  ["Une frontière qui se laisse traverser facilement a une grande ___.", "perméabilité", ["densité", "diaspora", "souveraineté"], "", "3"],
+  ["En 1979, la Chine impose la politique de ___.", "l'enfant unique", ["l'immigration choisie", "trois enfants", "deux enfants"], "Puis deux enfants en 2015, et trois en 2021.", "2"],
+  ["Le ___ est le droit d'une personne persécutée d'être protégée par le pays où elle en fait la demande.", "droit d'asile", ["solde migratoire", "permis de travail", "système de points"], "", "3"],
+  ["Le Canada choisit ses immigrants avec un ___ : âge, langue, instruction, expérience.", "système de points", ["tirage au sort", "quota fixé par l'ONU", "droit d'asile"], "", "4"],
+  ["Une ingénieure formée à l'étranger qui travaille comme caissière est ___.", "surqualifiée", ["sous-qualifiée", "clandestine", "réfugiée"], "Son diplôme n'est pas reconnu par l'ordre professionnel.", "4"],
+  ["Le départ permanent de médecins et d'ingénieurs vers l'étranger s'appelle l'___.", "exode des cerveaux", ["exode rural", "économie parallèle", "intégration"], "Le pays d'origine perd leurs compétences, leurs impôts et l'argent investi pour les former.", "4"],
+  ["Un travail payé mais non déclaré à l'État, c'est du ___.", "travail au noir", ["travail temporaire", "travail saisonnier", "bénévolat"], "", "4"],
+  ["Les mesures qui favorisent, à l'embauche, les groupes qui ont moins accès à l'emploi s'appellent la ___.", "discrimination positive", ["francisation", "mondialisation", "économie parallèle"], "", "4"],
+  ["Le processus par lequel un immigrant devient membre de la société d'accueil, tout en gardant sa culture, c'est l'___.", "intégration", ["assimilation", "émigration", "exode rural"], "", "4"],
+  ["Le départ des gens de la campagne vers la ville s'appelle l'___.", "exode rural", ["exode des cerveaux", "émigration", "étalement urbain"], "C'est ce qui fait grossir les villes du Sud.", "5"],
+  ["Un quartier d'habitations précaires, sans eau courante ni égouts, en périphérie d'une grande ville : un ___.", "bidonville", ["quartier ethnique", "centre-ville", "village"], "", "5"],
+  ["Une ville de plus de 10 millions d'habitants est une ___.", "mégapole", ["capitale", "banlieue", "bourgade"], "Il y en avait 10 en 1990, et 36 en 2021.", "5"],
+  ["Une ville centre et ses banlieues forment une ___.", "agglomération urbaine", ["diaspora", "région rurale", "frontière"], "Exemple : le Grand Montréal.", "5"]
+];
+
+// Deux mondes : [caractéristique, 0 = pays développés, 1 = pays en développement, explication, section]
+const MONDES = [
+  ["Une natalité faible, souvent sous 2,1 enfants par femme", 0, "", "2"],
+  ["Une population qui continue de croître, même si la fécondité baisse", 1, "Il y a encore plus de naissances que de décès.", "2"],
+  ["C'est l'immigration qui fait croître la population", 0, "Sans elle, plusieurs de ces pays perdraient des habitants.", "2"],
+  ["L'émigration est en hausse", 1, "", "2"],
+  ["Une population vieillissante", 0, "Moins de naissances, et on vit plus longtemps.", "2"],
+  ["Une pyramide des âges large à la base et pointue au sommet", 1, "Une population jeune : beaucoup de naissances, peu d'aînés.", "2"],
+  ["Environ 83,5 % de l'humanité y vit", 1, "", "2"],
+  ["Des politiques pour encourager les naissances", 0, "Allocations, congés parentaux, garderies…", "2"],
+  ["Les villes grandissent surtout par l'exode rural", 1, "", "5"],
+  ["Des quartiers ethniques se forment autour de la diaspora", 0, "Ex. : le quartier chinois de San Francisco.", "5"],
+  ["Des bidonvilles poussent en périphérie des villes", 1, "La ville n'arrive pas à suivre la croissance.", "5"],
+  ["Une pénurie de main-d'œuvre, causée par le vieillissement", 0, "", "4"],
+  ["Un chômage élevé : la population augmente plus vite que les emplois", 1, "", "4"]
+];
+// Partir ou venir? : [facteur, 0 = pousse à partir, 1 = attire vers un pays, explication, section]
+const PARTIR = [
+  ["Le chômage et la pauvreté", 0, "", "3"],
+  ["Une guerre", 0, "", "3"],
+  ["Des emplois et de meilleurs salaires", 1, "", "3"],
+  ["Une sécheresse qui ruine les récoltes", 0, "Elle pousse à partir, mais n'attire vers aucun pays précis.", "3"],
+  ["La sécurité et la stabilité", 1, "", "3"],
+  ["Une diaspora déjà installée", 1, "Elle facilite l'arrivée.", "3"],
+  ["La persécution politique", 0, "", "3"],
+  ["Des écoles et des hôpitaux accessibles", 1, "", "3"],
+  ["Une langue que tu parles déjà", 1, "", "3"],
+  ["Une population qui augmente trop vite pour les emplois disponibles", 0, "", "3"],
+  ["Une pénurie de main-d'œuvre", 1, "Les pays développés manquent de travailleurs.", "4"]
+];
+
+// L'entrevue : [prénom, qui c'est, propos, question, bonne réponse, autres choix, explication, section]
+const ENTREVUES = [
+  ["Amina", "journaliste", "J'ai écrit des articles contre le gouvernement. On m'a menacée de prison, alors j'ai fui et demandé la protection du Canada.", "Quel est son statut?", "Réfugiée", ["Migrante temporaire", "Immigrante clandestine", "Résidente permanente"], "Elle fuit une persécution politique et demande l'asile.", "3"],
+  ["Diego", "travailleur agricole", "Chaque été, je viens cueillir des fraises au Québec. En octobre, je rentre chez moi au Mexique.", "Quel genre de migration?", "Une migration temporaire", ["Une migration définitive", "L'exode rural", "Une demande d'asile"], "Il garde sa résidence dans son pays et il y revient.", "3"],
+  ["Sofia", "née à Lyon", "Je vis maintenant à Québec, pour de bon.", "Pour la France, Sofia est…", "Une émigrante", ["Une immigrante", "Une réfugiée", "Une travailleuse temporaire"], "Elle quitte la France. Pour le Canada, c'est une immigrante. Émigrer, c'est l'Exit.", "3"],
+  ["Kenji", "arrivé de Tokyo", "Je me suis installé à Vancouver pour y vivre.", "Pour le Canada, Kenji est…", "Un immigrant", ["Un émigrant", "Un réfugié", "Un clandestin"], "Il entre au Canada pour s'y installer. Immigrer, c'est In.", "3"],
+  ["Lukas", "étudiant allemand","Mon permis d'études est expiré depuis un an, mais je suis resté.", "Quel est son statut?", "Sans-papiers (clandestin)", ["Résident permanent", "Réfugié", "Citoyen"], "Rester après la fin de son permis rend sa situation illégale.", "3"],
+  ["Joy", "arrivée de Manille", "Ma sœur vit au Canada depuis dix ans, alors je suis venue la rejoindre.", "Quel facteur a guidé son choix?", "La diaspora", ["La langue", "La proximité", "L'histoire"], "P·L·D·H·E : proximité, langue, diaspora, histoire, emploi.", "3"],
+  ["Abebe", "arrivé d'Éthiopie", "L'Arabie saoudite, c'est juste de l'autre côté de la mer Rouge.", "Quel facteur a guidé son choix?", "La proximité", ["La langue", "L'histoire", "La diaspora"], "", "3"],
+  ["Rafael", "arrivé du Portugal", "Je suis parti au Brésil parce qu'on y parle portugais, comme chez moi.", "Quel facteur a guidé son choix?", "La langue", ["La proximité", "La diaspora", "L'emploi"], "", "3"],
+  ["Valentina", "ingénieure colombienne", "À Montréal, je travaille comme caissière : l'ordre des ingénieurs ne reconnaît pas mon diplôme.", "Quel est son plus grand obstacle?", "La reconnaissance des diplômes", ["Le système de points", "Le droit d'asile", "L'exode rural"], "Elle est surqualifiée pour son emploi.", "4"],
+  ["Rodel", "infirmier philippin", "Je travaille au Canada et j'envoie la moitié de mon salaire à ma famille.", "Ces transferts d'argent avantagent surtout…", "Les Philippines, son pays de départ", ["Le Canada, son pays d'accueil", "Aucun des deux pays"], "L'argent soutient sa famille et l'économie des Philippines.", "4"],
+  ["Chidi", "médecin", "J'ai quitté le Nigeria pour de bon, pour travailler à Londres.", "Pour le Nigeria, c'est…", "L'exode des cerveaux", ["L'exode rural", "Une migration temporaire", "Une mesure d'intégration"], "Le pays perd un travailleur qualifié et l'argent investi pour le former.", "4"],
+  ["Luis", "ouvrier en construction", "Le patron me paie comptant : pas de talon de paie, pas d'assurance, pas de congés.", "Comment s'appelle ce genre de travail?", "Le travail au noir", ["La discrimination positive", "Un permis de travail", "Le travail saisonnier"], "Un travail payé, mais non déclaré à l'État.", "4"],
+  ["Olena", "aide domestique sans papiers", "Ma patronne ne respecte rien, mais je ne dirai rien à personne.", "Pourquoi n'ose-t-elle pas porter plainte?", "Elle a peur d'être expulsée", ["Elle est mieux payée que les autres", "La loi lui interdit de parler", "Elle connaît trop bien ses droits"], "Être sans papiers rend vulnérable aux abus.", "4"],
+  ["Fatou", "arrivée du Sénégal", "J'ai suivi des cours de francisation, et un organisme m'a aidée à trouver un logement.", "De quoi a-t-elle profité?", "De mesures d'intégration", ["De critères de sélection", "De discrimination positive", "Du droit d'asile"], "Cours de langue, aide au logement et à l'emploi, traduction, organismes.", "4"],
+  ["Priya", "agricultrice", "Ma terre ne nourrit plus ma famille. Je pars travailler en ville, à Mumbai.", "Quel phénomène vit-elle?", "L'exode rural", ["L'exode des cerveaux", "Une migration internationale", "Une demande d'asile"], "Une migration interne, de la campagne vers la ville.", "5"],
+  ["Mei", "née en Chine", "Mes parents n'avaient droit qu'à un enfant. Pour mon petit frère, ils ont payé une amende.", "De quelle politique parle-t-elle?", "L'enfant unique (1979)", ["Une mesure nataliste", "Les trois enfants (2021)", "Le système de points"], "Une amende, c'est du contrôle des naissances, pas une mesure nataliste.", "2"]
+];
+
+// Le démographe : [nom, lignes de la fiche, ce qu'on cherche, bonne réponse, autres choix, explication, section]
+const FICHES = [
+  ["Pays A · 2025", [["Naissances", "40 000"], ["Décès", "52 000"], ["Immigrants", "25 000"], ["Émigrants", "3 000"]], "Accroissement naturel", "−12 000", ["+12 000", "+10 000", "−15 000"], "Naissances − décès : 40 000 − 52 000 = −12 000. Les migrations ne comptent pas.", "2"],
+  ["Pays A · 2025", [["Naissances", "40 000"], ["Décès", "52 000"], ["Immigrants", "25 000"], ["Émigrants", "3 000"]], "Solde migratoire", "+22 000", ["+25 000", "−12 000", "+28 000"], "Immigrants − émigrants : 25 000 − 3 000 = +22 000.", "2"],
+  ["Pays A · 2025", [["Naissances", "40 000"], ["Décès", "52 000"], ["Immigrants", "25 000"], ["Émigrants", "3 000"]], "Accroissement total", "+10 000", ["−12 000", "+22 000", "+13 000"], "(40 000 + 25 000) − (52 000 + 3 000) = +10 000. L'immigration compense.", "2"],
+  ["Pays B · 2025", [["Naissances", "90 000"], ["Décès", "30 000"], ["Immigrants", "5 000"], ["Émigrants", "20 000"]], "Accroissement naturel", "+60 000", ["+45 000", "+120 000", "−60 000"], "90 000 − 30 000 = +60 000.", "2"],
+  ["Pays B · 2025", [["Naissances", "90 000"], ["Décès", "30 000"], ["Immigrants", "5 000"], ["Émigrants", "20 000"]], "Solde migratoire", "−15 000", ["+15 000", "+25 000", "+60 000"], "5 000 − 20 000 = −15 000 : plus de gens partent qu'il en arrive.", "2"],
+  ["Pays B · 2025", [["Naissances", "90 000"], ["Décès", "30 000"], ["Immigrants", "5 000"], ["Émigrants", "20 000"]], "Accroissement total", "+45 000", ["+60 000", "+75 000", "−15 000"], "(90 000 + 5 000) − (30 000 + 20 000) = +45 000.", "2"],
+  ["Ville C", [["Habitants", "2 000 000"], ["Superficie", "500 km²"]], "Densité", "4 000 hab./km²", ["250 hab./km²", "400 hab./km²", "40 000 hab./km²"], "Habitants ÷ superficie : 2 000 000 ÷ 500 = 4 000.", "2"],
+  ["Pays D", [["Habitants", "8 000 000"], ["Superficie", "80 000 km²"]], "Densité", "100 hab./km²", ["10 hab./km²", "1 000 hab./km²", "10 000 hab./km²"], "8 000 000 ÷ 80 000 = 100.", "2"],
+  ["Pays E · 2025", [["Habitants", "1 000 000"], ["Naissances", "12 000"]], "Taux de natalité", "12 pour 1 000", ["1,2 pour 1 000", "120 pour 1 000", "12 000 pour 1 000"], "12 000 naissances pour 1 000 000 d'habitants, c'est 12 pour 1 000 habitants.", "1"],
+  ["Pays F", [["Indice de fécondité", "1,4"], ["Immigration", "aucune"]], "À long terme, sa population…", "vieillit", ["rajeunit", "explose", "fait plus d'enfants"], "1,4 est sous le seuil de renouvellement de 2,1 : la population vieillit.", "2"]
+];
+
+// Le graphique du jour : [titre, graphique, question, bonne réponse, autres choix, explication, section, source]
+const G_CROISS = { barres: [["Afrique", 113], ["Océanie", 63], ["Amér. latine", 47], ["Asie", 45], ["Amér. du Nord", 36], ["Europe", 3]], unite: " %", signe: true };
+const G_URB = { barres: [["Amér. du Nord", 82], ["Amér. latine", 81], ["Europe", 75], ["Océanie", 68], ["Asie", 50], ["Afrique", 43]], unite: " %" };
+const G_ACCR = { barres: [["Asie", 216.2], ["Afrique", 160.5], ["Amér. du Nord", 5.9], ["Europe", -2.2]], unite: " M", signe: true };
+const G_POP = { barres: [["−10 000 ans", 0.015], ["Début XIXe s.", 1], ["1990", 5.3], ["2023", 8]], unite: " G" };
+const GRAPHIQUES = [
+  ["Croissance de la population, 1990-2020", G_CROISS, "Quelle région a grandi le plus vite?", "L'Afrique", ["L'Asie", "L'Océanie", "L'Amérique latine"], "Elle a plus que doublé : de 638 à 1 361 millions.", "1", "ONU"],
+  ["Croissance de la population, 1990-2020", G_CROISS, "Quelle région stagne?", "L'Europe", ["L'Amérique du Nord", "L'Asie", "L'Océanie"], "À peine +3 % en 30 ans.", "1", "ONU"],
+  ["Population mondiale (en milliards)", G_POP, "Environ combien de temps a-t-il fallu pour passer de 1 à 8 milliards?", "Environ 200 ans", ["Environ 20 ans", "Environ 2 000 ans", "Environ 10 000 ans"], "Du début du XIXe siècle à 2023 : l'explosion démographique.", "1", "ONU"],
+  ["Accroissement naturel, 2010-2020", G_ACCR, "Dans quelle région meurt-il plus de gens qu'il en naît?", "L'Europe", ["L'Amérique du Nord", "L'Afrique", "L'Asie"], "−2,2 millions. L'immigration empêche sa population de baisser.", "2", "Manuel, d'après l'ONU"],
+  ["Accroissement naturel, 2010-2020", G_ACCR, "Si la population de l'Europe ne baisse pas, c'est grâce…", "à l'immigration", ["à la natalité", "à l'exode rural", "à la baisse de l'espérance de vie"], "L'accroissement naturel est négatif : l'immigration compense.", "2", "Manuel, d'après l'ONU"],
+  ["Pyramide des âges", { pyramide: "jeune" }, "Cette pyramide montre une population…", "jeune, typique d'un pays en développement", ["vieillissante, typique d'un pays développé", "stable, sans naissances", "qui a perdu tous ses aînés"], "Large à la base : beaucoup de naissances, peu d'aînés.", "2", "Silhouette typique"],
+  ["Pyramide des âges", { pyramide: "vieille" }, "Cette pyramide montre une population…", "vieillissante, typique d'un pays développé", ["jeune, typique d'un pays en développement", "en pleine explosion démographique", "qui fait beaucoup d'enfants"], "Étroite à la base : peu de naissances, beaucoup d'aînés.", "2", "Silhouette typique"],
+  ["Part de la population qui vit en ville, 2018", G_URB, "Quelle région est la moins urbanisée?", "L'Afrique", ["L'Asie", "L'Océanie", "L'Europe"], "43 %, mais ses villes grossissent le plus vite.", "5", "ONU"],
+  ["Part de la population qui vit en ville, 2018", G_URB, "Quelle région est la plus urbanisée?", "L'Amérique du Nord", ["L'Europe", "L'Amérique latine", "L'Océanie"], "82 %, suivie de près par l'Amérique latine (81 %).", "5", "ONU"],
+  ["Diplôme universitaire au Québec", { barres: [["Nés ailleurs", 65], ["Nés au Québec", 45]], unite: " %" }, "Quel groupe est le plus souvent diplômé de l'université?", "Les personnes nées ailleurs", ["Les personnes nées au Québec", "Les deux groupes, à égalité"], "65 % contre 45 %. Pourtant, beaucoup d'immigrants occupent un emploi sous leurs compétences : leurs diplômes ne sont souvent pas reconnus.", "4", "Manuel"],
+  ["Les bidonvilles, 2000 et 2018", { barres: [["Part · 2000", 28], ["Part · 2018", 24]], unite: " %", bis: { barres: [["Nombre · 2000", 803], ["Nombre · 2018", 1000]], unite: " M" } }, "La part baisse, mais le nombre monte. Pourquoi?", "La population urbaine grossit très vite", ["Les bidonvilles sont plus grands", "Les gens quittent les villes", "Les chiffres se contredisent"], "Un plus petit pourcentage d'une population beaucoup plus grande, ça fait plus de monde.", "5", "ONU-Habitat"]
+];
+
+// La ligne du temps : [consigne, éléments dans l'ordre, explication, section, nombre à placer]
+const TEMPS = [
+  ["Les phases de la transition démographique", ["Natalité et mortalité élevées", "La mortalité baisse", "La natalité baisse à son tour", "Natalité et mortalité basses"], "La clé : la mortalité baisse avant la natalité.", "1"],
+  ["L'histoire de la population mondiale",["Le début de l'agriculture", "La médecine fait baisser la mortalité", "L'explosion démographique", "8 milliards d'humains"], "−10 000 ans, XIXe siècle, dès 1950, 2023.", "1"],
+  ["Les grandes vagues migratoires", ["Le passage par la Béringie", "Les Vikings à Terre-Neuve", "Des Européens de l'Est vers l'Ouest", "La traversée de la Méditerranée"], "−30 000 ans, IXe-XIe siècles, années 1990, années 2010.", "1"],
+  ["La Chine et les naissances", ["L'enfant unique", "Deux enfants permis", "Trois enfants permis"], "1979, 2015, 2021.", "2"],
+  ["Les ententes sur les migrations", ["La Convention de Genève", "L'espace Schengen", "L'entente France–Québec", "L'AECG Canada–Union européenne"], "1951, 1995, 2008, 2017.", "3"],
+  ["Le monde devient urbain", ["Une petite minorité de citadins", "La moitié de l'humanité en ville", "57 % de citadins", "68 % de citadins prévus"], "1800, 2008, 2022, 2050.", "5"]
+];
+
+/* ============ Les rubriques ============ */
+const ACTS = [
+  { id: "faits", rub: "A1", nom: "Vérification des faits", desc: "Vrai ou faux? Le verdict.", oi: "Établir des faits" },
+  { id: "depeche", rub: "A2", nom: "La dépêche", desc: "Le mot qui manque", oi: "Établir des faits" },
+  { id: "graph", rub: "A3", nom: "Le graphique du jour", desc: "Lis les données", oi: null },
+  { id: "mondes", rub: "A4", nom: "Deux mondes", desc: "Pays développés ou en développement?", oi: "Différences et similitudes" },
+  { id: "partir", rub: "A5", nom: "Partir ou venir?", desc: "Ce qui pousse, ce qui attire", oi: "Causes et conséquences" },
+  { id: "entrevue", rub: "A6", nom: "L'entrevue", desc: "Qui est cette personne?", oi: "Mettre en relation des faits" },
+  { id: "demo", rub: "A7", nom: "Le démographe", desc: "Calcule comme un pro", oi: null },
+  { id: "temps", rub: "A8", nom: "La ligne du temps", desc: "Remets dans l'ordre", oi: "Situer dans le temps" }
+];
+const actDe = id => ACTS.find(a => a.id === id) || { id, nom: "Mini-examen · " + (id === "examen10" ? 10 : 5) + " questions" };
+const melange = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const avec = (bonne, autres) => melange([bonne, ...autres]);
+const Q = {
+  faits: () => FAITS.map(([t, vrai, ex, s]) => ({ type: "faits", t, bonne: vrai ? "Vrai" : "Faux", ex, s })),
+  depeche: () => DEPECHES.map(([t, rep, autres, ex, s]) => ({ type: "depeche", t, bonne: rep, options: avec(rep, autres), ex, s })),
+  graph: () => GRAPHIQUES.map(([titre, g, q, rep, autres, ex, s, src]) => ({ type: "graph", titre, g, q, bonne: rep, options: avec(rep, autres), ex, s, src })),
+  mondes: () => MONDES.map(([t, i, ex, s]) => ({ type: "deux", t, cotes: ["Pays développés", "Pays en développement"], notes: ["surtout au Nord", "surtout au Sud"], bonne: ["Pays développés", "Pays en développement"][i], ex, s })),
+  partir: () => PARTIR.map(([t, i, ex, s]) => ({ type: "deux", t, cotes: ["Pousse à partir", "Attire vers un pays"], notes: ["pays d'origine", "pays d'accueil"], bonne: ["Pousse à partir", "Attire vers un pays"][i], ex, s })),
+  entrevue: () => ENTREVUES.map(([nom, qui, dit, q, rep, autres, ex, s], i) => ({ type: "entrevue", nom, qui, dit, q, bonne: rep, options: avec(rep, autres), ex, s, h: (i * 53) % 360 })),
+  demo: () => FICHES.map(([nom, lignes, cible, rep, autres, ex, s]) => ({ type: "demo", nom, lignes, cible, bonne: rep, options: avec(rep, autres), ex, s })),
+  temps: () => TEMPS.map(([t, items, ex, s]) => ({ type: "temps", t, items, ex, s }))
+};
+
+/* ============ Outils ============ */
+const $t = id => document.getElementById(id);
+const TOUTES = Object.keys(SECTIONS);
+const secs = () => { const v = store.get("sections"); return Array.isArray(v) && v.length ? v.filter(s => SECTIONS[s]) : TOUTES; };
+const questions = id => (Q[id] ? Q[id]() : []).filter(q => secs().includes(q.s)).map(q => ({ ...q, act: id }));
+const abrege = t => t.length > 34 ? t.slice(0, 33).trimEnd() + "…" : t;
+const resume = q => q.type === "depeche" ? q.bonne : q.type === "graph" ? q.titre : q.type === "entrevue" ? "Entrevue · " + q.nom : q.type === "demo" ? q.nom + " · " + q.cible.toLowerCase() : q.t;
+const renvoi = q => `<i class="renvoi">📰 Manuel p. ${PAGES_SEC[q.s]} · section ${q.s}</i>`;
+const BRAVO = ["Exact.", "Juste.", "Bien vu.", "C'est ça.", "Confirmé."];
+const choixHtml = opts => `<div class="choix">${opts.map((o, i) => `<button class="ch" data-i="${i}">${esc(o)}</button>`).join("")}</div>`;
+
+/* ============ Le sommaire ============ */
+let RUN = null;
+function renderTrain() {
+  RUN = null;
+  const ss = secs(), tout = ss.length === TOUTES.length, faits = store.get("faits") || {};
+  const today = parse(iso(NOW));
+  const nx = HUB.examens.filter(x => finSemaine(x) >= today && SECTIONS_EXAMEN[x.id]).sort((a, b) => parse(a.semaine) - parse(b.semaine))[0];
+  const nxs = nx ? SECTIONS_EXAMEN[nx.id] : [];
+  $t("train").innerHTML = `
+    <header class="t-tete"><p class="t-kick mono">Population · Enjeu 1 · Teste-toi</p><h2 class="t-titre">Teste-toi<i>.</i></h2>
+      <p class="t-deck">Choisis tes sections, puis une rubrique. Une erreur? La bonne réponse, et les pages du manuel à relire.</p></header>
+    <div><b class="t-lab mono">Quelles sections?</b><div class="secs-g">
+      <button class="sx${tout ? " on" : ""}" data-sx="tout" aria-pressed="${tout}">Tout l'enjeu</button>
+      ${Object.entries(SECTIONS).map(([s, t]) => { const on = !tout && ss.includes(s);
+        return `<button class="sx${on ? " on" : ""}" data-sx="${s}" aria-pressed="${on}">${s} · ${esc(t)}</button>`; }).join("")}
+    </div>${nxs.length && nxs.join() !== ss.join() && nxs.length < TOUTES.length ? `<button class="sx-exam" data-sx="${nxs.join(",")}">🎯 Seulement la matière de ton ${esc(nx.titre.charAt(0).toLowerCase() + nx.titre.slice(1))} (sections ${nxs.join(", ")})</button>` : ""}</div>
+    <nav class="sommaire">${ACTS.map(a => { const n = questions(a.id).length;
+      return `<button class="rub" data-act="${a.id}"${n ? "" : " disabled"}><b class="rub-n">${a.rub}</b><em><strong class="rub-t">${esc(a.nom)}</strong><i class="rub-d">${n ? esc(a.desc) : "Pas dans ce choix"}</i></em><i class="rub-q${faits[a.id] && n ? " fait" : ""}">${faits[a.id] && n ? "✓ lu" : n ? Math.min(SERIE, n) + " q." : ""}</i></button>`; }).join("")}</nav>
+    <div class="exam-g"><button class="gros" data-ex="examen5">Mini-examen · 5</button><button class="gros" data-ex="examen10">Mini-examen · 10</button></div>
+    <p class="t-note">Rien n'est envoyé : tes choix restent sur ton appareil.</p>`;
+}
+function choisirSec(v) {
+  let ss = secs();
+  if (v === "tout") ss = TOUTES;
+  else if (v.includes(",")) ss = v.split(",");
+  else ss = ss.length === TOUTES.length ? [v] : ss.includes(v) ? ss.filter(x => x !== v) : [...ss, v].sort();
+  store.set("sections", ss.length ? ss : TOUTES);
+  renderTrain();
+}
+
+/* ============ Le joueur ============ */
+function lancer(id) {
+  let qs;
+  if (id.startsWith("examen")) {
+    // Un peu de tout : on pige à tour de rôle dans chaque rubrique.
+    const n = id === "examen10" ? 10 : 5, pools = melange(ACTS.map(a => melange(questions(a.id))).filter(l => l.length));
+    qs = [];
+    while (qs.length < n && pools.some(l => l.length)) pools.forEach(l => { if (l.length && qs.length < n) qs.push(l.pop()); });
+    qs = melange(qs);
+  } else qs = melange(questions(id)).slice(0, SERIE);
+  if (!qs.length) return renderTrain();
+  RUN = { id, qs, i: 0, res: [] };
+  montrer();
+  $t("train").scrollIntoView({ block: "start" });
+}
+function montrer() {
+  const q = RUN.qs[RUN.i], a = actDe(RUN.id), exam = RUN.id.startsWith("examen");
+  RUN.repondu = false;
+  $t("train").innerHTML = `<article class="jeu">
+    <header class="jeu-h"><button class="retour" data-menu>← Sommaire</button><p class="jeu-t"><strong>${esc(a.nom)}</strong><em>${exam ? "Sections " + secs().join(", ") : a.oi ? "OI · " + esc(a.oi) : "Lire et calculer"} · ${RUN.i + 1}/${RUN.qs.length}</em></p></header>
+    <p class="seg-bar">${RUN.qs.map((_, j) => `<i class="${j < RUN.res.length ? (RUN.res[j].ok ? "ok" : "ko") : j === RUN.i ? "cur" : ""}"></i>`).join("")}</p>
+    ${exam ? `<p class="q-kick mono">${esc(actDe(q.act).rub + " · " + actDe(q.act).nom)}</p>` : ""}
+    <section class="scene" id="scene"></section><section id="retro"></section></article>`;
+  VUES[q.type](q, $t("scene"));
+}
+function repondre(q, ok) {
+  if (RUN.repondu) return;
+  RUN.repondu = true;
+  RUN.res.push({ ok, court: abrege(resume(q)), s: q.s });
+  document.querySelectorAll("#scene .ch, #scene .col").forEach(b => b.disabled = true);
+  document.querySelectorAll(".seg-bar i")[RUN.i].className = ok ? "ok" : "ko";
+  const der = RUN.i === RUN.qs.length - 1;
+  const bonne = q.type === "temps" ? q.items.join(" → ") : q.bonne;
+  $t("retro").innerHTML = `<p class="retro ${ok ? "bon" : "faux"}"><strong>${ok ? BRAVO[Math.floor(Math.random() * BRAVO.length)] : "La bonne réponse : " + esc(bonne)}</strong>${q.ex ? `<i style="font-style:normal">${esc(q.ex)}</i>` : ""}${ok ? "" : renvoi(q)}</p>
+    <button class="gros suite" id="suite">${der ? "Voir mon édition" : "Suivante →"}</button>`;
+  $t("suite").onclick = () => { if (der) fin(); else { RUN.i++; montrer(); } };
+  setTimeout(() => { $t("suite")?.focus({ preventScroll: true }); $t("suite")?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, 50);
+}
+// Des boutons de choix : marque la bonne et la mauvaise, puis répond.
+function brancher(st, q, sel, valeur, apres) {
+  st.querySelectorAll(sel).forEach(b => b.onclick = () => {
+    if (RUN.repondu) return;
+    const v = valeur(b), ok = v === q.bonne;
+    st.querySelectorAll(sel).forEach(x => { if (valeur(x) === q.bonne) x.classList.add("ok"); });
+    if (!ok) b.classList.add("ko");
+    if (apres) apres(ok, v);
+    repondre(q, ok);
+  });
+}
+const parIndex = q => b => q.options[+b.dataset.i];
+
+/* ============ Les graphiques (SVG dessinés ici) ============ */
+function barres(g) {
+  const L = 116, W = 196, H = 30, max = Math.max(...g.barres.map(b => Math.abs(b[1]))), neg = g.barres.some(b => b[1] < 0);
+  const zero = L + (neg ? 14 : 0), larg = W - (neg ? 14 : 0);
+  const nb = v => (g.signe && v > 0 ? "+" : "") + String(v).replace("-", "−").replace(".", ",") + g.unite;
+  return `<svg viewBox="0 0 360 ${g.barres.length * H + 6}" role="img" aria-label="Graphique à barres">${g.barres.map(([l, v], i) => {
+    const w = Math.max(2, Math.abs(v) / max * larg), y = i * H + 4, x = v < 0 ? zero - w : zero;
+    return `<text x="${L - 8}" y="${y + 17}" text-anchor="end" font-size="15">${esc(l)}</text><rect class="b${v < 0 ? " n" : ""}" x="${x}" y="${y + 3}" width="${w}" height="20"/><text class="v" x="${(v < 0 ? zero : x + w) + 6}" y="${y + 18}" font-size="15">${nb(v)}</text>`; }).join("")}
+    <line class="ax" x1="${zero}" x2="${zero}" y1="0" y2="${g.barres.length * H + 6}"/></svg>`;
+}
+function pyramide(forme) {
+  const L = forme === "jeune" ? [100, 90, 80, 70, 60, 50, 40, 30, 20, 10] : [52, 56, 60, 66, 70, 72, 68, 58, 42, 22];
+  const h = 16, c = 180;
+  return `<svg viewBox="0 0 360 ${L.length * h + 30}" role="img" aria-label="Pyramide des âges">${L.map((w, i) => { const y = (L.length - 1 - i) * h;
+    return `<rect class="b" x="${c - 4 - w * 1.5}" y="${y}" width="${w * 1.5}" height="${h - 3}"/><rect class="b" x="${c + 4}" y="${y}" width="${w * 1.5}" height="${h - 3}"/>`; }).join("")}
+    <text x="${c - 12}" y="${L.length * h + 22}" text-anchor="end" font-size="15">Hommes</text><text x="${c + 12}" y="${L.length * h + 22}" font-size="15">Femmes</text>
+    <text x="4" y="12" font-size="15">Aînés</text><text x="4" y="${L.length * h - 2}" font-size="15">Jeunes</text></svg>`;
+}
+
+const VUES = {
+  // Vérification des faits : une affirmation, un verdict tamponné
+  faits(q, st) {
+    st.innerHTML = `<blockquote class="fc"><b class="fc-k mono">Affirmation à vérifier</b><strong class="fc-q">${esc(q.t)}</strong></blockquote>
+      <p class="choix deux"><button class="ch" data-v="Vrai">Vrai</button><button class="ch" data-v="Faux">Faux</button></p>`;
+    brancher(st, q, ".ch", b => b.dataset.v, () => st.querySelector(".fc").insertAdjacentHTML("beforeend", `<b class="tampon ${q.bonne === "Vrai" ? "v" : "f"}">${q.bonne.toUpperCase()}</b>`));
+  },
+  // La dépêche : le mot qui manque
+  depeche(q, st) {
+    const [avant, apres] = q.t.split("___");
+    st.innerHTML = `<article class="dp"><b class="dp-l mono">MONTRÉAL (Le Fil) —</b><p class="dp-t">${esc(avant)}<b class="trou" id="trou">______</b>${esc(apres)}</p></article>
+      <p class="q-txt">Quel mot complète la dépêche?</p>${choixHtml(q.options)}`;
+    brancher(st, q, ".ch", parIndex(q), () => { const t = $t("trou"); t.textContent = q.bonne; t.classList.add("rempli"); });
+  },
+  // Le graphique du jour
+  graph(q, st) {
+    const dessin = q.g.pyramide ? pyramide(q.g.pyramide) : barres(q.g) + (q.g.bis ? barres(q.g.bis) : "");
+    st.innerHTML = `<figure class="gr"><b class="gr-k mono">Le graphique du jour</b><strong class="gr-t">${esc(q.titre)}</strong>${dessin}<i class="gr-s mono">Source : ${esc(q.src)}</i></figure>
+      <p class="q-txt">${esc(q.q)}</p>${choixHtml(q.options)}`;
+    brancher(st, q, ".ch", parIndex(q));
+  },
+  // Deux colonnes : de quel côté va cet énoncé?
+  deux(q, st) {
+    st.innerHTML = `<p class="dm">${esc(q.t)}</p>
+      <p class="cols">${q.cotes.map((c, i) => `<button class="col" data-v="${esc(c)}">${esc(c)}<small>${esc(q.notes[i])}</small></button>`).join("")}</p>`;
+    brancher(st, q, ".col", b => b.dataset.v);
+  },
+  // L'entrevue : un témoignage, une question
+  entrevue(q, st) {
+    st.innerHTML = `<figure class="iv"><b class="iv-av" style="--h:${q.h}">${esc(q.nom[0])}</b><figcaption><strong class="iv-n">${esc(q.nom)}</strong><i class="iv-r mono">${esc(q.qui)} · propos recueillis</i></figcaption>
+      <blockquote class="iv-q">« ${esc(q.dit)} »</blockquote></figure>
+      <p class="q-txt">${esc(q.q)}</p>${choixHtml(q.options)}`;
+    brancher(st, q, ".ch", parIndex(q));
+  },
+  // Le démographe : une fiche pays à compléter
+  demo(q, st) {
+    st.innerHTML = `<section class="fp"><p class="fp-h"><em style="font-style:normal">${esc(q.nom)}</em><b>FICHE PAYS</b></p>
+      ${q.lignes.map(([l, v]) => `<p class="fp-l"><em style="font-style:normal">${esc(l)}</em><b>${esc(v)}</b></p>`).join("")}
+      <p class="fp-l cible"><em style="font-style:normal">${esc(q.cible)}</em><b id="cible">?</b></p></section>
+      <p class="q-txt">${esc(q.cible)} : combien?</p>${choixHtml(q.options)}`;
+    brancher(st, q, ".ch", parIndex(q), () => { const c = $t("cible"); c.textContent = q.bonne; c.classList.add("vu"); });
+  },
+  // La ligne du temps : touche les éléments dans l'ordre
+  temps(q, st) {
+    let pile; do pile = melange(q.items); while (pile.join() === q.items.join());
+    const place = [];
+    st.innerHTML = `<p class="q-txt">${esc(q.t)} : remets dans l'ordre.</p><ol class="lt" id="lt"></ol><p class="pile" id="pile"></p><button class="gros" id="valider" disabled>Valider</button>`;
+    const dessiner = () => {
+      $t("lt").innerHTML = q.items.map((_, j) => `<li class="slot${place[j] !== undefined ? " plein" : ""}" data-j="${j}"><b>${j + 1}</b><em>${place[j] !== undefined ? esc(place[j]) : ""}</em></li>`).join("");
+      $t("pile").innerHTML = pile.filter(t => !place.includes(t)).map(t => `<button class="pc" data-t="${esc(t)}">${esc(t)}</button>`).join("");
+      $t("valider").disabled = place.length !== q.items.length;
+    };
+    st.addEventListener("click", e => {
+      if (RUN.repondu) return;
+      const pc = e.target.closest(".pc"), sl = e.target.closest(".slot.plein");
+      if (pc) { place.push(pc.dataset.t); dessiner(); }
+      else if (sl) { place.splice(+sl.dataset.j, 1); dessiner(); }
+    });
+    dessiner();
+    $t("valider").onclick = () => {
+      st.querySelectorAll(".slot").forEach((s, j) => s.classList.add(place[j] === q.items[j] ? "ok" : "ko"));
+      $t("valider").remove();
+      repondre(q, place.join() === q.items.join());
+    };
+  }
+};
+
+/* ============ Édition spéciale (la fin) ============ */
+function fin() {
+  const bons = RUN.res.filter(r => r.ok).length, n = RUN.res.length, a = actDe(RUN.id);
+  const faits = store.get("faits") || {}; faits[RUN.id] = true; store.set("faits", faits);
+  const aRelire = [...new Set(RUN.res.filter(r => !r.ok).map(r => r.s))].sort();
+  const titre = bons === n ? "Sans faute." : bons / n >= .7 ? "Solide." : bons / n >= .4 ? "À moitié là." : "Retour au manuel.";
+  const deck = bons === n ? "Rien à corriger dans cette édition." : "Relis les pages ci-dessous, puis rejoue : les questions changent.";
+  $t("train").innerHTML = `<article class="jeu"><section class="ed">
+      <b class="ed-m">Le Fil<i>.</i></b><i class="ed-d mono">Édition spéciale · ${esc(fmt(new Date(), { day: "numeric", month: "long" }))} · ${esc(a.nom)}</i>
+      <i class="ed-k mono">${bons} sur ${n}</i><strong class="ed-h">${titre}</strong><em class="ed-p">${deck}</em>
+      <ol>${RUN.res.map((r, j) => `<li class="${r.ok ? "" : "ko"}"><em style="font-style:normal">${j + 1}. ${esc(r.court)}</em><i>${r.ok ? "✓" : "✗"}</i></li>`).join("")}</ol>
+      ${aRelire.length ? `<i class="ed-r">📰 À relire : ${aRelire.map(s => "manuel p. " + PAGES_SEC[s] + " (section " + s + ")").join(", ")}</i>` : ""}
+    </section>
+    <p class="fin-btns"><button class="gros" id="rejouer">Rejouer</button><button class="gros ghost" data-menu>Sommaire</button></p></article>`;
+}
+
+/* ============ Branchements ============ */
+$t("train").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b || b.disabled) return;
+  if (b.dataset.sx) choisirSec(b.dataset.sx);
+  else if (b.dataset.act) lancer(b.dataset.act);
+  else if (b.dataset.ex) lancer(b.dataset.ex);
+  else if (b.hasAttribute("data-menu")) { renderTrain(); $t("train").scrollIntoView({ block: "start" }); }
+  else if (b.id === "rejouer") lancer(RUN.id);
+});
+document.querySelectorAll('[data-go="train"]').forEach(b => b.addEventListener("click", renderTrain));
+renderTrain();
+// Lien direct vers l'entraînement (pour un code QR, par exemple) : …/monde/#teste-toi
+if (location.hash === "#teste-toi") go("train");
 </script>
 </body>
 </html>
