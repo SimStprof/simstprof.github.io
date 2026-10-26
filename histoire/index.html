@@ -185,6 +185,14 @@ header b{font-family:var(--titre);font-size:20px;font-weight:800;letter-spacing:
 .fin .prog{margin:4px 0 2px}
 .fin .prog i{width:44px;height:44px}
 .fin .prog.dix i{width:27px;height:27px}
+/* Fin : deux gros boutons côte à côte. Toutes les étoiles : elles surgissent une à une. */
+.choix-fin{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.choix-fin .btn{font-size:19px;padding:16px 12px;border-radius:16px}
+.choix-fin .btn span{font-size:1.2em;line-height:1}
+.fin.parfait .prog i{animation:surgit .5s cubic-bezier(.3,1.6,.5,1) backwards}
+.fin.parfait .prog i:nth-child(2){animation-delay:.08s}.fin.parfait .prog i:nth-child(3){animation-delay:.16s}.fin.parfait .prog i:nth-child(4){animation-delay:.24s}.fin.parfait .prog i:nth-child(5){animation-delay:.32s}
+.fin.parfait .prog i:nth-child(6){animation-delay:.4s}.fin.parfait .prog i:nth-child(7){animation-delay:.48s}.fin.parfait .prog i:nth-child(8){animation-delay:.56s}.fin.parfait .prog i:nth-child(9){animation-delay:.64s}.fin.parfait .prog i:nth-child(10){animation-delay:.72s}
+@keyframes surgit{from{transform:scale(0) rotate(-40deg);opacity:0}}
 @keyframes tac{0%{transform:scale(.3) rotate(-30deg)}70%{transform:scale(1.25) rotate(8deg)}100%{transform:none}}
 :root{--etoile:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5 1.4-7.1-5.3-5 7.2-.9z'/%3E%3C/svg%3E")}
 .demande{font-family:var(--titre);font-weight:800;font-size:20px;line-height:1.2;color:var(--a,var(--c));margin:14px 0 10px}
@@ -356,7 +364,8 @@ footer{color:var(--ink-3);font-size:12px;text-align:center;padding:26px 0 8px}
   .fin > p{font-size:22px}
   .fin .prog i{width:56px;height:56px}
   .revoir div{font-size:19px;padding:12px 0}
-  .fin .btn{font-size:20px;padding:16px 24px}
+  .fin .btn{font-size:22px;padding:18px 24px}
+  .choix-fin{max-width:640px;margin-left:auto;margin-right:auto}
 }
 /* Plein écran (ordi et TBI) */
 .plein-ecran,.retour .plein-ecran{display:none;margin-left:auto;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:700;font-size:15px;color:var(--ink-2);flex:none}
@@ -873,24 +882,15 @@ function fin(bons, total, cible = "zone", note = "") {
   const faits = store.get("faits") || {}; faits[run.id] = true; store.set("faits", faits);
   const pct = bons / total;
   const titre = pct === 1 ? "Félicitations!" : pct >= .8 ? "Bravo!" : pct >= .6 ? "Belle job!" : pct >= .4 ? "Bon début" : "Ça se travaille";
-  const sous = pct === 1 ? "Toutes les étoiles. Tu maîtrises!" : pct >= .6 ? "Encore une série pour aller chercher toutes les étoiles?" : "Relis les pages ci-dessous, puis retente ta chance.";
-  const idx = ACTIVITES.findIndex(a => a.id === run.id);
-  // La suivante : seulement une activité qui a des questions dans les dossiers choisis
-  const dispo = ACTIVITES.filter(a => a.id === run.id || admis(a.id).length >= (MINI[a.id] || 1)), j = dispo.findIndex(a => a.id === run.id);
-  const prochaine = dispo.find((a, i) => i > j && !faits[a.id]) || dispo.find(a => !faits[a.id] && a.id !== run.id) || dispo[(j + 1) % dispo.length] || ACTIVITES[0];
-  const refaire = run.rates.length && (Q[run.id] || run.id.startsWith("examen") || run.id.startsWith("test"));
-  const html = `<div class="fin" style="margin-top:14px">${etoiles(Array.from({ length: total }, (_, j) => run.etat[j] ?? (j < bons ? 1 : 0)), total)}<h3>${titre}</h3><p>${bons} sur ${total} · ${esc(sous)}</p>
+  const sous = pct === 1 ? "Toutes les étoiles. Tu maîtrises!" : pct >= .6 ? "Encore une série pour aller chercher toutes les étoiles?" : "Jette un œil aux pages ci-dessous, puis rejoue : tu vas t'améliorer.";
+  // Deux choix seulement, gros et clairs : rejouer ou revenir au menu. Les erreurs reviennent d'elles-mêmes dans la série suivante.
+  const html = `<div class="fin${pct === 1 ? " parfait" : ""}" style="margin-top:14px">${etoiles(Array.from({ length: total }, (_, j) => run.etat[j] ?? (j < bons ? 1 : 0)), total)}<h3>${titre}</h3><p>${bons} sur ${total} · ${esc(sous)}</p>
     ${note ? `<p>${esc(note)}</p>` : ""}
-    ${run.rates.length && cible === "zone" ? `<div class="revoir"><p class="eyebrow" style="padding:10px 0 2px">À revoir dans ton cahier</p>${run.rates.map(m => `<div><span>${esc((m.rev || m.q).replace("___", "…"))} <b>→ ${esc(m.rAff || m.r)}</b></span>${page(m.p)}</div>`).join("")}</div>` : ""}
-    <div class="btns">
-      <button class="btn acc" data-rejouer>★ ${run.id.startsWith("examen") ? "Un autre mini-examen" : total === SERIE ? "Encore 5 questions" : "Encore une série"}</button>
-      ${refaire ? `<button class="btn sec" data-refaire>Refaire mes erreurs</button>` : ""}
+    <div class="choix-fin">
+      <button class="btn acc" data-rejouer><span aria-hidden="true">↻</span> Rejouer</button>
+      <button class="btn sec" data-fermer><span aria-hidden="true">⌂</span> Menu</button>
     </div>
-    <div class="btns" style="margin-top:8px">
-      <button class="btn sec" data-act="${prochaine.id}">${prochaine.ic} ${esc(prochaine.nom)} →</button>
-      <button class="btn sec" data-fermer>Toutes les OI</button>
-    </div>
-    <p class="petit">Chaque série pige de nouvelles questions. Le reste se passe dans ton cahier.</p></div>`;
+    ${run.rates.length && cible === "zone" ? `<div class="revoir"><p class="eyebrow" style="padding:10px 0 2px">À revoir dans ton cahier</p>${run.rates.map(m => `<div><span>${esc((m.rev || m.q).replace("___", "…"))} <b>→ ${esc(m.rAff || m.r)}</b></span>${page(m.p)}</div>`).join("")}</div>` : ""}</div>`;
   $(cible).innerHTML = (cible === "zone" ? "" : $(cible).innerHTML) + html;
 }
 
@@ -924,8 +924,10 @@ if (!document.fullscreenEnabled) document.querySelectorAll("[data-plein]").forEa
 obsFeuille = new MutationObserver(reajuster);
 obsFeuille.observe($("sheetIn"), { childList: true, subtree: true });
 // Lien direct : #vf, #carte… ouvre une activité
-const h = location.hash.slice(1);
-if (ACTIVITES.some(a => a.id === h) || h === "examen" || h === "examen5" || /^test[1-4]$/.test(h)) lancer(h);
+// Code QR d'une fin de dossier dans le cahier : #c1-d2 choisit ce dossier et lance tout de suite un mini-examen de 5 questions.
+const h = location.hash.slice(1), qr = h.match(/^c1-d([1-4])$/);
+if (qr) { store.set("dossiers", [+qr[1]]); render(); lancer("examen5"); }
+else if (ACTIVITES.some(a => a.id === h) || h === "examen" || h === "examen5" || /^test[1-4]$/.test(h)) lancer(h);
 </script>
 </body>
 </html>
