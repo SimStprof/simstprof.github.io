@@ -590,7 +590,7 @@ function render() {
   const ds = choisis(), tout = ds.length === TOUS.length;
   let h = `<div class="dossiers"><p class="eyebrow">Où es-tu rendu dans ton cahier?</p><div class="dos-g">
     <button class="dos tout${tout ? " on" : ""}" data-dos="tout" aria-pressed="${tout}">Tout le chapitre</button>
-    ${Object.entries(DOSSIERS).map(([d, t]) => { const on = !tout && ds.includes(+d);
+    ${Object.entries(DOSSIERS).map(([d, t]) => { const on = ds.includes(+d);
       return `<button class="dos${on ? " on" : ""}" data-dos="${d}" aria-pressed="${on}"><span class="n">${d}</span><small>${esc(t)}</small></button>`; }).join("")}
     </div><p class="astuce">Touche un ou plusieurs dossiers : toutes les activités suivent.</p></div>`, fam = "";
   // Combien de questions chaque activité a dans les dossiers choisis
