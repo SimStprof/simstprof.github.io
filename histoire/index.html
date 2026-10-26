@@ -121,12 +121,27 @@ header b{font-family:var(--titre);font-size:20px;font-weight:800;letter-spacing:
 .act.large b{color:var(--bg);font-size:20px;margin:0}
 .act.large small{color:var(--bg);opacity:.75;font-size:14px}
 .act.large > span:not(.ic):not(.fait){display:flex;flex-direction:column;gap:2px}
-/* Mini-tests par dossier */
-.tests{margin-top:16px}
-.tests-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.act.test{min-height:auto;border-color:color-mix(in srgb,var(--ink) 22%,transparent)}
-.act.test b{margin-top:0;font-size:18px}
-.act.test small{font-weight:600;line-height:1.3}
+.act:disabled{opacity:.4;border-style:dashed;cursor:default}
+.act:disabled:active{transform:none}
+/* Mini-examens : deux boutons noirs, 5 ou 10 questions */
+.exams{margin-top:30px}
+.exams-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.exams .act.large{grid-column:auto;margin-top:0}
+@media (max-width:560px){.exams .act.large .ic{display:none}}
+/* Les dossiers du cahier, en haut : un ou plusieurs, et toutes les activités suivent */
+.dossiers{margin-top:22px;padding:14px;border-radius:24px;background:var(--surface);border:1px solid var(--line)}
+.dossiers .astuce{font-size:15px}
+.dos-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 8px}
+.dos{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;border:2px solid color-mix(in srgb,var(--ink) 18%,transparent);background:var(--bg);text-align:left;color:var(--ink);transition:transform .15s,background .15s}
+.dos:active{transform:scale(.97)}
+.dos .n{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:800 18px/1 var(--titre);background:var(--line);color:var(--ink-2)}
+.dos small{font-size:14px;font-weight:600;line-height:1.25;color:var(--ink-2)}
+.dos.tout{grid-column:1 / -1;justify-content:center;font-weight:800;padding:9px 12px}
+.dos.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.dos.on small{color:var(--bg);opacity:.85}
+.dos.on .n{background:var(--c);color:#fff}
+@media (max-width:560px){.dos-g{grid-template-columns:1fr}.dos{padding:8px 12px}}
+@media (min-width:900px){.dos-g{grid-template-columns:auto repeat(4,1fr)}.dos.tout{grid-column:auto;padding:10px 20px}}
 
 /* Feuille plein écran */
 .sheet{position:fixed;inset:0;z-index:30;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);visibility:hidden}
@@ -328,7 +343,6 @@ footer{color:var(--ink-3);font-size:12px;text-align:center;padding:26px 0 8px}
   .paires{gap:14px}
   .paires button{min-height:120px;font-size:21px;padding:14px;border-radius:20px;border-width:3px;border-bottom-width:7px}
   .paires button.terme{font-size:27px}
-  .tests-g{grid-template-columns:repeat(4,1fr)}
   .choix.frise{gap:16px}
   .choix.frise button{font-size:34px;padding:26px 10px}
   .repere-f{max-width:240px;padding:12px 18px;border-radius:18px}
@@ -534,8 +548,25 @@ const store = {
   set(k, v) { try { localStorage.setItem("hubhqc:" + k, JSON.stringify(v)); } catch (e) {} }
 };
 const page = (p, d) => `<span class="page">📒 Cahier p. ${p}${d ? " · Dossier " + d : ""}</span>`;
+// Les dossiers choisis en haut de la page (un ou plusieurs, gardés sur l'appareil) : toutes les activités y pigent leurs questions.
+const TOUS = [1, 2, 3, 4];
+const choisis = () => { const d = store.get("dossiers"); return Array.isArray(d) && d.length ? d : TOUS; };
+const nomChoix = (ds = choisis()) => ds.length === TOUS.length ? "Tout le chapitre" : (ds.length > 1 ? "Dossiers " : "Dossier ") + ds.join(", ").replace(/, (\d)$/, " et $1");
+function choisirDossier(v) {
+  let ds = choisis();
+  if (v === "tout") ds = TOUS;
+  else { const d = +v; ds = ds.length === TOUS.length ? [d] : ds.includes(d) ? ds.filter(x => x !== d) : [...ds, d].sort(); }
+  store.set("dossiers", ds.length ? ds : TOUS);
+  render();
+}
+// Le dossier d'une question. Le tri et les paires n'ont que la page du cahier : on la convertit.
+const parPage = p => p <= 7 ? 1 : p <= 10 ? 2 : p <= 13 ? 3 : 4;
+const DOS = { chaine: x => x[2], tri: x => parPage(x[2]), paires: x => parPage(x[2]), ordre: x => x[3] };
+const banque = id => Q[id] ? Q[id]() : { chaine: CHAINES, tri: TRI, paires: PAIRES, ordre: EVENEMENTS }[id];
+const admis = (id, b = banque(id)) => { const ds = choisis(); return [...b.keys()].filter(i => ds.includes(DOS[id] ? DOS[id](b[i]) : b[i].d)); };
+const MINI = { ordre: 3, paires: 2 }; // moins que ça, l'activité n'a pas de sens
 const actDe = id => ACTIVITES.find(a => a.id === id)
-  || (/^test\d$/.test(id) ? { id, nom: "Mini-test · Dossier " + id[4], oi: DOSSIERS[id[4]], ic: "✏️", a: "#1f1611" } : { id, nom: "Mini-examen", oi: "Tout le chapitre", ic: "📝", a: "#1f1611" });
+  || (/^test\d$/.test(id) ? { id, nom: "Mini-test · Dossier " + id[4], oi: DOSSIERS[id[4]], ic: "✏️", a: "#1f1611" } : { id, nom: "Mini-examen · " + (id === "examen5" ? 5 : 10) + " questions", oi: nomChoix(), ic: "📝", a: "#1f1611" });
 const oiDe = id => OIS.find(o => o.id === id);
 const BRAVO = ["Exact!", "Oui!", "Bien vu!", "C'est ça!", "Parfait!"];
 const LETTRES = "ABCDE";
@@ -547,7 +578,16 @@ function render() {
   $("hero").innerHTML = `<div><p class="eyebrow">Chapitre 1 · ${esc(CH.per)}</p><h1>${esc(CH.titre)}</h1>
     <p>Choisis une opération intellectuelle et teste-toi. Une erreur? Tu as la bonne réponse et la page de ton cahier.</p></div>`;
   const faits = store.get("faits") || {};
-  let h = "", fam = "";
+  const ds = choisis(), tout = ds.length === TOUS.length;
+  let h = `<div class="dossiers"><p class="eyebrow">Où es-tu rendu dans ton cahier?</p><div class="dos-g">
+    <button class="dos tout${tout ? " on" : ""}" data-dos="tout" aria-pressed="${tout}">Tout le chapitre</button>
+    ${Object.entries(DOSSIERS).map(([d, t]) => { const on = !tout && ds.includes(+d);
+      return `<button class="dos${on ? " on" : ""}" data-dos="${d}" aria-pressed="${on}"><span class="n">${d}</span><small>${esc(t)}</small></button>`; }).join("")}
+    </div><p class="astuce">Touche un ou plusieurs dossiers : toutes les activités suivent.</p></div>`, fam = "";
+  // Combien de questions chaque activité a dans les dossiers choisis
+  const nb = id => admis(id).length;
+  const carteAct = a => { const n = nb(a.id), vide = n < (MINI[a.id] || 1), q = Math.min(SERIE, n);
+    return `<button class="act" data-act="${a.id}"${vide ? " disabled" : ""}><span class="ic">${a.ic}</span><b>${esc(a.nom)}</b><small>${vide ? (tout ? "Bientôt" : "Pas dans ce choix") : `★ ${q} question${q > 1 ? "s" : ""}`}</small>${faits[a.id] && !vide ? '<span class="fait" title="Déjà essayée">✓</span>' : ""}</button>`; };
   OIS.forEach(o => {
     if (o.fam !== fam) {
       if (fam) h += "</div>";
@@ -555,10 +595,10 @@ function render() {
       h += `<div class="famille" style="--f:${FAM[fam].f}"><span class="sceau" aria-hidden="true">${FAM[fam].n}</span><div class="txt"><h2><svg viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true"><path d="M6 14 C 90 2, 210 10, 394 6 C 398 22, 392 40, 396 54 C 260 60, 120 52, 4 58 C 0 42, 8 28, 6 14 Z" fill="${FAM[fam].f}" filter="url(#aquarelle)"/></svg>${fam.toUpperCase()}</h2><p>${esc(FAM[fam].sous)}</p></div><span class="sentier" aria-hidden="true"></span><span class="confettis" aria-hidden="true">${OIS.filter(x => x.fam === fam).map(x => `<i style="--k:${x.a}"></i>`).join("")}</span></div><div class="ois">`;
     }
     h += `<div class="oi-bloc" style="--a:${o.a}"><div class="oi-tete"><span class="picto"><i style="--m:url(${PICTOS[o.id]})"></i></span><div><h3>${esc(o.nom)}</h3><p>${esc(o.desc)}</p></div></div>
-      <div class="acts">${ACTIVITES.filter(a => a.oi === o.id).map(a => `<button class="act" data-act="${a.id}"><span class="ic">${a.ic}</span><b>${esc(a.nom)}</b><small>★ 5 questions</small>${faits[a.id] ? '<span class="fait" title="Déjà essayée">✓</span>' : ""}</button>`).join("")}</div></div>`;
+      <div class="acts">${ACTIVITES.filter(a => a.oi === o.id).map(carteAct).join("")}</div></div>`;
   });
-  h += `</div><button class="act large" data-act="examen"><span class="ic">📝</span><span><b>Mini-examen</b><small>10 questions mélangées, toutes les OI</small></span>${faits.examen ? '<span class="fait">✓</span>' : ""}</button>`
-    + `<div class="tests"><p class="eyebrow">Mini-test · 5 questions sur un dossier du cahier</p><div class="tests-g">${Object.entries(DOSSIERS).map(([d, t]) => `<button class="act test" data-act="test${d}"><b>Dossier ${d}</b><small>${esc(t)}</small>${faits["test" + d] ? '<span class="fait">✓</span>' : ""}</button>`).join("")}</div></div>`;
+  h += `</div><div class="exams"><p class="eyebrow">Mini-examen · toutes les OI · ${esc(nomChoix(ds))}</p><div class="exams-g">${[["examen5", 5], ["examen", 10]].map(([id, n]) =>
+    `<button class="act large" data-act="${id}"><span class="ic">📝</span><span><b>${n} questions</b><small>${n === 5 ? "Un tour rapide" : "Le grand tour"}</small></span>${faits[id] ? '<span class="fait">✓</span>' : ""}</button>`).join("")}</div></div>`;
   $("ois").innerHTML = h;
 }
 
@@ -662,40 +702,41 @@ function noter(id, i, bon) {
   if (!bon) l.push(i);
   r[id] = l; store.set("ratees", r);
 }
-function piger(id, taille, n = SERIE) {
-  const retour = melange(ratees(id).filter(i => i < taille)).slice(0, 2);
-  let p = (PAQUETS[id] || []).filter(i => !retour.includes(i));
-  if (p.length < n - retour.length) p = [...p, ...melange([...Array(taille).keys()].filter(i => !p.includes(i) && !retour.includes(i)))];
+// « ok » : les numéros de questions permis (celles des dossiers choisis).
+function piger(id, ok, n = SERIE) {
+  const retour = melange(ratees(id).filter(i => ok.includes(i))).slice(0, 2);
+  let p = (PAQUETS[id] || []).filter(i => ok.includes(i) && !retour.includes(i));
+  if (p.length < n - retour.length) p = [...p, ...melange(ok.filter(i => !p.includes(i) && !retour.includes(i)))];
   PAQUETS[id] = p;
   return melange([...retour, ...p.splice(0, n - retour.length)]);
 }
 const marquer = (x, id, i) => Array.isArray(x) ? Object.assign([...x], { _i: i, _src: id }) : { ...x, _i: i, _src: id };
-const tirage = (id, banque) => piger(id, banque.length).map(i => marquer(banque[i], id, i));
-// Mini-test d'un dossier : 5 questions de ce dossier, en variant les types de questions.
-function miniTest(d) {
+const tirage = (id, b) => piger(id, admis(id, b)).map(i => marquer(b[i], id, i));
+// Mini-examen (ou mini-test d'un dossier) : n questions des dossiers choisis, en variant les types de questions.
+function miniTest(ds, n = SERIE) {
   const parType = {};
   for (const k of ["vf", "mot", "perso", "qui", "pareil", "change", "cause", "carte", "avant"])
-    Q[k]().forEach((m, i) => { if (m.d === d) (parType[k] ||= []).push(marquer(m, k, i)); });
+    Q[k]().forEach((m, i) => { if (ds.includes(m.d)) (parType[k] ||= []).push(marquer(m, k, i)); });
   Object.keys(parType).forEach(k => parType[k] = melange(parType[k]));
   const out = [], types = melange(Object.keys(parType));
-  while (out.length < SERIE && types.some(k => parType[k].length))
-    for (const k of types) if (out.length < SERIE && parType[k].length) out.push(parType[k].pop());
-  return out;
+  while (out.length < n && types.some(k => parType[k].length))
+    for (const k of types) if (out.length < n && parType[k].length) out.push(parType[k].pop());
+  return melange(out);
 }
 let run = null;
 function lancer(id, opts = {}) {
   const act = actDe(id);
   let items;
   if (opts.items) items = opts.items;
-  else if (id === "examen") items = melange(["vf", "vf", "mot", "perso", "avant", "carte", "qui", "pareil", "change", "cause"].map(k => { const b = Q[k](), i = Math.floor(Math.random() * b.length); return marquer(b[i], k === "avant" ? null : k, i); }));
-  else if (/^test\d$/.test(id)) items = miniTest(+id[4]);
+  else if (id === "examen" || id === "examen5") items = miniTest(choisis(), id === "examen" ? 10 : 5);
+  else if (/^test\d$/.test(id)) items = miniTest([+id[4]]);
   else if (Q[id]) items = tirage(id, Q[id]());
   const o = oiDe(act.oi);
   run = { id, opts, act, items, k: 0, rates: [], etat: [] };
   history.pushState(null, "", "#" + id);
   const picto = o ? `<span class="picto"><i style="--m:url(${PICTOS[o.id]})"></i></span>` : `<span class="picto emoji">${act.ic}</span>`;
   ouvrir(`${barreRetour(act.nom, o ? o.nom : act.oi, picto)}<div id="zone"></div>`, act.a);
-  if (Q[id] || id === "examen" || /^test\d$/.test(id) || opts.items) return question();
+  if (Q[id] || id.startsWith("examen") || /^test\d$/.test(id) || opts.items) return question();
   ({ ordre, tri, paires, chaine })[id]();
 }
 const etoiles = (etat, n, neuf) => `<div class="prog${n > 5 ? " dix" : ""}">${Array.from({ length: n }, (_, j) => `<i class="${etat[j] === 1 ? "f" : etat[j] === 0 ? "x" : ""}${j === neuf ? " neuf" : ""}"></i>`).join("")}</div>`;
@@ -734,7 +775,7 @@ function repondre(btn) {
 function tirerEvenements(n) {
   // Évite deux dates trop proches quand l'une est approximative (« vers 1500 » et 1492).
   const pris = [];
-  for (const e of melange(EVENEMENTS)) {
+  for (const e of melange(admis("ordre").map(i => EVENEMENTS[i]))) {
     if (pris.every(x => Math.abs(x[0] - e[0]) >= (x[4] || e[4] ? 30 : 1))) pris.push(e);
     if (pris.length === n) break;
   }
@@ -743,7 +784,7 @@ function tirerEvenements(n) {
 function ordre() {
   if (!run.items) { run.items = tirerEvenements(5); run.choisis = []; }
   const ev = run.items;
-  $("zone").innerHTML = `<p class="demande">Du plus ancien au plus récent</p><p class="astuce-q">Touche les 5 événements dans l'ordre. Touche encore pour enlever.</p>
+  $("zone").innerHTML = `<p class="demande">Du plus ancien au plus récent</p><p class="astuce-q">Touche les ${ev.length} événements dans l'ordre. Touche encore pour enlever.</p>
     <div class="choix ordre">${ev.map((e, i) => { const r = run.choisis.indexOf(i); return `<button data-ordre="${i}" class="${r >= 0 ? "choisi" : ""}"><span class="num">${r >= 0 ? r + 1 : ""}</span><span>${esc(e[1])}</span></button>`; }).join("")}</div>`;
 }
 function verifierOrdre() {
@@ -752,7 +793,7 @@ function verifierOrdre() {
   $("zone").innerHTML = `<div class="choix ordre">${juste.map((i, r) => { const ok = run.choisis[r] === i; if (ok) bons++; else run.rates.push({ q: ev[i][1], r: an(ev[i][0], ev[i][4]), p: ev[i][2], d: ev[i][3] });
     return `<button class="${ok ? "bon" : "mauvais"}" disabled><span class="num" style="border-style:solid">${r + 1}</span><span>${esc(ev[i][1])}${ok ? "" : "<br>" + page(ev[i][2])}</span><span class="an">${an(ev[i][0], ev[i][4])}</span></button>`; }).join("")}</div><div id="fin"></div>`;
   run.etat = juste.map((i, r) => run.choisis[r] === i ? 1 : 0);
-  fin(bons, 5, "fin");
+  fin(bons, ev.length, "fin");
 }
 
 /* ---------- La chaîne : remettre 3 faits dans l'ordre de causalité ---------- */
@@ -794,7 +835,7 @@ function ranger(f) {
   noter("tri", run.items[run.k]._i, bon);
   run.etat[run.k] = bon ? 1 : 0; run.dernier = run.k;
   run.bacs[r].push(t);
-  if (!bon) run.rates.push({ q: t, r, p, d: 1 });
+  if (!bon) run.rates.push({ q: t, r, p, d: parPage(p) });
   document.querySelector(`[data-bac="${f}"]`).classList.add(bon ? "bon" : "mauvais");
   document.querySelector(".prog").outerHTML = barreProg();
   if (bon) { run.k++; setTimeout(tri, 380); return; }
@@ -834,13 +875,15 @@ function fin(bons, total, cible = "zone", note = "") {
   const titre = pct === 1 ? "Félicitations!" : pct >= .8 ? "Bravo!" : pct >= .6 ? "Belle job!" : pct >= .4 ? "Bon début" : "Ça se travaille";
   const sous = pct === 1 ? "Toutes les étoiles. Tu maîtrises!" : pct >= .6 ? "Encore une série pour aller chercher toutes les étoiles?" : "Relis les pages ci-dessous, puis retente ta chance.";
   const idx = ACTIVITES.findIndex(a => a.id === run.id);
-  const prochaine = ACTIVITES.find((a, i) => i > idx && !faits[a.id]) || ACTIVITES.find(a => !faits[a.id] && a.id !== run.id) || ACTIVITES[(idx + 1) % ACTIVITES.length];
-  const refaire = run.rates.length && (Q[run.id] || run.id === "examen" || run.id.startsWith("test"));
+  // La suivante : seulement une activité qui a des questions dans les dossiers choisis
+  const dispo = ACTIVITES.filter(a => a.id === run.id || admis(a.id).length >= (MINI[a.id] || 1)), j = dispo.findIndex(a => a.id === run.id);
+  const prochaine = dispo.find((a, i) => i > j && !faits[a.id]) || dispo.find(a => !faits[a.id] && a.id !== run.id) || dispo[(j + 1) % dispo.length] || ACTIVITES[0];
+  const refaire = run.rates.length && (Q[run.id] || run.id.startsWith("examen") || run.id.startsWith("test"));
   const html = `<div class="fin" style="margin-top:14px">${etoiles(Array.from({ length: total }, (_, j) => run.etat[j] ?? (j < bons ? 1 : 0)), total)}<h3>${titre}</h3><p>${bons} sur ${total} · ${esc(sous)}</p>
     ${note ? `<p>${esc(note)}</p>` : ""}
     ${run.rates.length && cible === "zone" ? `<div class="revoir"><p class="eyebrow" style="padding:10px 0 2px">À revoir dans ton cahier</p>${run.rates.map(m => `<div><span>${esc((m.rev || m.q).replace("___", "…"))} <b>→ ${esc(m.rAff || m.r)}</b></span>${page(m.p)}</div>`).join("")}</div>` : ""}
     <div class="btns">
-      <button class="btn acc" data-rejouer>★ ${run.id === "examen" ? "Un autre mini-examen" : "Encore 5 questions"}</button>
+      <button class="btn acc" data-rejouer>★ ${run.id.startsWith("examen") ? "Un autre mini-examen" : total === SERIE ? "Encore 5 questions" : "Encore une série"}</button>
       ${refaire ? `<button class="btn sec" data-refaire>Refaire mes erreurs</button>` : ""}
     </div>
     <div class="btns" style="margin-top:8px">
@@ -856,6 +899,7 @@ document.addEventListener("click", e => {
   const t = e.target;
   if (t.closest("[data-plein]")) return basculerPlein();
   if (t.closest("[data-fermer]")) return fermer();
+  const dos = t.closest("[data-dos]"); if (dos) return choisirDossier(dos.dataset.dos);
   const a = t.closest("[data-act]"); if (a) return lancer(a.dataset.act);
   const r = t.closest("[data-rep]"); if (r) return repondre(r);
   if (t.closest("[data-suite]")) { run.k++; return question(); }
@@ -864,7 +908,7 @@ document.addEventListener("click", e => {
   if (t.closest("[data-rejouer]")) return lancer(run.id);
   if (t.closest("[data-refaire]")) return lancer(run.id, { items: run.rates.map(m => ({ ...m, fait: false, choix: m.choix.length > 2 && !m.carte ? melange(m.choix) : m.choix })) });
   const ord = t.closest("[data-ordre]");
-  if (ord) { const i = +ord.dataset.ordre, pos = run.choisis.indexOf(i); if (pos >= 0) run.choisis.splice(pos, 1); else run.choisis.push(i); return run.choisis.length === 5 ? verifierOrdre() : ordre(); }
+  if (ord) { const i = +ord.dataset.ordre, pos = run.choisis.indexOf(i); if (pos >= 0) run.choisis.splice(pos, 1); else run.choisis.push(i); return run.choisis.length === run.items.length ? verifierOrdre() : ordre(); }
   const mai = t.closest("[data-maillon]");
   if (mai) { const i = +mai.dataset.maillon, pos = run.choisis.indexOf(i); if (pos >= 0) run.choisis.splice(pos, 1); else run.choisis.push(i); return run.choisis.length === 3 ? verifierChaine() : chaine(); }
   const bac = t.closest("[data-bac]"); if (bac) return ranger(bac.dataset.bac);
@@ -881,7 +925,7 @@ obsFeuille = new MutationObserver(reajuster);
 obsFeuille.observe($("sheetIn"), { childList: true, subtree: true });
 // Lien direct : #vf, #carte… ouvre une activité
 const h = location.hash.slice(1);
-if (ACTIVITES.some(a => a.id === h) || h === "examen" || /^test[1-4]$/.test(h)) lancer(h);
+if (ACTIVITES.some(a => a.id === h) || h === "examen" || h === "examen5" || /^test[1-4]$/.test(h)) lancer(h);
 </script>
 </body>
 </html>
