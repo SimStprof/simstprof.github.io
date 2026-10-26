@@ -3,7 +3,7 @@
 <head>
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-yBpTkTMo7adylWL1uXq/q4Lpe/yXP7+7W7pqHaykgbc=' 'sha256-quBjGPBlIhdLtYE3G4QLnR+0voYK8evfFYnDXu+4JVs=' 'sha256-7yC6QK9TMngTNAnPWUFqoNP/ZanrWhWmhX2rMtlJZNc='; style-src 'unsafe-inline' 'self'; font-src 'self'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-yBpTkTMo7adylWL1uXq/q4Lpe/yXP7+7W7pqHaykgbc=' 'sha256-7yC6QK9TMngTNAnPWUFqoNP/ZanrWhWmhX2rMtlJZNc=' 'sha256-7yC6QK9TMngTNAnPWUFqoNP/ZanrWhWmhX2rMtlJZNc='; style-src 'unsafe-inline' 'self'; font-src 'self'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Notes de cours 1.1 + 1.2 · Consommation</title>
@@ -278,6 +278,48 @@ footer .wrap { padding-block: 18px 40px; font-size: .85rem; color: var(--muted);
   .key-src { display: block; margin-top: 24px; padding-top: 6px; border-top: 1px solid var(--line); font-size: 8.5pt; color: var(--muted); }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<style id="texte-lisible">
+/* Texte lisible (2026-10-25) : étiquettes ≥ 15 px, texte courant ≥ 16 px, au cell et à l'ordi seulement (le TBI et l'impression gardent leurs tailles). */
+@media screen and (max-width: 1400px) {
+  div.eyebrow,
+  div.i > p > strong,
+  div.l1 > span,
+  div.l2 > span,
+  div.l3 > span,
+  div.l4 > span,
+  div.l5 > span,
+  div.p > p > strong,
+  div.rate > span,
+  div.rate.total > span,
+  div.receipt,
+  div.s > p > strong,
+  div.strat > span,
+  div.sub,
+  div.tip > b,
+  div.trap > b,
+  div.wrap > em,
+  dt > span.muted,
+  span > strong,
+  span.pause-t,
+  span.q-n,
+  span.see,
+  span.star,
+  span.v,
+  span.v.in,
+  span.y,
+  th { font-size: 15px !important; }
+  #score,
+  div.bars > p.muted,
+  div.i > p,
+  div.p > p,
+  div.s > p,
+  footer > div.wrap,
+  p.ex,
+  p.mnemo,
+  table.mini > tbody > tr > td { font-size: 16px !important; }
+}
 </style>
 <link rel="stylesheet" href="../polices/d2b6d1b6a0.css">
 </head>

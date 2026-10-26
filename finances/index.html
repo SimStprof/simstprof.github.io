@@ -194,6 +194,38 @@ footer{color:var(--ink-3);font-size:12px;text-align:center;padding:24px 0 8px}
   .card{min-height:230px}
 }
 </style>
+
+<style id="texte-lisible">
+/* Texte lisible (2026-10-25) : étiquettes ≥ 15 px, texte courant ≥ 16 px, au cell et à l'ordi seulement (le TBI et l'impression gardent leurs tailles). */
+@media screen and (max-width: 1400px) {
+  #notesCount,
+  #today,
+  a.tag,
+  button,
+  div.row > span,
+  div.tx > span,
+  div.tx-row > div.tx > b,
+  div.tx-row.unlock > div.tx > b,
+  div.yearlbl > span,
+  footer > b,
+  h2,
+  small,
+  span.amt,
+  span.id.num,
+  span.num,
+  span.num.muted,
+  span.p,
+  span.pill.lock,
+  span.pill.ok,
+  span.t,
+  span.tag { font-size: 15px !important; }
+  footer,
+  label.check > span,
+  p,
+  p.kicker,
+  p.muted { font-size: 16px !important; }
+}
+</style>
 </head>
 <body>
 <div class="wrap">

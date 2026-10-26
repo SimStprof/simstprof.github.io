@@ -172,6 +172,44 @@ nav.bottom button[aria-current="true"] svg{color:var(--red)}
   main.dash .view[data-v="une"] .une h2{font-size:58px}
 }
 </style>
+
+<style id="texte-lisible">
+/* Texte lisible (2026-10-25) : étiquettes ≥ 15 px, texte courant ≥ 16 px, au cell et à l'ordi seulement (le TBI et l'impression gardent leurs tailles). */
+@media screen and (max-width: 1400px) {
+  #dateline,
+  #edition,
+  #live > b,
+  button,
+  div > span,
+  div.format > span,
+  div.k.mono > span,
+  div.st,
+  footer > b,
+  h3.mono,
+  small.mono,
+  span.mono,
+  span.on.mono,
+  span.rest.mono,
+  span.stamp.mono,
+  span.t.mono,
+  span.when { font-size: 15px !important; }
+  a.card.e-pop > p,
+  div.ag.e-conf > div > p,
+  div.ag.e-pop > div > p,
+  div.ag.e-rich > div > p,
+  div.ag.now.e-pop > div > p,
+  div.card.e-conf.emb > p,
+  div.card.e-pop.emb > p,
+  div.card.e-rich.emb > p,
+  footer,
+  label.check > span,
+  li > b,
+  p.by.mono,
+  p.k.mono,
+  p.kick.mono > span,
+  p.tag.mono { font-size: 16px !important; }
+}
+</style>
 </head>
 <body>
 <div class="wrap">
