@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Au comptant · Éducation financière</title>
+<meta name="theme-color" content="#f4f1e8">
+<link rel="stylesheet" href="../../polices/7c952bed33.css">
+<style>
+/* Au comptant : l'app d'entraînement d'Éducation financière (Sec 5), chapitre 1.
+   Direction : une affiche audacieuse. Gros caractères, bordures épaisses, ombres franches, un jaune vif. */
+:root{
+  --bg:#f4f1e8; --card:#ffffff; --ink:#0e0e0e; --ink-2:#3d3a33; --ink-3:#6b675e; --line:#0e0e0e;
+  --jaune:#ffd23f; --vert:#00a86b; --vert-soft:#c9f2df; --rouge:#ff4d2e; --rouge-soft:#ffd9cf;
+  --ombre:5px 5px 0 var(--line);
+  --sans:"Archivo",system-ui,sans-serif; --mono:"JetBrains Mono",Consolas,ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#0e0e0e; --card:#191917; --ink:#f4f1e8; --ink-2:#cfcabe; --ink-3:#9a958a; --line:#f4f1e8; --vert-soft:#123d2c; --rouge-soft:#45180f; }
+}
+:root[data-theme="dark"]{ --bg:#0e0e0e; --card:#191917; --ink:#f4f1e8; --ink-2:#cfcabe; --ink-3:#9a958a; --line:#f4f1e8; --vert-soft:#123d2c; --rouge-soft:#45180f; }
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.45}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+svg{width:1em;height:1em;flex:none}
+.wrap{max-width:1080px;margin:0 auto;padding:16px 16px 40px}
+
+/* Barre du haut */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:3px solid var(--line);margin-bottom:22px}
+.marque{font-weight:900;font-size:24px;letter-spacing:-.03em;text-transform:uppercase;line-height:1}
+.marque b{background:var(--jaune);color:#0e0e0e;padding:0 6px;margin-left:2px}
+.cours{font-family:var(--mono);font-size:15px;font-weight:700;text-decoration:none;border:2px solid var(--line);padding:6px 10px;white-space:nowrap}
+
+/* Accueil */
+#train{display:flex;flex-direction:column;gap:26px}
+.hero h1{font-weight:900;font-size:clamp(44px,12vw,92px);line-height:.92;letter-spacing:-.045em;margin:12px 0 14px}
+.hero h1 em{font-style:normal;color:var(--rouge)}
+.sticker{display:inline-block;background:var(--jaune);color:#0e0e0e;font-family:var(--mono);font-weight:700;font-size:15px;padding:5px 10px;border:2px solid #0e0e0e;transform:rotate(-2deg)}
+.hero-d{font-size:19px;color:var(--ink-2);max-width:52ch}
+.lab{font-family:var(--mono);font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.secs-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sx{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border:3px solid var(--line);background:var(--card);text-align:left;line-height:1.2}
+.sx b{font-family:var(--mono);font-size:18px}
+.sx small{font-size:15px;color:var(--ink-2);font-weight:600}
+.sx.tout{grid-column:1/-1;align-items:center;font-weight:900;font-size:17px;text-transform:uppercase}
+.sx.on{background:var(--ink);color:var(--bg)}
+.sx.on small{color:var(--bg);opacity:.8}
+.sx-exam{display:block;width:100%;margin-top:10px;padding:12px;border:3px dashed var(--line);font-weight:700;font-size:16px;text-align:left}
+
+.grille{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.act{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-height:150px;padding:12px;border:3px solid var(--line);background:var(--card);box-shadow:var(--ombre);text-align:left;transition:transform .1s,box-shadow .1s}
+.act:not(:disabled):active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--line)}
+.act:disabled{opacity:.4;box-shadow:none;cursor:default}
+.a-n{font-family:var(--mono);font-size:15px;font-weight:700;background:var(--c);color:#fff;padding:2px 7px}
+.a-ic{width:28px;height:28px;margin-top:auto}
+.act strong{font-weight:900;font-size:19px;line-height:1.05;letter-spacing:-.02em}
+.act small{font-family:var(--mono);font-size:15px;color:var(--ink-3)}
+.a-fait{position:absolute;top:10px;right:10px;font-style:normal;font-family:var(--mono);font-weight:700;font-size:15px;background:var(--jaune);color:#0e0e0e;padding:1px 6px;border:2px solid #0e0e0e;transform:rotate(4deg)}
+.exam-g{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gros{display:flex;align-items:center;justify-content:center;width:100%;padding:16px;border:3px solid var(--line);background:var(--ink);color:var(--bg);font-weight:900;font-size:18px;text-transform:uppercase;letter-spacing:.01em;box-shadow:var(--ombre)}
+.gros.ghost{background:var(--card);color:var(--ink)}
+.gros:disabled{opacity:.35;box-shadow:none;cursor:default}
+.gros:not(:disabled):active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--line)}
+.t-note{color:var(--ink-3);font-size:15px;text-align:center}
+footer{margin-top:36px;padding-top:14px;border-top:3px solid var(--line);color:var(--ink-3);font-size:15px}
+
+/* Le joueur */
+.jeu{width:100%;max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.jeu-h{display:flex;align-items:center;gap:12px}
+.retour{padding:8px 12px;border:3px solid var(--line);background:var(--card);font-weight:800;font-size:15px}
+.jeu-t{flex:1;min-width:0;line-height:1.15}
+.jeu-t b{display:block;font-weight:900;font-size:22px;letter-spacing:-.02em}
+.jeu-t small{font-family:var(--mono);color:var(--ink-3);font-size:15px}
+.seg-bar{display:flex;gap:6px}
+.seg-bar i{flex:1;height:12px;border:2px solid var(--line);background:var(--card)}
+.seg-bar i.cur{background:var(--jaune)}
+.seg-bar i.ok{background:var(--vert)}
+.seg-bar i.ko{background:var(--rouge)}
+.q-kick{font-family:var(--mono);font-weight:700;font-size:15px;text-transform:uppercase;color:var(--ink-3)}
+.q-txt{font-size:19px;font-weight:800;line-height:1.3}
+.scene{display:flex;flex-direction:column;gap:14px}
+.choix{display:grid;gap:10px}
+.choix.deux{grid-template-columns:1fr 1fr}
+.ch{padding:14px 15px;border:3px solid var(--line);background:var(--card);font-weight:700;font-size:17px;text-align:left;line-height:1.3;box-shadow:3px 3px 0 var(--line)}
+.choix.deux .ch{text-align:center;font-weight:900}
+.ch:not(:disabled):active{transform:translate(3px,3px);box-shadow:none}
+.ch.ok{background:var(--vert);color:#fff}
+.ch.ko{background:var(--rouge);color:#fff}
+.ch:disabled{cursor:default}
+.retro{border:3px solid var(--line);padding:14px 16px;display:flex;flex-direction:column;gap:4px;font-size:17px;animation:monte .25s ease-out}
+.retro b{font-size:18px;font-weight:900}
+.retro.bon{background:var(--vert-soft)}
+.retro.faux{background:var(--rouge-soft)}
+.page{display:inline-block;margin-top:4px;font-family:var(--mono);font-weight:700;font-size:15px}
+.suite{margin-top:14px}
+@keyframes monte{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Glisse la carte */
+.sw-zone{position:relative;min-height:290px;display:grid;place-items:center;padding-top:30px}
+.sw-lab{position:absolute;top:0;font-family:var(--mono);font-weight:700;font-size:15px;text-transform:uppercase;color:var(--ink-3);transition:color .2s,transform .2s}
+.sw-lab.l{left:2px;transform-origin:left}.sw-lab.r{right:2px;transform-origin:right}
+.sw-zone[data-pen="l"] .sw-lab.l,.sw-zone[data-pen="r"] .sw-lab.r{color:var(--ink);transform:scale(1.2)}
+.sw-card{position:relative;z-index:1;width:min(80%,380px);min-height:230px;padding:22px;display:flex;flex-direction:column;justify-content:center;gap:12px;
+  color:#fff;background:linear-gradient(150deg,var(--c1),var(--c2));border:3px solid var(--line);box-shadow:8px 8px 0 var(--line);touch-action:pan-y;cursor:grab;user-select:none;transition:transform .35s ease}
+.sw-tag{font-family:var(--mono);font-size:15px;font-weight:700;text-transform:uppercase;opacity:.8}
+.sw-t{font-size:22px;font-weight:800;line-height:1.25}
+.sw-hint{font-size:15px;opacity:.7}
+.sw-stamp{position:absolute;top:16px;right:16px;padding:4px 10px;border:3px solid currentColor;font-family:var(--mono);font-weight:700;font-size:16px;text-transform:uppercase;transform:rotate(8deg);background:#0e0e0e}
+
+/* Décode la pub */
+.ad{padding:18px;min-height:250px;display:flex;flex-direction:column;gap:10px;color:#fff;background:linear-gradient(160deg,var(--g1),var(--g2));border:3px solid var(--line);box-shadow:var(--ombre)}
+.ad-top{display:flex;align-items:center;gap:8px}
+.ad-logo{width:30px;height:30px;border-radius:50%;background:#fff;color:#111;display:grid;place-items:center;font-weight:900;font-size:15px}
+.ad-top b{font-size:16px}
+.ad-top small{font-size:15px;opacity:.8;margin-left:auto}
+.ad-vis{font-size:56px;line-height:1;margin-top:8px}
+.ad-slogan{font-size:26px;font-weight:900;line-height:1.1;letter-spacing:-.02em}
+.ad-sous{font-size:16px;opacity:.9}
+
+/* Le marché */
+.tk{padding:18px;background:#0e0e0e;color:#f4f1e8;border:3px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.tk-h{display:flex;align-items:baseline;gap:10px}
+.tk-sym{font-family:var(--mono);font-weight:700;font-size:15px;padding:3px 8px;background:var(--jaune);color:#0e0e0e}
+.tk-nm{font-weight:800;font-size:17px;flex:1}
+.tk-px{font-family:var(--mono);font-weight:700;font-size:24px;color:#9a958a}
+.tk-px.up{color:#3ddc84}.tk-px.down{color:#ff5c5c}
+.tk svg{width:100%;height:84px;display:block}
+.tk .base{stroke:#6b675e}
+.tk .tail{stroke-dasharray:1;stroke-dashoffset:1;opacity:0}
+.tk svg.up .tail.up,.tk svg.down .tail.down{opacity:1;animation:trace .9s ease-out forwards}
+.tk .tail.up{stroke:#3ddc84}.tk .tail.down{stroke:#ff5c5c}
+@keyframes trace{to{stroke-dashoffset:0}}
+.tk-sc{font-size:18px;line-height:1.4}
+.ch.up{color:var(--vert)}.ch.down{color:var(--rouge)}
+.ch.up.ok,.ch.down.ok,.ch.up.ko,.ch.down.ko{color:#fff}
+.fleches{font-family:var(--mono);font-weight:700}
+
+/* À la caisse et le reçu de fin */
+.recu{align-self:center;width:min(100%,360px);background:#fbfaf5;color:#1b1b18;padding:20px 20px 26px;font-family:var(--mono);font-size:16px;line-height:1.5;filter:drop-shadow(5px 5px 0 var(--line));
+  -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/16px 10px repeat-x;
+  mask:linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/16px 10px repeat-x}
+.r-h{text-align:center;font-weight:700;letter-spacing:.12em;font-size:17px}
+.r-s{text-align:center;color:#6b6b62;font-size:15px;margin-bottom:10px;padding-bottom:10px;border-bottom:1.5px dashed #c9c7bb}
+.r-l{display:flex;justify-content:space-between;gap:12px}
+.r-l b{font-weight:700;white-space:nowrap}
+.r-l.ko{color:#b3361a}
+.r-tot{display:flex;justify-content:space-between;gap:12px;margin-top:10px;padding-top:10px;border-top:1.5px dashed #c9c7bb;font-weight:700;font-size:19px}
+.r-tot b{white-space:nowrap}
+.r-tot b.vu{background:#ffd23f;padding:0 6px}
+.r-relire{margin-top:12px;font-weight:700;font-size:15px}
+.r-msg{margin-top:12px;text-align:center;font-size:15px}
+.r-code{height:44px;margin-top:14px;background:repeating-linear-gradient(90deg,#1b1b18 0 2px,#0000 2px 4px,#1b1b18 4px 7px,#0000 7px 9px,#1b1b18 9px 10px,#0000 10px 13px)}
+.fin-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* On te texte */
+.chat{border:3px solid var(--line);background:var(--card);box-shadow:var(--ombre)}
+.chat-h{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:3px solid var(--line)}
+.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;background:hsl(var(--h) 55% 42%)}
+.chat-h b{display:block;font-size:16px}
+.chat-h small{font-family:var(--mono);font-size:15px;color:var(--vert);font-weight:700}
+.fil{display:flex;flex-direction:column;gap:8px;padding:14px}
+.bulle{max-width:84%;padding:10px 14px;border-radius:18px;font-size:17px;line-height:1.35;animation:monte .25s ease-out}
+.bulle.in{align-self:flex-start;background:var(--bg);border:2px solid var(--line);border-bottom-left-radius:4px}
+.bulle.out{align-self:flex-end;background:#2563eb;color:#fff;border-bottom-right-radius:4px}
+
+/* Dans l'ordre */
+.slots{list-style:none;display:flex;flex-direction:column;gap:8px}
+.slot{display:flex;align-items:center;gap:12px;min-height:54px;padding:8px 12px;border:3px dashed var(--ink-3);cursor:pointer}
+.slot span{width:30px;height:30px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:15px;flex:none}
+.slot em{font-style:normal;font-weight:800;font-size:17px}
+.slot.plein{border-style:solid;border-color:var(--line);background:var(--card)}
+.slot.ok{background:var(--vert-soft)}
+.slot.ko{background:var(--rouge-soft)}
+.pile{display:flex;flex-wrap:wrap;gap:8px}
+.pc{padding:10px 14px;border:3px solid var(--line);background:var(--jaune);color:#0e0e0e;font-weight:800;font-size:16px}
+
+@media (min-width: 640px){
+  .grille{grid-template-columns:repeat(3,1fr)}
+  .secs-g{grid-template-columns:repeat(4,1fr)}
+}
+@media (min-width: 900px){
+  .wrap{padding:24px 32px 48px}
+  .grille{grid-template-columns:repeat(5,1fr)}
+}
+.exam-g .gros{text-transform:none;font-size:17px}
+/* Au TBI : tout 1,6 fois plus gros (15 px deviennent 24 px) */
+@media (min-width: 1600px){ .wrap{zoom:1.6} }
+@media (prefers-reduced-motion: reduce){
+  .sw-card,.retro,.bulle{transition:none;animation:none}
+  .tk svg.up .tail.up,.tk svg.down .tail.down{animation:none;stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><b class="marque">Au<b>comptant</b></b><a class="cours" href="../">← Site du cours</a></header>
+  <main id="train"><p>Ouvre cette page dans ton navigateur (Safari, Chrome ou Edge) : l'aperçu de ton application ne l'affiche pas.</p></main>
+  <footer>Éducation financière · Secondaire 5 · <b>Confidentialité :</b> aucun compte, aucun cookie, aucune statistique. Tes choix restent sur ton appareil. Comme tout hébergeur, GitHub garde un journal technique des visites (adresse IP).</footer>
+</div>
+<script>
+
+/* ============ Outils de l'app (elle est autonome : rien ne vient du site du cours) ============ */
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const iso = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const DAY = 864e5;
+const fmt = (d, o) => d.toLocaleDateString("fr-CA", o);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem("aucomptant:" + k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem("aucomptant:" + k, JSON.stringify(v)); } catch (e) {} }
+};
+const NOW = new URLSearchParams(location.search).get("date") ? parse(new URLSearchParams(location.search).get("date")) : new Date();
+const finSemaine = x => new Date(parse(x.semaine).getTime() + 4 * DAY);
+// Les examens du chapitre (pour le bouton « Seulement la matière de ton examen »).
+// ⚠ Copie des semaines de HUB.examens du site du cours (hubs/Hub Sec 5 Finances.html) : les changer aux deux endroits.
+const EXAMENS = [
+  { titre: "Examen de mi-étape 1", semaine: "2026-10-26", sections: ["1.1", "1.2"] },
+  { titre: "Examen d'étape 1", semaine: "2026-11-09", sections: ["1.1", "1.2", "1.3", "1.4"] }
+];
+
+/* =====================================================================
+   AU COMPTANT : l'entraînement du chapitre 1 (bêta, 2026-10-26).
+   Même principe que le site Histoire : on choisit ses sections, une activité, 5 questions ;
+   une erreur donne la bonne réponse et la page du cahier. Chaque question finit par [section, page].
+   Source : les notes de cours 1.1 à 1.4 et le cahier (p. 4 à 37). Jamais une question d'examen recopiée.
+   ===================================================================== */
+const SECTIONS = { "1.1": "Consommer, c'est choisir", "1.2": "La publicité", "1.3": "Outils, droits et recours", "1.4": "Le budget" };
+const SERIE = 5;
+
+// Glisse : [énoncé, bonne réponse (0 = à gauche, 1 = à droite), explication, section, page]
+const BESOIN = [
+  ["Marie remplace son frigo, qui vient de briser.", 0, "Sans frigo, elle ne peut plus conserver sa nourriture.", "1.1", 4],
+  ["Laetitia change son frigo, qui marche très bien, pour un modèle plus récent.", 1, "Même produit que Marie, situation différente : c'est une envie.", "1.1", 4],
+  ["Pierre, qui vit en région éloignée sans autobus, achète une auto pour aller travailler.", 0, "Sans auto, il ne peut pas se rendre au travail.", "1.1", 4],
+  ["Émilie, qui habite à deux pas du métro, achète une auto.", 1, "Elle a déjà un moyen de transport : l'auto est un plus.", "1.1", 4],
+  ["Un manteau d'hiver, quand tu n'as rien de chaud à te mettre.", 0, "Se protéger du froid, c'est essentiel.", "1.1", 4],
+  ["Un troisième manteau griffé, alors que le tien est encore bon.", 1, "Ça fait plaisir, mais ce n'est pas essentiel.", "1.1", 4],
+  ["Une semaine dans le Sud pendant la relâche.", 1, "Des vacances, c'est agréable, pas essentiel.", "1.1", 4],
+  ["Un repas, quand tu as faim.", 0, "Manger, c'est un besoin physiologique.", "1.1", 4],
+  ["Un cellulaire pour un technicien qui doit être joignable sur appel.", 0, "Ça dépend de la situation : pour son travail, il en a besoin.", "1.1", 4],
+  ["Le dernier modèle de cellulaire, alors que le tien fonctionne.", 1, "Le tien fait la job : le nouveau est une envie.", "1.1", 4]
+];
+const TAXE = [ // 0 = pas taxé, 1 = taxé
+  ["Un sac de pommes", 0, "Aliment de base : pas taxé.", "1.1", 10],
+  ["Un sac de croustilles", 1, "Aliment transformé et emballé : taxé.", "1.1", 10],
+  ["Un rendez-vous chez le dentiste", 0, "Soin de santé : pas taxé.", "1.1", 10],
+  ["Une boisson gazeuse", 1, "Ce n'est pas un aliment de base : taxé.", "1.1", 10],
+  ["Un pain", 0, "Aliment de base : pas taxé.", "1.1", 10],
+  ["Une consultation chez le médecin", 0, "Soin de santé : pas taxé.", "1.1", 10],
+  ["Un chandail", 1, "Ni un aliment de base ni un soin de santé : taxé.", "1.1", 10],
+  ["Des carottes", 0, "Légume frais, aliment de base : pas taxé.", "1.1", 10],
+  ["Un billet de cinéma", 1, "Un loisir : taxé.", "1.1", 10],
+  ["Du poulet frais", 0, "Viande, aliment de base : pas taxé.", "1.1", 10],
+  ["Un jeu vidéo", 1, "Un loisir : taxé.", "1.1", 10]
+];
+const VF = [ // 0 = faux, 1 = vrai
+  ["Une même chose peut être un besoin pour une personne et un désir pour une autre.", 1, "Tout dépend de la personne et de la situation.", "1.1", 4],
+  ["« Besoin d'un cellulaire » est un étage de la pyramide de Maslow.", 0, "La pyramide nomme de grandes catégories de besoins, pas des produits.", "1.1", 4],
+  ["Le temps, l'argent et l'énergie sont des ressources limitées.", 1, "C'est pour ça qu'on doit choisir : choisir, c'est renoncer.", "1.1", 4],
+  ["Quand le prix d'un produit monte, on en achète généralement plus.", 0, "Le prix monte, on achète moins.", "1.1", 6],
+  ["L'inflation fait baisser ton pouvoir d'achat.", 1, "Avec le même argent, tu achètes moins qu'avant.", "1.1", 6],
+  ["La taxe d'accise apparaît clairement sur ta facture.", 0, "Elle est cachée dans le prix affiché.", "1.1", 8],
+  ["La TVQ est de 9,975 %.", 1, "Et la TPS est de 5 %. Ensemble : 14,975 %.", "1.1", 8],
+  ["Une pub qui te fait pleurer est illégale au Québec.", 0, "L'émotion est une stratégie permise. Ce qui est interdit : mentir ou cacher la vérité.", "1.2", 16],
+  ["Au Québec, la pub commerciale destinée aux moins de 13 ans est interdite.", 1, "C'est la règle des 13 ans.", "1.2", 16],
+  ["En 2021, la télé captait encore la plus grande part de la pub au Québec.", 0, "Le numérique en captait 73 %, contre environ 15 % pour la télé.", "1.2", 12],
+  ["Un vendeur peut « oublier » de dire qu'une auto usagée a été accidentée.", 0, "Cacher la vérité sur un produit est interdit par la Loi sur la protection du consommateur.", "1.2", 16],
+  ["Une pub sociétale cherche à changer un comportement.", 1, "Ex. : la ceinture, l'alcool au volant. Son objectif : sensibiliser.", "1.2", 12],
+  ["Une pub peut jouer avec la vérité, tant qu'elle ne ment pas.", 1, "C'est la stratégie de « la vérité ».", "1.2", 14],
+  ["La garantie du fabricant dure généralement deux ans.", 0, "Généralement un an, pièces et main-d'œuvre.", "1.3", 22],
+  ["La garantie légale est automatique et gratuite.", 1, "Prévue par la loi, pour les biens achetés d'un commerçant. Aucun commerçant ne peut te la faire payer.", "1.3", 22],
+  ["La garantie prolongée est la seule qu'on paie en plus du prix d'achat.", 1, "Celle du fabricant est incluse dans le prix ; la légale est gratuite.", "1.3", 24],
+  ["Un contrat verbal n'a aucune valeur légale.", 0, "Il a la même valeur qu'un contrat écrit. Il est seulement plus difficile à prouver.", "1.3", 24],
+  ["La loi oblige un magasin à reprendre un article qui n'est pas défectueux.", 0, "Chaque commerce fixe sa propre politique d'échange.", "1.3", 26],
+  ["La politique d'exactitude des prix s'applique aux vêtements.", 0, "Les vêtements sont exclus par la loi.", "1.3", 22],
+  ["Les garanties s'appliquent aussi à un achat entre particuliers sur Marketplace.", 0, "Pas entre particuliers, ni sur un site d'enchères, ni à l'étranger.", "1.3", 22],
+  ["Un reçu de caisse, c'est déjà un contrat de vente.", 1, "Tu signes des contrats sans t'en rendre compte.", "1.3", 24],
+  ["À la Cour des petites créances, on se représente soi-même, sans avocat.", 1, "Pour les litiges de 15 000 $ ou moins.", "1.3", 26],
+  ["Le médiateur décide qui a raison.", 0, "Le médiateur aide à s'entendre. C'est l'arbitre qui tranche.", "1.3", 26],
+  ["Dans un budget, l'épargne peut être traitée comme une dépense.", 1, "C'est même la meilleure façon de s'assurer d'épargner.", "1.4", 30],
+  ["La carte de crédit est un poste de dépenses.", 0, "C'est un mode de paiement différé. Seuls les intérêts vont au budget.", "1.4", 30],
+  ["Être payé aux 2 semaines, c'est la même chose que deux fois par mois.", 0, "Aux 2 semaines : 26 paies par année. Deux fois par mois : 24.", "1.4", 30],
+  ["Un budget déficitaire, c'est une catastrophe.", 0, "Non : tu as maintenant un portrait clair pour corriger le tir.", "1.4", 32],
+  ["Par prudence, on estime ses revenus au minimum et ses dépenses au maximum.", 1, "C'est la règle de prudence : moins de mauvaises surprises.", "1.4", 30],
+  ["Le logement, l'alimentation et le transport font souvent plus de 60 % des dépenses.", 1, "Ce sont les trois gros postes.", "1.4", 30]
+];
+const FIABLE = [ // 0 = pas fiable, 1 = fiable
+  ["Une blogueuse mode très populaire déballe un ordinateur et le recommande.", 0, "Elle n'est pas spécialiste et ne cite aucune source : c'est une opinion.", "1.3", 18],
+  ["Le site d'Affaires mondiales Canada, pour vérifier une catastrophe avant un voyage.", 1, "Site gouvernemental : information officielle et à jour.", "1.3", 18],
+  ["Un test comparatif de la revue Protégez-Vous.", 1, "Une revue spécialisée qui teste et compare les produits.", "1.3", 18],
+  ["Un fil Reddit où des inconnus donnent leur avis.", 0, "Presque aucun contrôle de qualité : ce sont des opinions.", "1.3", 18],
+  ["Le site de l'Office de la protection du consommateur.", 1, "Un organisme public reconnu.", "1.3", 18],
+  ["Un influenceur payé par la marque qu'il te recommande.", 0, "Il est peut-être sincère, mais il n'est pas impartial.", "1.3", 18],
+  ["Une page anonyme, sans date ni sources.", 0, "On ne sait ni qui l'a écrite, ni quand, ni d'où vient l'info.", "1.3", 18],
+  ["Un guide d'achat de Consumer Reports, qui teste les produits en laboratoire.", 1, "Une revue spécialisée, avec plus de 60 laboratoires.", "1.3", 18],
+  ["Un article signé d'une université, avec ses sources, mis à jour cette année.", 1, "Organisme reconnu, auteur connu, sources et date récente.", "1.3", 18],
+  ["Un avis Google : 5 étoiles sur 5 pour un produit.", 0, "Un avis, c'est une opinion, pas une preuve.", "1.3", 18]
+];
+// Classe la dépense : [dépense, question, bonne réponse, explication, section, page]
+const CLASSE = { fv: ["Fixe", "Variable"], ci: ["Incompressible", "Compressible"] };
+const BUDGET = [
+  ["Le loyer", "fv", 0, "Même montant chaque mois.", "1.4", 30],
+  ["L'épicerie", "fv", 1, "Le montant change d'une semaine à l'autre.", "1.4", 30],
+  ["Le prêt-auto", "fv", 0, "Même paiement chaque mois.", "1.4", 30],
+  ["L'essence", "fv", 1, "Le montant change selon tes déplacements et le prix.", "1.4", 30],
+  ["L'abonnement de streaming", "fv", 0, "Même montant chaque mois.", "1.4", 30],
+  ["Les sorties au restaurant", "fv", 1, "Le montant et la fréquence changent.", "1.4", 30],
+  ["Le forfait cellulaire", "fv", 0, "Même montant chaque mois.", "1.4", 30],
+  ["Les vêtements", "fv", 1, "Le montant et la fréquence changent.", "1.4", 30],
+  ["L'assurance habitation", "fv", 0, "Même montant chaque mois.", "1.4", 30],
+  ["Le loyer", "ci", 0, "On ne peut ni l'éviter ni le réduire à court terme.", "1.4", 32],
+  ["Le prêt-auto", "ci", 0, "On ne peut pas le couper à court terme.", "1.4", 32],
+  ["L'abonnement de streaming", "ci", 1, "Fixe, mais compressible : il s'annule.", "1.4", 32],
+  ["Les sorties au restaurant", "ci", 1, "Facile à couper ou à réduire.", "1.4", 32],
+  ["Les vêtements", "ci", 1, "On peut facilement les reporter.", "1.4", 32],
+  ["Un voyage", "ci", 1, "On peut le reporter ou l'annuler.", "1.4", 32]
+];
+
+// Décode la pub : [marque, visuel, slogan, petite ligne, question (s = stratégie, o = objectif), réponse, explication, couleurs]
+const STRATS = ["Le culte de l'idéal", "Les données factuelles", "La vérité", "La popularité", "La notoriété", "L'émotion", "La concurrence", "La mémorisation et la répétition", "Le témoignage", "Les promesses", "La nouveauté"];
+const PUBS = [
+  ["Krounch", "🥨", "Érable-wasabi. Jamais vu. Jamais goûté.", "NOUVEAU · en épicerie dès lundi", "s", "La nouveauté", "« Jamais vu » : elle pique ta curiosité.", ["#ff6a00", "#ee0979"]],
+  ["Lustra", "🧴", "« J'ai essayé des dizaines de crèmes. Celle-là a tout changé. »", "Julie, 34 ans, cliente", "s", "Le témoignage", "Une « vraie » cliente satisfaite raconte son expérience.", ["#d4a373", "#6d4c41"]],
+  ["Volt", "⚡", "« En match, je bois juste Volt. »", "Max Tremblay · joueur étoile, #24", "s", "La notoriété", "Une personnalité connue vante le produit.", ["#1e3c72", "#2a5298"]],
+  ["Pixa", "📷", "2 fois plus de mégapixels que le Nova X.", "Compare. Choisis mieux.", "s", "La concurrence", "Elle se compare à la marque rivale pour paraître meilleure.", ["#0f2027", "#2c5364"]],
+  ["Tricot Nord", "🧶", "Tuques fabriquées à Victoriaville. 100 % laine du Québec. Cousues à la main.", "", "s", "Les données factuelles", "Des faits : la provenance et la fabrication.", ["#3e5151", "#8a9a5b"]],
+  ["Pizza Rapido", "🍕", "♪ Rapido, Rapido, c'est chaud, c'est beau, Rapido! ♪", "Le refrain que t'as dans la tête depuis des années", "s", "La mémorisation et la répétition", "Un jingle qui reste dans la tête.", ["#c31432", "#240b36"]],
+  ["Solène", "🏝️", "Plage déserte. Peau parfaite. Soleil couchant.", "Solène. La vie comme elle devrait être.", "s", "Le culte de l'idéal", "Des gens beaux dans un monde parfait.", ["#f7971e", "#c0587e"]],
+  ["Glo", "💬", "Avec Glo, tout le monde va vouloir être ton ami.", "", "s", "La popularité", "Achète-le et tu auras plus d'amis.", ["#8e2de2", "#4a00e0"]],
+  ["Lien Mobile", "🫂", "Un grand-père retrouve sa petite-fille à l'aéroport. Piano doux. Aucune parole.", "Toujours proches.", "s", "L'émotion", "Te toucher pour que tu t'en souviennes.", ["#355c7d", "#6c5b7b"]],
+  ["Dodo+", "🌙", "Fini les nuits blanches. Dodo+ règle ton sommeil, pour de bon.", "", "s", "Les promesses", "Le produit promet de combler ton besoin.", ["#141e30", "#243b55"]],
+  ["Café Brûlot", "☕", "Le café préféré… de notre équipe de bureau.", "Sondage maison, 12 répondants", "s", "La vérité", "C'est vrai, mais l'échantillon est minuscule : elle joue avec la vérité sans mentir.", ["#603813", "#b29f94"]],
+  ["Sécurité routière", "🚗", "L'alcool au volant, ça tue. Prévois ton retour.", "", "o", "Sensibiliser", "Une pub sociétale veut changer un comportement.", ["#232526", "#414345"]],
+  ["Quincaillerie Biron", "🍞", "Grille-pain 4 tranches · 39,99 $", "Fentes larges · minuterie · en magasin jeudi", "o", "Informer", "Elle décrit le produit, son prix et où l'acheter.", ["#11998e", "#38ef7d"]],
+  ["Fizz", "🥤", "Des amis rient à la plage, canette à la main.", "Fizz. L'été, c'est maintenant.", "o", "Persuader", "Elle vend une image de bonheur, pas des faits sur le produit.", ["#00b4db", "#0083b0"]],
+  ["Sécurité nautique", "🛶", "Ta veste de sauvetage te sauve seulement si tu la portes.", "", "o", "Sensibiliser", "Un organisme veut changer un comportement.", ["#5f2c82", "#49a09d"]]
+];
+// Stratégies trop proches pour être mises côte à côte dans les choix : on ne les mélange pas.
+const VOISINS = [["Le témoignage", "La notoriété"], ["La popularité", "Les promesses"], ["La concurrence", "Les données factuelles"], ["La vérité", "Les données factuelles"], ["La vérité", "La popularité"], ["Le culte de l'idéal", "L'émotion"], ["Le culte de l'idéal", "Les promesses"]];
+const voisin = (a, b) => VOISINS.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+
+// Le marché : [symbole, nom, situation, sujet (prix ou pouvoir d'achat), monte?, flèches, section, page]
+const MARCHE = [
+  ["LIMO", "Location de limousine", "Bal des finissants : plein d'élèves veulent une limousine, mais il n'y en a pas plus en ville.", "prix", true, "Demande ▲ · Offre = → Prix ▲", "1.1", 8],
+  ["CHOCO", "Barres de chocolat", "L'usine produit deux fois plus de barres, mais les gens n'en veulent pas plus.", "prix", false, "Offre ▲ · Demande = → Prix ▼", "1.1", 8],
+  ["SUD", "Voyage dans le Sud", "À la relâche, tout le monde veut partir en même temps. Pas plus de places dans les avions.", "prix", true, "Demande ▲ · Offre = → Prix ▲", "1.1", 8],
+  ["SHOW", "Billets de spectacle", "Ton artiste préféré annonce un seul spectacle, dans une petite salle.", "prix", true, "Demande ▲ · Offre = (pas plus de places) → Prix ▲", "1.1", 8],
+  ["FRAIS", "Fraises du Québec", "Récolte record cet été. Les gens n'en mangent pas plus que d'habitude.", "prix", false, "Offre ▲ · Demande = → Prix ▼", "1.1", 8],
+  ["SNKR", "Espadrilles", "Le modèle n'est plus à la mode : presque personne n'en veut, et les magasins en sont pleins.", "prix", false, "Demande ▼ · Offre = → Prix ▼", "1.1", 8],
+  ["CAFÉ", "Café", "Une sécheresse détruit une grande partie des récoltes. Les gens en boivent autant qu'avant.", "prix", true, "Offre ▼ · Demande = → Prix ▲", "1.1", 8],
+  ["MOI$", "Ton pouvoir d'achat", "Tu as une augmentation de salaire. Les prix ne bougent pas.", "pa", true, "Revenu ▲ · Prix = → Pouvoir d'achat ▲", "1.1", 6],
+  ["MOI$", "Ton pouvoir d'achat", "Ton salaire ne bouge pas, mais tout coûte plus cher qu'avant.", "pa", false, "Prix ▲ (inflation) · Revenu = → Pouvoir d'achat ▼", "1.1", 6],
+  ["MOI$", "Ton pouvoir d'achat", "Une nouvelle taxe s'ajoute sur ce que tu achètes. Ton salaire reste pareil.", "pa", false, "Taxes ▲ · Revenu = → Pouvoir d'achat ▼", "1.1", 6],
+  ["MOI$", "Ton pouvoir d'achat", "Les prix de l'épicerie baissent. Ton revenu reste le même.", "pa", true, "Prix ▼ · Revenu = → Pouvoir d'achat ▲", "1.1", 6]
+];
+
+// On te texte : [prénom, message, bonne réponse, autres choix, explication, section, page]
+const TEXTOS = [
+  ["Noah", "toute ma gang a les mêmes espadrilles, faque je les ai achetées moi aussi 😅 c'est quel facteur dans le cours?", "Les groupes sociaux", ["La culture", "Les facteurs individuels", "Le pouvoir d'achat"], "Tu achètes pour appartenir au groupe.", "1.1", 10],
+  ["Maëlle", "j'achète mes légumes au marché local parce que l'environnement me tient à cœur. c'est quel facteur?", "Les facteurs individuels", ["Les groupes sociaux", "La culture", "L'offre et la demande"], "Ce sont tes valeurs à toi.", "1.1", 10],
+  ["Sam", "chez nous, aller au cinéma sans popcorn c'est impensable lol. c'est quel facteur ça?", "La culture", ["Les facteurs individuels", "Le prix", "Les groupes sociaux"], "Une habitude de ton groupe culturel.", "1.1", 10],
+  ["Ruby", "j'avais 600 $ : j'ai pris le téléphone au lieu de l'équipement de ski. c'est quoi mon coût d'opportunité?", "L'équipement de ski", ["Les 600 $", "Le téléphone", "Les taxes sur le téléphone"], "C'est ce à quoi tu as renoncé.", "1.1", 6],
+  ["Jayden", "j'ai lâché mon shift de samedi payé 80 $ pour aller au party 🎉 mon coût d'opportunité?", "Les 80 $ du shift", ["Le party", "Rien : le party était gratuit", "Le transport pour y aller"], "Tu as renoncé à 80 $ pour y aller.", "1.1", 6],
+  ["Léa", "un gars dans une vidéo dit qu'il est médecin pis il vend une pilule miracle… il l'est pas pantoute. qui surveille ça au Québec?", "L'OPC", ["Le TAL", "L'ACEF", "Personne : c'est de la pub"], "Une fausse déclaration, c'est interdit. L'OPC surveille les pubs et applique la loi.", "1.2", 16],
+  ["Ethan", "pourquoi je vois des pubs de souliers partout depuis que j'en ai cherché en ligne?? 👀", "Tes recherches deviennent des données : on te cible", ["C'est un hasard", "Tout le monde voit les mêmes pubs", "C'est la télé qui les envoie sur ton cell"], "Les entreprises compilent tes traces en ligne pour te montrer des pubs ciblées.", "1.2", 12],
+  ["Léa", "mon proprio refuse de faire les réparations prévues dans mon bail 😤 je m'adresse à qui?", "Le Tribunal administratif du logement (TAL)", ["L'ACEF", "L'APA", "Éducaloi"], "Le TAL s'occupe des problèmes de bail et de loyer.", "1.3", 20],
+  ["Sam", "on dirait que les gyms de la ville s'entendent pour garder leurs prix élevés… qui s'occupe de ça?", "Le Bureau de la concurrence", ["Le TAL", "L'ACEF", "L'APA"], "Il veille à ce que les entreprises se fassent vraiment concurrence.", "1.3", 20],
+  ["Maëlle", "ma mère voudrait de l'aide pour faire un budget réaliste, on n'a pas de gros revenus", "L'ACEF", ["Le TAL", "L'APA", "Le Bureau de la concurrence"], "L'ACEF aide surtout les familles à revenus modestes.", "1.3", 20],
+  ["Jayden", "le garage veut me charger une réparation que j'ai jamais demandée sur mon char 🙄", "L'APA (protection des automobilistes)", ["Le TAL", "L'ACEF", "Le Bureau de la concurrence"], "L'APA s'occupe des pratiques de vente et de réparation d'autos.", "1.3", 20],
+  ["Ethan", "je comprends rien à mon contrat. y a-tu un site qui explique les lois en mots simples?", "Éducaloi", ["Le TAL", "L'APA", "Le Bureau de la concurrence"], "Éducaloi explique les lois, tes droits et tes obligations en langage simple.", "1.3", 20],
+  ["Noah", "mon cell neuf a pris feu pendant qu'il chargeait 🔥🔥", "La garantie de sécurité", ["La garantie de qualité", "La garantie de conformité", "La garantie de durabilité"], "Un bien ne doit pas mettre ses utilisateurs en danger.", "1.3", 22],
+  ["Léa", "ma télé a lâché après 2 ans. c'est normal?", "Non : la garantie de durabilité te protège", ["Oui : la garantie du fabricant est finie, tant pis", "Non : la garantie de sécurité te protège", "Non : la garantie de conformité te protège"], "Un bien doit fonctionner pendant une durée raisonnable, même après la garantie du fabricant.", "1.3", 22],
+  ["Sam", "l'étagère est arrivée d'une autre couleur que sur la boîte", "La garantie de conformité", ["La garantie de sécurité", "La garantie de durabilité", "La garantie de qualité"], "Le bien doit correspondre à la description.", "1.3", 22],
+  ["Maëlle", "mon taille-crayon électrique… taille pas les crayons 💀", "La garantie de qualité", ["La garantie de sécurité", "La garantie de durabilité", "Aucune : c'est un petit objet"], "Le bien doit servir à l'usage normal prévu.", "1.3", 22],
+  ["Ethan", "le vendeur insiste pour que je prenne la garantie prolongée à 90 $ sur mon ordi. je la prends?", "Probablement pas : la garantie légale te protège déjà", ["Oui : sans elle, plus aucune protection après un an", "Oui : la loi l'exige pour un ordinateur"], "Elle est souvent inutile. Les détaillants la poussent parce qu'ils font une grosse marge de profit dessus.", "1.3", 24],
+  ["Jayden", "ma laveuse neuve a brisé après 3 mois. je commence par quoi?", "Appeler le service à la clientèle", ["Aller direct à la Cour des petites créances", "Acheter une garantie prolongée", "Rien : c'est trop tard"], "Le premier réflexe. Avec la garantie légale, on obtient souvent un remboursement ou un remplacement.", "1.3", 26],
+  ["Léa", "le magasin m'ignore. je veux leur envoyer une lettre officielle avant d'aller en cour", "Une mise en demeure", ["La médiation", "L'arbitrage", "Un avis Google"], "La lettre dit ce qu'on reproche à l'entreprise et ce qu'elle doit faire pour éviter d'être poursuivie.", "1.3", 26],
+  ["Noah", "on veut quelqu'un de neutre qui nous aide à nous entendre, sans décider à notre place", "La médiation", ["L'arbitrage", "La Cour des petites créances", "La mise en demeure"], "Le médiateur aide les parties à se parler. Il ne tranche pas.", "1.3", 26],
+  ["Sam", "on s'entend pas pantoute. on veut que quelqu'un tranche, une fois pour toutes", "L'arbitrage", ["La médiation", "La négociation", "Le service à la clientèle"], "L'arbitre écoute les deux parties et décide.", "1.3", 26],
+  ["Maëlle", "ils me doivent 900 $ et j'ai pas les moyens d'un avocat", "La Cour des petites créances", ["Le Protecteur du citoyen", "Le TAL", "Rien : sans avocat, c'est impossible"], "Pour 15 000 $ ou moins, on s'y représente soi-même.", "1.3", 26],
+  ["Ethan", "un service public du Québec me traite injustement. je me plains à qui?", "Le Protecteur du citoyen", ["L'OPC", "Le Bureau de la concurrence", "L'APA"], "L'« ombudsman du Québec » protège tes droits face aux services publics.", "1.3", 26],
+  ["Jayden", "j'ai reçu un texto « ton compte est bloqué, envoie ton NAS ». je fais quoi?", "Supprime-le sans répondre : c'est de l'hameçonnage", ["Envoie ton NAS, sinon ton compte reste bloqué", "Envoie plutôt ton numéro de carte, c'est moins grave"], "Protéger ses renseignements personnels, c'est une responsabilité du consommateur.", "1.3", 24],
+  ["Noah", "mon reçu de caisse est rendu tout pâle, je peux le jeter?", "Non : prends-le en photo, c'est ta preuve", ["Oui : un reçu pâle ne vaut plus rien", "Oui : le magasin en garde une copie"], "Conserver ses factures, c'est une responsabilité. C'est ta preuve pour la garantie.", "1.3", 24],
+  ["Maëlle", "j'ai mis tout ce que j'ai payé avec ma carte de crédit comme un poste « carte de crédit » dans mon budget. c'est correct?", "Non : c'est un mode de paiement, pas un poste", ["Oui : c'est un poste comme les autres", "Oui, mais seulement si je paie le solde"], "Ce que tu achètes avec est déjà dans tes postes. Seuls les intérêts vont au budget.", "1.4", 30],
+  ["Jayden", "je veux couper 100 $ par mois dans mon budget. j'attaque quoi en premier?", "Le restaurant et les abonnements", ["Le loyer", "Le prêt-auto"], "Ils sont compressibles : faciles à couper vite.", "1.4", 32]
+];
+const MERCI = ["merci!! 🙏", "ok ça fait du sens", "parfait, merci 👌", "t'es bon·ne en éduc fin 😎", "noté!"];
+
+// Dans l'ordre : [consigne, éléments dans le bon ordre, explication, section, page, nombre à placer]
+const ORDRES = [
+  ["La pyramide de Maslow, de la base au sommet", ["Physiologiques", "Sécurité", "Appartenance", "Estime", "Accomplissement"], "« Pas Sûr, Appelle Encore Alex »", "1.1", 4],
+  ["Les 3 étapes d'un budget", ["Les revenus et les dépenses", "La grille budgétaire", "L'analyse et le suivi"], "Lister → organiser → analyser.", "1.4", 28],
+  ["Les recours, du plus simple au plus formel", ["Service à la clientèle", "Négociation", "Mise en demeure", "Médiation", "Arbitrage", "Cour des petites créances"], "On commence toujours par le plus simple.", "1.3", 26, 4],
+  ["Le nombre de paies par année, du plus petit au plus grand", ["Chaque mois", "Deux fois par mois", "Aux 2 semaines", "Chaque semaine"], "12, 24, 26 et 52 paies.", "1.4", 30],
+  ["Trouver un salaire par mois, à partir d'une paie", ["Trouver le nombre de paies par année", "Multiplier la paie par ce nombre", "Diviser le total annuel par 12"], "Tout se ramène d'abord à l'année, puis on divise.", "1.4", 30]
+];
+
+/* ============ À la caisse : les calculs ============ */
+const argent = c => (c / 100).toLocaleString("fr-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " $";
+const taxes = c => { const tps = Math.round(c * 5 / 100), tvq = Math.round(c * 9975 / 100000); return { tps, tvq, tot: c + tps + tvq }; };
+const CAISSE = [
+  ...[["Chandail", 5000], ["Souper pour 4", 15000], ["Écouteurs", 8000], ["Jeu vidéo", 7000], ["Casquette", 2500]].map(([art, c]) => { const t = taxes(c);
+    return { tete: "BOUTIQUE DU COIN", sous: "Facture · taxes à calculer", lignes: [[art, argent(c)], ["TPS 5 %", "?"], ["TVQ 9,975 %", "?"]], cible: "TOTAL",
+      question: "Combien paies-tu au total?", bonne: argent(t.tot), autres: [argent(Math.round(c * 1.12)), argent(c + t.tps), argent(c + t.tvq), argent(c + 2 * t.tps)], // pas 15 % : « ≈ 15 % » se défendrait
+      ex: `TPS : ${argent(t.tps)}. TVQ : ${argent(t.tvq)}. Total : ${argent(t.tot)}.`, court: "Taxes · " + art.toLowerCase(), s: "1.1", p: 8 }; }),
+  ...[["Boîte de céréales", 449, 529], ["8 muffins", 1299, 1595], ["Écouteurs", 3999, 4499], ["Shampoing", 899, 1049], ["Lampe de bureau", 2499, 2799], ["Jus d'orange", 399, 449]].map(([art, an, ca]) => { const pay = an <= 1000 ? 0 : an - 1000;
+    return { tete: "ERREUR DE PRIX", sous: art, lignes: [["Prix annoncé", argent(an)], ["Prix à la caisse", argent(ca)]], cible: "À PAYER",
+      question: "Avec la politique d'exactitude des prix, tu paies combien (avant taxes)?", bonne: argent(pay), autres: pay ? [argent(an), argent(ca), argent(ca - 1000), argent(0)] : [argent(an), argent(ca), argent(ca - an)],
+      ex: pay ? `Prix annoncé de plus de 10 $ : rabais de 10 $ sur le prix annoncé. ${argent(an)} − 10,00 $ = ${argent(pay)}.` : "Prix annoncé de 10 $ ou moins : le produit est gratuit.",
+      court: "Exactitude · " + art.toLowerCase(), s: "1.3", p: 22 }; }),
+  ...[["Derek", 48000, "aux 2 semaines", "mois", 104000, [96000, 1248000, 208000], "480 × 26 paies = 12 480 $ par année, ÷ 12 = 1 040 $ par mois."],
+      ["Maya", 36000, "chaque semaine", "mois", 156000, [144000, 1872000, 78000], "360 × 52 = 18 720 $ par année, ÷ 12 = 1 560 $ par mois. (Pas 360 × 4 : un mois a plus de 4 semaines!)"],
+      ["Léo", 70000, "aux 2 semaines", "année", 1820000, [1680000, 3640000, 840000], "700 × 26 paies = 18 200 $ par année."],
+      ["Zoé", 100000, "deux fois par mois", "année", 2400000, [2600000, 1200000, 5200000], "1 000 × 24 paies = 24 000 $. Deux fois par mois, c'est 24 paies, pas 26."],
+      ["Nathan", 260000, "chaque mois", "semaine", 60000, [65000, 3120000, 130000], "2 600 × 12 = 31 200 $ par année, ÷ 52 = 600 $ par semaine."]
+    ].map(([nom, m, fr, vers, bonne, autres, ex]) => ({ tete: "TALON DE PAIE", sous: nom, lignes: [["Paie", argent(m)], ["Fréquence", fr]], cible: "PAR " + vers.toUpperCase(),
+      question: `Combien ${nom} gagne-t-${["Maya", "Zoé"].includes(nom) ? "elle" : "il"} par ${vers}?`,
+      bonne: argent(bonne), autres: autres.map(argent), ex, court: "Salaire · " + nom, s: "1.4", p: 32 })),
+  ...[["Yasmine", 285000, 303000], ["Alex", 120000, 135000], ["Inès", 200000, 175000], ["Karim", 160000, 160000]].map(([nom, r, d]) => {
+      const e = r - d, verdict = e > 0 ? "Excédentaire de " + argent(e) : e < 0 ? "Déficitaire de " + argent(-e) : "Équilibré";
+      const autres = e === 0 ? ["Excédentaire de " + argent(r), "Déficitaire de " + argent(r)] : ["Équilibré", (e > 0 ? "Déficitaire de " : "Excédentaire de ") + argent(Math.abs(e)), (e > 0 ? "Excédentaire de " : "Déficitaire de ") + argent(d)];
+      return { tete: "BILAN DU MOIS", sous: "Budget de " + nom + (e === 0 ? " · épargne incluse" : ""), lignes: [["Revenus", argent(r)], ["Dépenses", argent(d)]], cible: "VERDICT",
+        question: "Quel type de budget?", bonne: verdict, autres,
+        ex: e > 0 ? "Revenus > dépenses : il reste de l'argent." : e < 0 ? "Revenus < dépenses : il manque de l'argent chaque mois." : "Revenus = dépenses, épargne incluse : c'est l'objectif.", court: "Budget · " + nom, s: "1.4", p: 32 }; }),
+  ...[[15, 4852], [6, 6000]].map(([mois, c]) => { const reste = mois * c, dix = Math.round(reste / 10), frais = Math.min(5000, dix);
+    return { tete: "ANNULATION DE CONTRAT", sous: "Forfait cellulaire", lignes: [["Mois restants", String(mois)], ["Services par mois", argent(c)]], cible: "FRAIS",
+      question: "Frais d'annulation : le plus petit entre 50 $ et 10 % des services qui restent. Combien?", bonne: argent(frais), autres: [argent(Math.max(5000, dix)), argent(reste), argent(0)],
+      ex: `${mois} × ${argent(c)} = ${argent(reste)}. 10 % = ${argent(dix)}. Le plus petit entre 50,00 $ et ${argent(dix)} : ${argent(frais)}.`, court: "Annulation · " + mois + " mois", s: "1.3", p: 24 }; })
+];
+
+/* ============ Les activités ============ */
+const ICO = {
+  swipe: '<path d="M7 7l-4 4 4 4M17 7l4 4-4 4M3 11h18"/>',
+  tag: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/>',
+  vf: '<path d="M4 12l4 4 8-9"/><path d="M15 15l5 5M20 15l-5 5"/>',
+  shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
+  pie: '<circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/>',
+  pub: '<path d="M3 10v4h4l8 5V5L7 10z"/><path d="M18 9a4 4 0 0 1 0 6"/>',
+  trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  recu: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+  chat: '<path d="M4 5h16v11H9l-5 4z"/>',
+  list: '<path d="M10 6h10M10 12h10M10 18h10M4 6h1M4 12h1M4 18h1"/>'
+};
+const ACTS = [
+  { id: "besoin", nom: "Besoin ou désir?", ic: "swipe", oi: "Établir des faits", c1: "#2a1550", c2: "#7b3fe4" },
+  { id: "marche", nom: "Le marché", ic: "trend", oi: "Causes et conséquences", c1: "#10140f", c2: "#3f5a12" },
+  { id: "taxe", nom: "Taxé ou pas?", ic: "tag", oi: "Établir des faits", c1: "#4a1f08", c2: "#c9561a" },
+  { id: "caisse", nom: "À la caisse", ic: "recu", oi: null, c1: "#1d1d1b", c2: "#4d4d47" },
+  { id: "pub", nom: "Décode la pub", ic: "pub", oi: "Mettre en relation des faits", c1: "#3a2405", c2: "#a0650c" },
+  { id: "texto", nom: "On te texte", ic: "chat", oi: "Mettre en relation des faits", c1: "#0a2540", c2: "#2563eb" },
+  { id: "fiable", nom: "Fiable ou pas?", ic: "shield", oi: "Établir des faits", c1: "#0b3326", c2: "#17895f" },
+  { id: "vf", nom: "Vrai ou faux?", ic: "vf", oi: "Établir des faits", c1: "#0d2a3a", c2: "#1b7aa0" },
+  { id: "budget", nom: "Classe la dépense", ic: "pie", oi: "Différences et similitudes", c1: "#3a0d24", c2: "#b8336a" },
+  { id: "ordre", nom: "Dans l'ordre", ic: "list", oi: null, c1: "#3a1010", c2: "#a83226" }
+];
+const actDe = id => ACTS.find(a => a.id === id) || { id, nom: "Mini-examen · " + (id === "examen10" ? 10 : 5) + " questions", c1: "#10140f", c2: "#3f5a12" };
+
+// Chaque activité fabrique ses questions : { type, …, s, p }
+const glisse = (banque, cotes, titre) => banque.map(([t, ok, ex, s, p]) => ({ type: "swipe", t, cotes, titre, ok, ex, s, p }));
+const Q = {
+  besoin: () => glisse(BESOIN, ["Besoin", "Désir"], "Besoin ou désir?"),
+  taxe: () => glisse(TAXE, ["Pas taxé", "Taxé"], "Taxé ou pas?"),
+  vf: () => glisse(VF, ["Faux", "Vrai"], "Vrai ou faux?"),
+  fiable: () => glisse(FIABLE, ["Pas fiable", "Fiable"], "Fiable ou pas?"),
+  budget: () => BUDGET.map(([t, k, ok, ex, s, p]) => ({ type: "swipe", t, cotes: CLASSE[k], titre: CLASSE[k].join(" ou ") + "?", ok, ex, s, p })),
+  pub: () => PUBS.map(([marque, vis, slogan, sous, k, rep, ex, g]) => ({ type: "pub", marque, vis, slogan, sous, obj: k === "o", bonne: rep,
+    options: k === "o" ? ["Informer", "Persuader", "Sensibiliser"] : melange([rep, ...melange(STRATS.filter(x => x !== rep && !voisin(x, rep))).slice(0, 3)]), ex, g, s: "1.2", p: k === "o" ? 12 : 14 })),
+  marche: () => MARCHE.map(([sym, nom, sc, sujet, monte, fl, s, p]) => ({ type: "marche", sym, nom, sc, pa: sujet === "pa", bonne: monte ? "Monte" : "Baisse", ex: fl, s, p })),
+  caisse: () => CAISSE.map(c => ({ type: "caisse", ...c, options: melange([c.bonne, ...melange([...new Set(c.autres)].filter(x => x !== c.bonne)).slice(0, 3)]) })),
+  texto: () => TEXTOS.map(([nom, msg, rep, autres, ex, s, p], i) => ({ type: "texto", nom, msg, bonne: rep, options: melange([rep, ...autres]), ex, s, p, h: (i * 47) % 360 })),
+  ordre: () => ORDRES.map(([t, items, ex, s, p, n]) => { let it = items;
+    if (n) { const garde = melange(items.map((_, j) => j)).slice(0, n).sort((a, b) => a - b); it = garde.map(j => items[j]); }
+    return { type: "ordre", t, items: it, ex, s, p }; })
+};
+
+/* ============ Outils ============ */
+const $t = id => document.getElementById(id);
+const melange = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const TOUTES = Object.keys(SECTIONS);
+const secs = () => { const v = store.get("sections"); return Array.isArray(v) && v.length ? v.filter(s => SECTIONS[s]) : TOUTES; };
+const questions = id => (Q[id] ? Q[id]() : []).filter(q => secs().includes(q.s)).map(q => ({ ...q, act: id }));
+// Une ligne du reçu de fin : assez courte pour tenir sur une ligne au cellulaire.
+const court = t => t.length > 24 ? t.slice(0, 23).trimEnd() + "…" : t;
+const resume = q => ({ swipe: q.t, pub: "Pub " + q.marque, marche: q.nom, caisse: q.court, texto: "Texto de " + q.nom, ordre: q.t }[q.type]);
+const page = q => `<span class="page">📒 Cahier p. ${q.p} · section ${q.s}</span>`;
+const BRAVO = ["Exact.", "Oui.", "Bien vu.", "C'est ça.", "Parfait."];
+const choixHtml = (opts, cls = "") => `<div class="choix ${cls}">${opts.map((o, i) => `<button class="ch" data-i="${i}">${esc(o)}</button>`).join("")}</div>`;
+
+/* ============ Le joueur ============ */
+function lancer(id) {
+  let qs;
+  if (id.startsWith("examen")) {
+    // Un peu de tout : on pige à tour de rôle dans chaque activité.
+    const n = id === "examen10" ? 10 : 5, pools = melange(ACTS.map(a => melange(questions(a.id))).filter(l => l.length));
+    qs = [];
+    while (qs.length < n && pools.some(l => l.length)) pools.forEach(l => { if (l.length && qs.length < n) qs.push(l.pop()); });
+    qs = melange(qs);
+  } else qs = melange(questions(id)).slice(0, SERIE);
+  if (!qs.length) return renderTrain();
+  RUN = { id, qs, i: 0, res: [] };
+  montrer();
+  $t("train").scrollIntoView({ block: "start" });
+}
+function montrer() {
+  const q = RUN.qs[RUN.i], a = actDe(RUN.id), exam = RUN.id.startsWith("examen");
+  RUN.repondu = false;
+  $t("train").innerHTML = `<div class="jeu" style="--c1:${a.c1};--c2:${a.c2}">
+    <div class="jeu-h"><button class="retour" data-menu>← Menu</button><div class="jeu-t"><b>${esc(a.nom)}</b><small>${exam ? "Sections " + secs().join(", ") : a.oi ? "OI · " + esc(a.oi) : "Calcul et méthode"} · ${RUN.i + 1}/${RUN.qs.length}</small></div></div>
+    <div class="seg-bar">${RUN.qs.map((_, j) => `<i class="${j < RUN.res.length ? (RUN.res[j].ok ? "ok" : "ko") : j === RUN.i ? "cur" : ""}"></i>`).join("")}</div>
+    ${exam ? `<p class="q-kick">${esc(actDe(q.act).nom)}</p>` : ""}
+    <div class="scene" id="scene"></div><div id="retro"></div></div>`;
+  VUES[q.type](q, $t("scene"));
+}
+function repondre(q, ok, bonne) {
+  if (RUN.repondu) return;
+  RUN.repondu = true;
+  RUN.res.push({ ok, court: court(resume(q)), p: q.p });
+  document.querySelectorAll("#scene .ch").forEach(b => b.disabled = true);
+  document.querySelectorAll(".seg-bar i")[RUN.i].className = ok ? "ok" : "ko";
+  const der = RUN.i === RUN.qs.length - 1;
+  $t("retro").innerHTML = `<div class="retro ${ok ? "bon" : "faux"}"><b>${ok ? BRAVO[Math.floor(Math.random() * BRAVO.length)] : "La bonne réponse : " + esc(bonne)}</b>${q.ex ? `<span${q.type === "marche" ? ' class="fleches"' : ""}>${esc(q.ex)}</span>` : ""}${ok ? "" : page(q)}</div>
+    <button class="gros suite" id="suite">${der ? "Voir mon reçu" : "Suivante →"}</button>`;
+  $t("suite").onclick = () => { if (der) fin(); else { RUN.i++; montrer(); } };
+  setTimeout(() => { $t("suite")?.focus({ preventScroll: true }); $t("suite")?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, 50);
+}
+// Boutons de choix : marque la bonne et la mauvaise, puis répond.
+function brancher(st, q, options, apres) {
+  st.querySelectorAll(".choix .ch").forEach(b => b.onclick = () => {
+    if (RUN.repondu) return;
+    const v = options[+b.dataset.i], ok = v === q.bonne;
+    st.querySelectorAll(".choix .ch").forEach(x => { if (options[+x.dataset.i] === q.bonne) x.classList.add("ok"); });
+    if (!ok) b.classList.add("ko");
+    if (apres) apres(ok, v);
+    repondre(q, ok, q.bonne);
+  });
+}
+
+const VUES = {
+  // Glisse la carte (ou touche un bouton, ou les flèches du clavier)
+  swipe(q, st) {
+    const [g, d] = q.cotes;
+    st.innerHTML = `<div class="sw-zone"><span class="sw-lab l">← ${esc(g)}</span><span class="sw-lab r">${esc(d)} →</span>
+      <div class="sw-card" tabindex="0"><span class="sw-tag">${esc(q.titre)}</span><div class="sw-t">${esc(q.t)}</div><span class="sw-hint">Glisse la carte, ou touche un bouton</span></div></div>
+      <div class="choix deux"><button class="ch" data-i="0">← ${esc(g)}</button><button class="ch" data-i="1">${esc(d)} →</button></div>`;
+    const zone = st.querySelector(".sw-zone"), carte = st.querySelector(".sw-card");
+    let x0 = null, dx = 0;
+    const choisir = i => {
+      if (RUN.repondu) return;
+      const ok = i === q.ok;
+      carte.style.transform = `translateX(${i ? 30 : -30}px) rotate(${i ? 4 : -4}deg)`;
+      carte.insertAdjacentHTML("beforeend", `<span class="sw-stamp" style="color:${ok ? "#c6f432" : "#ff8a4c"}">${esc(q.cotes[i])}</span>`);
+      st.querySelectorAll(".ch").forEach(b => { if (+b.dataset.i === q.ok) b.classList.add("ok"); else if (+b.dataset.i === i) b.classList.add("ko"); });
+      zone.dataset.pen = "";
+      repondre(q, ok, q.cotes[q.ok]);
+    };
+    carte.addEventListener("pointerdown", e => { if (RUN.repondu) return; x0 = e.clientX; dx = 0; carte.setPointerCapture(e.pointerId); carte.style.transition = "none"; });
+    carte.addEventListener("pointermove", e => { if (x0 === null) return; dx = e.clientX - x0;
+      carte.style.transform = `translateX(${dx}px) rotate(${dx / 16}deg)`; zone.dataset.pen = dx < -40 ? "l" : dx > 40 ? "r" : ""; });
+    const lacher = () => { if (x0 === null) return; x0 = null; carte.style.transition = "";
+      if (Math.abs(dx) > 80) choisir(dx < 0 ? 0 : 1); else { carte.style.transform = ""; zone.dataset.pen = ""; } };
+    carte.addEventListener("pointerup", lacher); carte.addEventListener("pointercancel", lacher);
+    carte.addEventListener("keydown", e => { if (e.key === "ArrowLeft") choisir(0); if (e.key === "ArrowRight") choisir(1); });
+    st.querySelectorAll(".ch").forEach(b => b.onclick = () => choisir(+b.dataset.i));
+  },
+
+  // Une story commanditée
+  pub(q, st) {
+    st.innerHTML = `<div class="ad" style="--g1:${q.g[0]};--g2:${q.g[1]}"><div class="ad-top"><span class="ad-logo">${esc(q.marque[0])}</span><b>${esc(q.marque)}</b><small>${q.bonne === "Sensibiliser" ? "Message public" : "Commandité"}</small></div>
+      <div class="ad-vis">${q.vis}</div><div class="ad-slogan">${esc(q.slogan)}</div>${q.sous ? `<div class="ad-sous">${esc(q.sous)}</div>` : ""}</div>
+      <p class="q-txt">${q.obj ? "Quel est l'objectif de cette pub?" : "Quelle stratégie publicitaire?"}</p>${choixHtml(q.options)}`;
+    brancher(st, q, q.options);
+  },
+
+  // Une cote : le prix monte ou baisse?
+  marche(q, st) {
+    st.innerHTML = `<div class="tk"><div class="tk-h"><span class="tk-sym">${esc(q.sym)}</span><span class="tk-nm">${esc(q.nom)}</span><span class="tk-px" id="tkpx">?</span></div>
+      <svg id="spark" viewBox="0 0 300 84" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path class="base" d="M2 46 L30 40 L58 48 L86 36 L114 44 L142 38 L170 42"/>
+        <path class="tail up" pathLength="1" d="M170 42 L200 32 L228 28 L256 16 L298 6"/>
+        <path class="tail down" pathLength="1" d="M170 42 L200 52 L228 58 L256 68 L298 78"/>
+        <circle cx="170" cy="42" r="4" fill="#7c8373" stroke="none"/></svg>
+      <p class="tk-sc">${esc(q.sc)}</p></div>
+      <p class="q-txt">${q.pa ? "Ton pouvoir d'achat…" : "Le prix…"}</p>
+      <div class="choix deux"><button class="ch up" data-i="0">▲ Monte</button><button class="ch down" data-i="1">▼ Baisse</button></div>`;
+    brancher(st, q, ["Monte", "Baisse"], () => {
+      const up = q.bonne === "Monte";
+      $t("spark").classList.add(up ? "up" : "down");
+      const px = $t("tkpx"); px.textContent = up ? "▲" : "▼"; px.className = "tk-px " + (up ? "up" : "down");
+    });
+  },
+
+  // Une facture, un talon de paie ou un bilan
+  caisse(q, st) {
+    st.innerHTML = `<div class="recu"><div class="r-h">${esc(q.tete)}</div><div class="r-s">${esc(q.sous)}</div>
+      ${q.lignes.map(([l, v]) => `<div class="r-l"><span>${esc(l)}</span><b>${esc(v)}</b></div>`).join("")}
+      <div class="r-tot"><span>${esc(q.cible)}</span><b id="rtot">???</b></div></div>
+      <p class="q-txt">${esc(q.question)}</p>${choixHtml(q.options)}`;
+    brancher(st, q, q.options, () => { const t = $t("rtot"); t.textContent = q.bonne; t.classList.add("vu"); });
+  },
+
+  // Un ami te texte un problème
+  texto(q, st) {
+    st.innerHTML = `<div class="chat"><div class="chat-h"><span class="av" style="--h:${q.h}">${esc(q.nom[0])}</span><div><b>${esc(q.nom)}</b><small>en ligne</small></div></div>
+      <div class="fil" id="fil"><div class="bulle in">${esc(q.msg)}</div></div></div>
+      <p class="q-txt">Tu lui réponds :</p>${choixHtml(q.options, "rep")}`;
+    brancher(st, q, q.options, (ok, v) => {
+      const fil = $t("fil");
+      fil.insertAdjacentHTML("beforeend", `<div class="bulle out">${esc(v)}</div>`);
+      setTimeout(() => fil.isConnected && fil.insertAdjacentHTML("beforeend", `<div class="bulle in">${ok ? MERCI[Math.floor(Math.random() * MERCI.length)] : "hmm… t'es sûr·e? 🤔"}</div>`), 450);
+    });
+  },
+
+  // Touche les éléments dans le bon ordre
+  ordre(q, st) {
+    let pile; do pile = melange(q.items); while (pile.join() === q.items.join());
+    const place = [];
+    st.innerHTML = `<p class="q-txt">${esc(q.t)}</p><ol class="slots" id="slots"></ol><div class="pile" id="pile"></div><button class="gros" id="valider" disabled>Valider</button>`;
+    const dessiner = () => {
+      $t("slots").innerHTML = q.items.map((_, j) => `<li class="slot${place[j] !== undefined ? " plein" : ""}" data-j="${j}"><span>${j + 1}</span><em>${place[j] !== undefined ? esc(place[j]) : ""}</em></li>`).join("");
+      $t("pile").innerHTML = pile.filter(t => !place.includes(t)).map(t => `<button class="pc" data-t="${esc(t)}">${esc(t)}</button>`).join("");
+      $t("valider").disabled = place.length !== q.items.length;
+    };
+    st.addEventListener("click", e => {
+      if (RUN.repondu) return;
+      const pc = e.target.closest(".pc"), sl = e.target.closest(".slot.plein");
+      if (pc) { place.push(pc.dataset.t); dessiner(); }
+      else if (sl) { place.splice(+sl.dataset.j, 1); dessiner(); }
+    });
+    dessiner();
+    $t("valider").onclick = () => {
+      const ok = place.join() === q.items.join();
+      st.querySelectorAll(".slot").forEach((s, j) => s.classList.add(place[j] === q.items[j] ? "ok" : "ko"));
+      $t("valider").remove();
+      repondre(q, ok, q.items.join(" → "));
+    };
+  }
+};
+
+/* ============ L'accueil ============ */
+let RUN = null;
+function renderTrain() {
+  RUN = null;
+  const ss = secs(), tout = ss.length === TOUTES.length, faits = store.get("faits") || {};
+  const today = parse(iso(NOW));
+  const nx = EXAMENS.filter(x => finSemaine(x) >= today).sort((a, b) => parse(a.semaine) - parse(b.semaine))[0];
+  const nxs = nx ? nx.sections : [];
+  const tuile = (a, i) => { const n = questions(a.id).length;
+    return `<button class="act" data-act="${a.id}" style="--c:${a.c2}"${n ? "" : " disabled"}>
+      <b class="a-n">${String(i + 1).padStart(2, "0")}</b>${faits[a.id] && n ? '<i class="a-fait">✓ Fait</i>' : ""}
+      <svg class="a-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO[a.ic]}</svg>
+      <strong>${esc(a.nom)}</strong><small>${n ? Math.min(SERIE, n) + " questions" : "Pas dans ce choix"}</small></button>`; };
+  $t("train").innerHTML = `
+    <header class="hero"><p class="sticker">Chapitre 1 · La consommation</p><h1>Teste ce que tu sais<em>.</em></h1>
+      <p class="hero-d">Choisis tes sections, puis une activité. Une erreur? Tu as la bonne réponse et la page de ton cahier.</p></header>
+    <section><h2 class="lab">Tes sections</h2><div class="secs-g">
+      <button class="sx tout${tout ? " on" : ""}" data-sx="tout" aria-pressed="${tout}">Tout le chapitre</button>
+      ${Object.entries(SECTIONS).map(([s, t]) => { const on = !tout && ss.includes(s);
+        return `<button class="sx${on ? " on" : ""}" data-sx="${s}" aria-pressed="${on}"><b>${s}</b><small>${esc(t)}</small></button>`; }).join("")}
+    </div>${nxs.length && nxs.join() !== ss.join() ? `<button class="sx-exam" data-sx="${nxs.join(",")}">🎯 Seulement la matière de ton ${esc(nx.titre.charAt(0).toLowerCase() + nx.titre.slice(1))} (${nxs.join(", ")})</button>` : ""}</section>
+    <section><h2 class="lab">Les activités</h2><div class="grille">${ACTS.map(tuile).join("")}</div></section>
+    <section class="exam-g"><button class="gros" data-ex="examen5">Mini-examen · 5</button><button class="gros" data-ex="examen10">Mini-examen · 10</button></section>
+    <p class="t-note">Rien n'est envoyé : tes choix restent sur ton appareil.</p>`;
+}
+function choisirSec(v) {
+  let ss = secs();
+  if (v === "tout") ss = TOUTES;
+  else if (v.includes(",")) ss = v.split(",");
+  else ss = ss.length === TOUTES.length ? [v] : ss.includes(v) ? ss.filter(x => x !== v) : [...ss, v].sort();
+  store.set("sections", ss.length ? ss : TOUTES);
+  renderTrain();
+}
+
+/* ============ Le reçu de fin ============ */
+function fin() {
+  const bons = RUN.res.filter(r => r.ok).length, n = RUN.res.length, a = actDe(RUN.id);
+  const faits = store.get("faits") || {}; faits[RUN.id] = true; store.set("faits", faits);
+  const pages = [...new Set(RUN.res.filter(r => !r.ok).map(r => r.p))].sort((x, y) => x - y);
+  const msg = bons === n ? "Parfait. Rien à relire." : bons / n >= .7 ? "Solide. Relis ces pages, puis rejoue." : "Relis ces pages, puis reviens : ça va rentrer.";
+  $t("train").innerHTML = `<div class="jeu">
+    <div class="recu"><div class="r-h">AU COMPTANT · REÇU</div><div class="r-s">${esc(a.nom)} · ${esc(fmt(new Date(), { day: "numeric", month: "long" }))}</div>
+      ${RUN.res.map((r, j) => `<div class="r-l${r.ok ? "" : " ko"}"><span>${j + 1}. ${esc(r.court)}</span><b>${r.ok ? "✓" : "✗"}</b></div>`).join("")}
+      <div class="r-tot"><span>TOTAL</span><b>${bons} / ${n}</b></div>
+      ${pages.length ? `<div class="r-relire">📒 À relire : cahier p. ${pages.join(", ")}</div>` : ""}
+      <div class="r-msg">${msg}</div><div class="r-code"></div></div>
+    <div class="fin-btns"><button class="gros" id="rejouer">Rejouer</button><button class="gros ghost" data-menu>Menu</button></div></div>`;
+}
+
+/* ============ Branchements ============ */
+$t("train").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b || b.disabled) return;
+  if (b.dataset.sx) choisirSec(b.dataset.sx);
+  else if (b.dataset.act) lancer(b.dataset.act);
+  else if (b.dataset.ex) lancer(b.dataset.ex);
+  else if (b.hasAttribute("data-menu")) { renderTrain(); scrollTo({ top: 0 }); }
+  else if (b.id === "rejouer") lancer(RUN.id);
+});
+renderTrain();
+
+</script>
+</body>
+</html>
