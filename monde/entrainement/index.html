@@ -60,6 +60,15 @@ body:has(.jeu) .couv h1{font-size:26px;margin-top:4px}
 .v-d{font-style:normal;color:var(--ink-3);font-size:15px}
 .tampon-v{position:absolute;right:12px;top:50%;transform:translateY(-50%) rotate(-12deg);font-family:var(--mono);font-size:15px;color:var(--vert);border:2px solid var(--vert);border-radius:50%;width:74px;height:74px;display:grid;place-items:center;text-align:center;line-height:1.1;opacity:.85;font-style:normal}
 .v-n{position:absolute;right:16px;bottom:10px;font-style:normal;font-family:var(--mono);font-size:15px;color:var(--ink-3)}
+/* Un seul geste pour commencer ; les visas sont repliés dans un menu */
+.go-g{display:grid;gap:12px}
+.gros.go{flex-direction:column;padding:22px 16px;font-family:var(--serif);font-size:25px;font-weight:800}
+.gros.go small{font-family:var(--mono);font-size:15px;font-weight:500;margin-top:4px;opacity:.85}
+.types summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 4px;border-top:1px solid var(--line);font-weight:700;font-size:17px}
+.types summary::-webkit-details-marker{display:none}
+.types summary::before{content:"+";font-family:var(--mono);font-size:20px;line-height:1;width:28px;height:28px;display:grid;place-items:center;border:1.5px solid var(--ink);border-radius:50%}
+.types[open] summary::before{content:"−"}
+.types summary i{font-style:normal;font-family:var(--mono);font-size:15px;color:var(--ink-3)}
 .exam-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .gros{display:flex;align-items:center;justify-content:center;width:100%;padding:15px;border-radius:12px;background:var(--cover);color:var(--gold);font-weight:700;font-size:17px;border:1.5px solid var(--cover)}
 .gros.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
@@ -401,7 +410,7 @@ const ACTS = [
   { id: "demo", rub: "A7", nom: "Le démographe", desc: "Calcule comme un pro", oi: null },
   { id: "temps", rub: "A8", nom: "La ligne du temps", desc: "Remets dans l'ordre", oi: "Situer dans le temps" }
 ];
-const actDe = id => ACTS.find(a => a.id === id) || { id, nom: "Mini-examen · " + (id === "examen10" ? 10 : 5) + " questions" };
+const actDe = id => ACTS.find(a => a.id === id) || { id, nom: id === "examen10" ? "Mini-examen · 10 questions" : "Teste-toi · un peu de tout" };
 const melange = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const avec = (bonne, autres) => melange([bonne, ...autres]);
 const Q = {
@@ -578,15 +587,17 @@ function renderTrain() {
     return `<button class="visa" data-act="${a.id}" style="--vc:${ENCRES[i % ENCRES.length]}"${n ? "" : " disabled"}><b class="v-code">${a.rub}</b><strong class="v-t">${esc(a.nom)}</strong><i class="v-d">${n ? esc(a.desc) : "Pas dans ce choix"}</i>
       ${f && n ? `<i class="tampon-v">VALIDÉ<br>${esc(typeof f === "string" ? fmt(parse(f), { day: "numeric", month: "short" }) : "✓")}</i>` : n ? `<i class="v-n">${Math.min(SERIE, n)} q.</i>` : ""}</button>`; };
   $t("train").innerHTML = `
-    <section class="intro"><h2>Enjeu 1 · La population</h2><p>Choisis tes destinations, puis un visa. Chaque série validée est tamponnée. Une erreur? La bonne réponse, et les pages du manuel à relire.</p></section>
+    <section class="intro"><h2>Enjeu 1 · La population</h2><p>Choisis tes destinations, puis décolle. Une erreur? La bonne réponse, et les pages du manuel à relire.</p></section>
     <section><b class="lab">Tes destinations</b><div class="secs-g">
       <button class="sx${tout ? " on" : ""}" data-sx="tout" aria-pressed="${tout}">Tout l'enjeu</button>
       ${Object.entries(SECTIONS).map(([s, t]) => { const on = !tout && ss.includes(s);
         return `<button class="sx${on ? " on" : ""}" data-sx="${s}" aria-pressed="${on}">${s} · ${esc(t)}</button>`; }).join("")}
     </div>${nxs.length && nxs.join() !== ss.join() && nxs.length < TOUTES.length ? `<button class="sx-exam" data-sx="${nxs.join(",")}">🎯 Seulement la matière de ton ${esc(nx.titre.charAt(0).toLowerCase() + nx.titre.slice(1))} (sections ${nxs.join(", ")})</button>` : ""}</section>
-    <section><b class="lab">Tes visas</b><div class="visas">${ACTS.map(visa).join("")}</div></section>
-    <section class="exam-g"><button class="gros" data-ex="examen5">Mini-examen · 5</button><button class="gros" data-ex="examen10">Mini-examen · 10</button></section>
+    <section class="go-g"><button class="gros go" data-ex="examen5">✈ Teste-toi · 5 questions<small>Un peu de tout, dans tes destinations</small></button><button class="gros ghost" data-ex="examen10">Mini-examen · 10 questions</button></section>
+    <details class="types" id="types"${store.get("types") ? " open" : ""}><summary>Ou choisis un visa précis <i>${ACTS.length}</i></summary><div class="visas">${ACTS.map(visa).join("")}</div></details>
     <p class="t-note">Rien n'est envoyé : tes choix restent sur ton appareil.</p>`;
+  // Le menu des visas reste ouvert ou fermé, comme l'élève l'a laissé.
+  $t("types").addEventListener("toggle", e => store.set("types", e.target.open));
 }
 function choisirSec(v) {
   let ss = secs();
@@ -606,7 +617,7 @@ function fin() {
   $t("train").innerHTML = `<article class="jeu"><section class="cb">
       <p class="cb-h"><b>Carte d'embarquement</b><b>${esc(fmt(new Date(), { day: "numeric", month: "short" }))}</b></p>
       <div class="cb-b">
-        <p class="cb-route"><b><small>De</small>Ton cahier</b><i>✈</i><b><small>Vers</small>${a.rub ? esc(a.rub) : "Examen"}</b></p>
+        <p class="cb-route"><b><small>De</small>Ton cahier</b><i>✈</i><b><small>Vers</small>${a.rub ? esc(a.rub) : RUN.id === "examen10" ? "Examen" : "Le monde"}</b></p>
         <p class="cb-champs"><em style="font-style:normal"><small>Score</small><b>${bons}/${n}</b></em><em style="font-style:normal"><small>Verdict</small><b>${verdict}</b></em><em style="font-style:normal"><small>Sections</small><b>${secs().length === TOUTES.length ? "Toutes" : secs().join(",")}</b></em></p>
         <ol>${RUN.res.map((r, j) => `<li class="${r.ok ? "" : "ko"}"><em style="font-style:normal">${j + 1}. ${esc(r.court)}</em><i>${r.ok ? "✓" : "✗"}</i></li>`).join("")}</ol>
         ${aRelire.length ? `<i class="cb-r" style="font-style:normal">📘 À relire : ${aRelire.map(s => "manuel p. " + PAGES_SEC[s] + " (section " + s + ")").join(", ")}</i>` : `<i class="cb-r" style="font-style:normal">Rien à relire. Bon vol!</i>`}

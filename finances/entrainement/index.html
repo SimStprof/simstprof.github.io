@@ -60,6 +60,16 @@ svg{width:1em;height:1em;flex:none}
 .act strong{font-weight:900;font-size:19px;line-height:1.05;letter-spacing:-.02em}
 .act small{font-family:var(--mono);font-size:15px;color:var(--ink-3)}
 .a-fait{position:absolute;top:10px;right:10px;font-style:normal;font-family:var(--mono);font-weight:700;font-size:15px;background:var(--jaune);color:#0e0e0e;padding:1px 6px;border:2px solid #0e0e0e;transform:rotate(4deg)}
+/* Un seul geste pour commencer ; les types d'activité sont repliés dans un menu */
+.go-g{display:grid;gap:14px}
+.gros.go{flex-direction:column;padding:22px 16px;font-size:24px;background:var(--jaune);color:#0e0e0e}
+.gros.go small{font-family:var(--mono);font-size:15px;font-weight:700;text-transform:none;margin-top:4px}
+.types summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 4px;border-top:3px solid var(--line);font-weight:800;font-size:17px}
+.types summary::-webkit-details-marker{display:none}
+.types summary::before{content:"+";font-family:var(--mono);font-size:22px;line-height:1;width:26px;height:26px;display:grid;place-items:center;border:2px solid var(--line)}
+.types[open] summary::before{content:"−"}
+.types summary i{font-style:normal;font-family:var(--mono);font-size:15px;color:var(--ink-3)}
+.types .grille{padding:6px 0 4px}
 .exam-g{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .gros{display:flex;align-items:center;justify-content:center;width:100%;padding:16px;border:3px solid var(--line);background:var(--ink);color:var(--bg);font-weight:900;font-size:18px;text-transform:uppercase;letter-spacing:.01em;box-shadow:var(--ombre)}
 .gros.ghost{background:var(--card);color:var(--ink)}
@@ -457,7 +467,7 @@ const ACTS = [
   { id: "budget", nom: "Classe la dépense", ic: "pie", oi: "Différences et similitudes", c1: "#3a0d24", c2: "#b8336a" },
   { id: "ordre", nom: "Dans l'ordre", ic: "list", oi: null, c1: "#3a1010", c2: "#a83226" }
 ];
-const actDe = id => ACTS.find(a => a.id === id) || { id, nom: "Mini-examen · " + (id === "examen10" ? 10 : 5) + " questions", c1: "#10140f", c2: "#3f5a12" };
+const actDe = id => ACTS.find(a => a.id === id) || { id, nom: id === "examen10" ? "Mini-examen · 10 questions" : "Teste-toi · un peu de tout", c1: "#10140f", c2: "#3f5a12" };
 
 // Chaque activité fabrique ses questions : { type, …, s, p }
 const glisse = (banque, cotes, titre) => banque.map(([t, ok, ex, s, p]) => ({ type: "swipe", t, cotes, titre, ok, ex, s, p }));
@@ -655,15 +665,17 @@ function renderTrain() {
       <strong>${esc(a.nom)}</strong><small>${n ? Math.min(SERIE, n) + " questions" : "Pas dans ce choix"}</small></button>`; };
   $t("train").innerHTML = `
     <header class="hero"><p class="sticker">Chapitre 1 · La consommation</p><h1>Teste ce que tu sais<em>.</em></h1>
-      <p class="hero-d">Choisis tes sections, puis une activité. Une erreur? Tu as la bonne réponse et la page de ton cahier.</p></header>
+      <p class="hero-d">Choisis tes sections, puis lance-toi. Une erreur? Tu as la bonne réponse et la page de ton cahier.</p></header>
     <section><h2 class="lab">Tes sections</h2><div class="secs-g">
       <button class="sx tout${tout ? " on" : ""}" data-sx="tout" aria-pressed="${tout}">Tout le chapitre</button>
       ${Object.entries(SECTIONS).map(([s, t]) => { const on = !tout && ss.includes(s);
         return `<button class="sx${on ? " on" : ""}" data-sx="${s}" aria-pressed="${on}"><b>${s}</b><small>${esc(t)}</small></button>`; }).join("")}
     </div>${nxs.length && nxs.join() !== ss.join() ? `<button class="sx-exam" data-sx="${nxs.join(",")}">🎯 Seulement la matière de ton ${esc(nx.titre.charAt(0).toLowerCase() + nx.titre.slice(1))} (${nxs.join(", ")})</button>` : ""}</section>
-    <section><h2 class="lab">Les activités</h2><div class="grille">${ACTS.map(tuile).join("")}</div></section>
-    <section class="exam-g"><button class="gros" data-ex="examen5">Mini-examen · 5</button><button class="gros" data-ex="examen10">Mini-examen · 10</button></section>
+    <section class="go-g"><button class="gros go" data-ex="examen5">▶ Teste-toi · 5 questions<small>Un peu de tout, dans tes sections</small></button><button class="gros ghost" data-ex="examen10">Mini-examen · 10 questions</button></section>
+    <details class="types" id="types"${store.get("types") ? " open" : ""}><summary>Ou choisis un type d'activité <i>${ACTS.length}</i></summary><div class="grille">${ACTS.map(tuile).join("")}</div></details>
     <p class="t-note">Rien n'est envoyé : tes choix restent sur ton appareil.</p>`;
+  // Le menu des types d'activité reste ouvert ou fermé, comme l'élève l'a laissé.
+  $t("types").addEventListener("toggle", e => store.set("types", e.target.open));
 }
 function choisirSec(v) {
   let ss = secs();
