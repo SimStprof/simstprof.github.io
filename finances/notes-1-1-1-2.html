@@ -3,7 +3,7 @@
 <head>
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-yBpTkTMo7adylWL1uXq/q4Lpe/yXP7+7W7pqHaykgbc=' 'sha256-zCTM2CaoFwPyEc/c4YugHw9vIiKptiejT7lvKT9XdIM=' 'sha256-quBjGPBlIhdLtYE3G4QLnR+0voYK8evfFYnDXu+4JVs='; style-src 'unsafe-inline' 'self'; font-src 'self'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-yBpTkTMo7adylWL1uXq/q4Lpe/yXP7+7W7pqHaykgbc=' 'sha256-AOER47uEL9JJ0G2t/bHC6voWmGYnnXELpoyBdi3husY=' 'sha256-quBjGPBlIhdLtYE3G4QLnR+0voYK8evfFYnDXu+4JVs='; style-src 'unsafe-inline' 'self'; font-src 'self'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Notes de cours 1.1 + 1.2 · Consommation</title>
@@ -286,12 +286,13 @@ footer .wrap { padding-block: 18px 40px; font-size: .85rem; color: var(--muted);
 h3 { font-size: 1.9rem; }
 .pause { margin-top: 6px; max-width: 68ch; }
 .pause .quiz { display: block; }
-.pause .quiz details { background: transparent; border: 0; border-left: 4px solid var(--teal); border-radius: 0; }
-.pause .quiz summary { padding: 6px 0 6px 16px; gap: 4px; }
-.pause .quiz summary .q-n { color: var(--teal); font-weight: 600; }
+/* 2026-10-27 : la petite vérif doit arrêter l'œil de l'élève qui défile (carte teintée, étiquette pleine) */
+.pause .quiz details { background: var(--teal-soft); border: 2px solid var(--teal); border-radius: 14px; box-shadow: 0 4px 0 var(--teal); }
+.pause .quiz summary { padding: 14px 18px; gap: 8px; font-size: 1.1rem; font-weight: 600; }
+.pause .quiz summary .q-n { align-self: flex-start; width: fit-content; background: var(--teal); color: #fff; font-weight: 700; padding: 4px 14px; border-radius: 999px; }
 .pause .quiz summary .q-n::before { content: "✓ Petite vérif · "; }
-.pause .quiz summary .see { text-decoration: underline; text-underline-offset: 3px; }
-.pause .quiz .ans { margin: 2px 0 6px 16px; padding: 10px 14px; border-top: 0; background: var(--teal-soft); border-radius: 0 10px 10px 0; }
+.pause .quiz summary .see { color: var(--teal); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.pause .quiz .ans { margin: 0 18px 16px; padding: 12px 16px; border-top: 0; background: #fff; border-radius: 10px; }
 .check-h { font-family: var(--mono); font-size: 1rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 10px; line-height: 1.3; }
 .check li { display: flex; gap: 6px; align-items: center; }
 .check label { flex: 1; min-width: 0; }
@@ -299,7 +300,8 @@ h3 { font-size: 1.9rem; }
 @media print {
   h3 { font-size: 1.45rem; }
   .pause .quiz summary .q-n::before { content: none; }
-  .pause .quiz details { border-left-width: 3px; }
+  .pause .quiz details { background: none; box-shadow: none; border: 1px solid #999; border-radius: 6px; }
+  .pause .quiz summary .q-n { background: none; color: inherit; padding: 0; }
   .check .rev { display: none; }
   .check-h { margin: 10px 0 4px; font-size: 9.5pt; break-after: avoid; }
 }
@@ -382,7 +384,7 @@ h3 { font-size: 1.9rem; }
 <section class="plan" aria-labelledby="plan-t">
   <div class="wrap">
     <h2 id="plan-t">Le plan de match</h2>
-    <p>À l'examen&nbsp;: des vrai ou faux, des « nomme-moi trois… » et des « explique avec un exemple ». Connais tes <strong>définitions</strong>, tes <strong>listes</strong>, et garde des <strong>exemples</strong> en poche. Chaque thème finit par une <strong>petite vérif</strong>.</p>
+    <p>Lis un thème, puis fais sa <strong>petite vérif</strong>. À la fin de la note, on teste.</p>
     <ul>
       <li><a href="#besoins">Besoin ou désir</a></li>
       <li><a href="#maslow">La pyramide de Maslow</a></li>
@@ -655,28 +657,6 @@ h3 { font-size: 1.9rem; }
 
   
 
-  <!-- ===================== CHECKLIST ===================== -->
-  <div class="section-head" id="pret">
-    <span class="num" aria-hidden="true">OK</span>
-    <h2>Je suis prêt si je peux…</h2>
-    <p class="score" id="score" aria-live="polite">0 sur 10</p>
-  </div>
-  <h3 class="check-h">1.1 · Consommer, c'est faire des choix</h3>
-  <ul class="check">
-    <li><label for="c1"><input type="checkbox" id="c1"><span>Expliquer pourquoi une même chose peut être un besoin <em>ou</em> un désir, avec un exemple.</span></label><a class="rev" href="#besoins">Revoir</a></li>
-    <li><label for="c2"><input type="checkbox" id="c2"><span>Nommer les 5 étages de Maslow dans l'ordre.</span></label><a class="rev" href="#maslow">Revoir</a></li>
-    <li><label for="c3"><input type="checkbox" id="c3"><span>Définir le coût d'opportunité et donner un exemple de ma vie.</span></label><a class="rev" href="#opportunite">Revoir</a></li>
-    <li><label for="c4"><input type="checkbox" id="c4"><span>Définir le pouvoir d'achat et nommer ce qui l'influence (revenu, prix, taxes).</span></label><a class="rev" href="#pouvoir">Revoir</a></li>
-    <li><label for="c5"><input type="checkbox" id="c5"><span>Expliquer l'offre et la demande avec un exemple, et dire ce qui arrive au prix.</span></label><a class="rev" href="#offre">Revoir</a></li>
-    <li><label for="c6"><input type="checkbox" id="c6"><span>Nommer la TPS et la TVQ, leurs taux, des produits non taxés, et ce qu'est une taxe d'accise.</span></label><a class="rev" href="#taxes">Revoir</a></li>
-    <li><label for="c7"><input type="checkbox" id="c7"><span>Nommer les 3 facteurs socioculturels avec deux exemples personnels chacun.</span></label><a class="rev" href="#socio">Revoir</a></li>
-  </ul>
-  <h3 class="check-h">1.2 · La publicité</h3>
-  <ul class="check">
-    <li><label for="c8"><input type="checkbox" id="c8"><span>Nommer les 3 objectifs de la pub (I·P·S).</span></label><a class="rev" href="#objectifs">Revoir</a></li>
-    <li><label for="c9"><input type="checkbox" id="c9"><span>Nommer au moins 5 stratégies publicitaires.</span></label><a class="rev" href="#strategies">Revoir</a></li>
-    <li><label for="c10"><input type="checkbox" id="c10"><span>Expliquer ce que la Loi sur la protection du consommateur interdit, la règle des 13 ans, et quoi faire si je suis trompé.</span></label><a class="rev" href="#lois">Revoir</a></li>
-  </ul>
 <!--qr5--><section class="qr5-affiche" aria-labelledby="qr5-t"><h2 id="qr5-t">On teste?</h2><p>5 questions sur ton cellulaire. À chaque erreur&nbsp;: la bonne réponse et la page de ton cahier.</p><div class="qr5-btns"><a href="https://simleprof.github.io/finances/?s=1.1" target="_blank" rel="noopener">Section 1.1 →</a><a href="https://simleprof.github.io/finances/?s=1.2" target="_blank" rel="noopener">Section 1.2 →</a></div><div class="qr5-qr"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h35v35H0z"/><path stroke="#000000" d="M1 1.5h7m5 0h1m3 0h1m1 0h6m2 0h7M1 2.5h1m5 0h1m2 0h1m2 0h1m2 0h1m2 0h1m2 0h1m4 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m1 0h2m2 0h1m1 0h1m3 0h3m3 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h1m6 0h1m2 0h1m2 0h1m2 0h1m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h5m2 0h3m3 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m1 0h5m5 0h2m1 0h1m1 0h2m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h1m3 0h1m1 0h1m1 0h1m1 0h4m1 0h1M1 9.5h1m1 0h5m4 0h4m2 0h1m1 0h2m1 0h3m1 0h5M1 10.5h1m1 0h1m1 0h1m2 0h1m4 0h2m2 0h2m1 0h2m1 0h2m2 0h2m1 0h2m1 0h1M1 11.5h1m2 0h1m2 0h3m1 0h8m2 0h1m1 0h1m1 0h1m3 0h1m1 0h2M3 12.5h2m1 0h1m1 0h1m2 0h2m1 0h1m2 0h3m6 0h2m1 0h3m1 0h1M1 13.5h2m1 0h2m1 0h1m5 0h1m1 0h1m1 0h1m2 0h6m3 0h2m1 0h2M3 14.5h1m2 0h1m2 0h1m2 0h3m1 0h1m2 0h1m2 0h1m2 0h3m3 0h3M1 15.5h1m1 0h1m3 0h1m2 0h3m1 0h1m1 0h2m3 0h1m4 0h2m1 0h2m1 0h1M1 16.5h1m3 0h2m2 0h3m3 0h2m5 0h1m2 0h3m1 0h3M3 17.5h1m1 0h6m2 0h4m1 0h1m4 0h1m1 0h2m1 0h2m3 0h1M1 18.5h1m1 0h1m1 0h1m5 0h3m5 0h4m1 0h1m1 0h3m1 0h2m1 0h1M3 19.5h2m1 0h4m4 0h4m1 0h1m1 0h2m3 0h4m1 0h2M2 20.5h2m7 0h3m3 0h1m2 0h4m2 0h1m1 0h5M5 21.5h4m1 0h2m1 0h1m5 0h1m2 0h1m1 0h1m4 0h2M1 22.5h2m1 0h1m1 0h1m1 0h6m1 0h3m3 0h1m1 0h6m1 0h2m1 0h1M1 23.5h1m1 0h1m3 0h1m5 0h1m1 0h1m2 0h3m2 0h1m1 0h1m3 0h4M1 24.5h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h2m2 0h1m1 0h6m1 0h2m1 0h5M1 25.5h1m2 0h2m1 0h2m1 0h1m2 0h3m2 0h3m2 0h8m2 0h1M9 26.5h2m2 0h2m2 0h5m3 0h1m3 0h1m1 0h1m1 0h1M1 27.5h7m3 0h1m2 0h5m4 0h3m1 0h1m1 0h1m1 0h2M1 28.5h1m5 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h4m2 0h2m3 0h3m1 0h1M1 29.5h1m1 0h3m1 0h1m1 0h5m1 0h1m1 0h1m2 0h4m1 0h6m1 0h2M1 30.5h1m1 0h3m1 0h1m1 0h3m2 0h3m1 0h2m2 0h1m1 0h3m2 0h1m1 0h1m1 0h1M1 31.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h4m2 0h1m1 0h1m3 0h2m1 0h1M1 32.5h1m5 0h1m6 0h3m2 0h1m2 0h1m6 0h1m1 0h1M1 33.5h7m1 0h1m4 0h1m1 0h1m1 0h1m6 0h2m1 0h1m3 0h1"/></svg>Section 1.1</figure><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h35v35H0z"/><path stroke="#000000" d="M1 1.5h7m5 0h1m3 0h1m1 0h6m2 0h7M1 2.5h1m5 0h1m2 0h2m1 0h1m2 0h1m2 0h1m2 0h1m4 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m1 0h2m2 0h1m1 0h1m3 0h3m3 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1m2 0h1m2 0h1m2 0h1m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m2 0h7m2 0h3m3 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m1 0h5m5 0h2m1 0h1m1 0h2m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h1m5 0h1m1 0h1m1 0h4m1 0h1M1 9.5h1m1 0h5m4 0h4m2 0h1m1 0h2m1 0h3m1 0h5M1 10.5h1m1 0h1m1 0h1m2 0h1m1 0h1m2 0h2m2 0h2m1 0h2m1 0h2m2 0h2m1 0h2m1 0h1M4 11.5h1m1 0h5m1 0h7m2 0h1m1 0h1m1 0h1m3 0h1m1 0h2M1 12.5h5m2 0h1m2 0h2m1 0h1m2 0h3m6 0h2m1 0h3m1 0h1M2 13.5h1m1 0h4m1 0h3m3 0h1m1 0h1m2 0h6m3 0h2m1 0h2M4 14.5h1m1 0h1m2 0h1m1 0h4m1 0h1m2 0h1m2 0h1m2 0h3m3 0h3M1 15.5h1m1 0h1m3 0h1m2 0h3m1 0h1m1 0h2m3 0h1m3 0h3m1 0h2m1 0h1M1 16.5h1m3 0h2m3 0h3m2 0h2m5 0h1m1 0h4m1 0h3M3 17.5h1m1 0h3m1 0h2m2 0h4m1 0h1m4 0h1m1 0h2m1 0h2m3 0h1M1 18.5h1m1 0h1m7 0h4m4 0h4m1 0h1m1 0h3m1 0h2m1 0h1M1 19.5h1m1 0h3m1 0h3m4 0h4m1 0h1m1 0h2m3 0h4m1 0h2M3 20.5h1m6 0h1m1 0h2m3 0h1m2 0h4m2 0h1m1 0h5M5 21.5h4m5 0h2m3 0h1m2 0h1m1 0h1m4 0h2M1 22.5h2m1 0h1m1 0h1m2 0h5m2 0h2m3 0h1m1 0h6m1 0h2m1 0h1M1 23.5h1m1 0h2m2 0h3m2 0h1m2 0h1m2 0h3m2 0h1m1 0h1m3 0h4M1 24.5h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h2m2 0h1m1 0h6m1 0h2m1 0h5M1 25.5h1m1 0h3m1 0h1m2 0h1m1 0h4m2 0h3m2 0h8m2 0h1M9 26.5h1m3 0h1m3 0h5m3 0h1m3 0h1m1 0h1m1 0h1M1 27.5h7m2 0h2m4 0h3m4 0h3m1 0h1m1 0h1m1 0h2M1 28.5h1m5 0h1m1 0h2m1 0h1m1 0h1m1 0h1m1 0h4m2 0h2m3 0h3m1 0h1M1 29.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m2 0h4m1 0h6m1 0h2M1 30.5h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m1 0h2m2 0h1m1 0h3m2 0h1m1 0h1m1 0h1M1 31.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h4m2 0h1m1 0h1m3 0h2m1 0h1M1 32.5h1m5 0h1m5 0h4m2 0h1m2 0h1m6 0h1m1 0h1M1 33.5h7m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m6 0h2m1 0h1m3 0h1"/></svg>Section 1.2</figure></div></section><!--/qr5-->
 </main>
 
@@ -693,7 +673,7 @@ h3 { font-size: 1.9rem; }
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   function update() {
     var n = boxes.filter(function (b) { return b.checked; }).length;
-    score.textContent = n + " sur " + boxes.length + (n === boxes.length ? " · Prêt pour l'examen!" : "");
+    if (score) score.textContent = n + " sur " + boxes.length + (n === boxes.length ? " · Prêt pour l'examen!" : "");
   }
   boxes.forEach(function (b) {
     if (saved[b.id]) b.checked = true;
