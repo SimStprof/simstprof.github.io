@@ -377,6 +377,16 @@ footer .wrap { padding-block: 22px 40px; font-size: .85rem; }
 .qr5 a i{font-style:normal}
 /* Sur papier : compact, pour ne pas tomber seul sur une page (une feuille de plus × 180 élèves) */
 @media print{.qr5{opacity:1;margin:10px 0 0;padding:6px 12px;gap:12px;font-size:.9em}.qr5 svg{display:block;width:.75in;height:.75in}.qr5 a{display:none}}
+/* Affiche de fin (notes de Finances) : couleurs fixes, pour rester noire et jaune aussi en mode sombre */
+.qr5-affiche{margin:56px 0 0;background:#15171C;color:#fff;border-radius:18px;box-shadow:0 0 0 2px var(--line,#ccc);padding:36px 20px;display:grid;gap:16px;justify-items:center;text-align:center}
+.qr5-affiche h2{margin:0;font-family:var(--display,inherit);font-weight:400;font-size:clamp(2.8rem,10vw,4rem);line-height:1;text-transform:uppercase;color:#FFDC38}
+.qr5-affiche p{margin:0;max-width:34ch;font-size:1.1rem;line-height:1.45}
+.qr5-btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;width:100%}
+.qr5-btns a{flex:1 1 200px;max-width:290px;min-height:60px;display:grid;place-items:center;padding:10px 24px;border-radius:999px;background:#FFDC38;color:#15171C;font-family:var(--display,inherit);font-size:1.5rem;letter-spacing:.02em;text-transform:uppercase;text-decoration:none;transition:transform .15s}
+.qr5-btns a:hover{transform:translateY(-2px)}
+.qr5-btns a:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.qr5-qr{display:none}
+@media print{.qr5-affiche{margin:16px 0 0;padding:12px 16px;gap:8px;background:none;color:#15171C;border:2.5px solid #15171C;box-shadow:none;break-inside:avoid;page-break-inside:avoid}.qr5-affiche h2{font-size:22pt;color:#15171C}.qr5-affiche p{font-size:10pt}.qr5-btns{display:none}.qr5-qr{display:flex;gap:36px;justify-content:center}.qr5-qr figure{margin:0;font:700 10pt/1.2 var(--body,inherit)}.qr5-qr svg{display:block;width:1in;height:1in;margin:0 auto 4px}}
 </style>
 <link rel="stylesheet" href="../polices/d2b6d1b6a0.css">
 </head>
