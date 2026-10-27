@@ -662,7 +662,11 @@ $t("train").addEventListener("click", e => {
   else if (b.hasAttribute("data-menu")) { renderTrain(); scrollTo({ top: 0 }); }
   else if (b.id === "rejouer") lancer(RUN.id);
 });
+// Lien d'une note de cours (?s=1.2, ou ?s=1,2) : ces sections-là, et la série de 5 démarre tout de suite.
+const demandees = (new URLSearchParams(location.search).get("s") || "").split(",").filter(s => SECTIONS[s]);
+if (demandees.length) store.set("sections", demandees);
 renderTrain();
+if (demandees.length) lancer("examen5");
 
 </script>
 </body>

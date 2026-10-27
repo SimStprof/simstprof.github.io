@@ -128,6 +128,20 @@ header b{font-family:var(--titre);font-size:20px;font-weight:800;letter-spacing:
 .exams-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
 .exams .act.large{grid-column:auto;margin-top:0}
 @media (max-width:560px){.exams .act.large .ic{display:none}}
+/* Un seul geste pour commencer : 5 questions mêlées ; les activités par OI, repliées (2026-10-26) */
+.go-g{display:grid;gap:12px;margin-top:18px}
+.go{display:flex;flex-direction:column;align-items:center;gap:4px;padding:20px 16px;border-radius:24px;background:var(--ink);color:var(--bg);text-align:center;transition:transform .15s}
+.go:active{transform:scale(.98)}
+.go b{font:800 24px/1.1 var(--titre)}
+.go small{font-size:15px;opacity:.85}
+.go.ghost{padding:14px;background:var(--surface);color:var(--ink);border:2px solid color-mix(in srgb,var(--ink) 25%,transparent)}
+.go.ghost b{font-size:19px}
+.par-oi{margin-top:22px}
+.par-oi summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:14px 4px;border-top:2px dashed color-mix(in srgb,var(--ink) 20%,transparent);font-weight:800;font-size:18px;color:var(--ink)}
+.par-oi summary::-webkit-details-marker{display:none}
+.par-oi summary::before{content:"+";flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--ink);font-size:20px;line-height:1}
+.par-oi[open] summary::before{content:"−"}
+.par-oi summary i{font-style:normal;font-weight:500;color:var(--ink-2)}
 /* Les dossiers du cahier, en haut : un ou plusieurs, et toutes les activités suivent */
 .dossiers{margin-top:22px;padding:14px;border-radius:24px;background:var(--surface);border:1px solid var(--line)}
 .dossiers .astuce{font-size:15px}
@@ -585,14 +599,18 @@ function render() {
   $("sansjs")?.remove();
   $("hero").style.backgroundImage = `url(${IMAGES.couv})`;
   $("hero").innerHTML = `<div><p class="eyebrow">Chapitre 1 · ${esc(CH.per)}</p><h1>${esc(CH.titre)}</h1>
-    <p>Choisis une opération intellectuelle et teste-toi. Une erreur? Tu as la bonne réponse et la page de ton cahier.</p></div>`;
+    <p>Choisis où tu es rendu dans ton cahier, puis teste-toi. Une erreur? Tu as la bonne réponse et la page de ton cahier.</p></div>`;
   const faits = store.get("faits") || {};
   const ds = choisis(), tout = ds.length === TOUS.length;
   let h = `<div class="dossiers"><p class="eyebrow">Où es-tu rendu dans ton cahier?</p><div class="dos-g">
     <button class="dos tout${tout ? " on" : ""}" data-dos="tout" aria-pressed="${tout}">Tout le chapitre</button>
     ${Object.entries(DOSSIERS).map(([d, t]) => { const on = ds.includes(+d);
       return `<button class="dos${on ? " on" : ""}" data-dos="${d}" aria-pressed="${on}"><span class="n">${d}</span><small>${esc(t)}</small></button>`; }).join("")}
-    </div><p class="astuce">Touche un ou plusieurs dossiers : toutes les activités suivent.</p></div>`, fam = "";
+    </div><p class="astuce">Touche un ou plusieurs dossiers : toutes les questions suivent.</p></div>`, fam = "";
+  // Un seul geste pour commencer (2026-10-26, avis du comité) : 5 questions mêlées ; les activités par OI sont repliées.
+  h += `<div class="go-g"><button class="go" data-act="examen5"><b>▶ Teste-toi · 5 questions</b><small>Un peu de tout, dans ${esc(nomChoix(ds).toLowerCase())}</small></button>
+    <button class="go ghost" data-act="examen"><b>Mini-examen · 10 questions</b></button></div>
+    <details class="par-oi"${store.get("ouvert-oi") ? " open" : ""}><summary><span>Ou choisis une activité <i>par opération intellectuelle</i></span></summary>`;
   // Combien de questions chaque activité a dans les dossiers choisis
   const nb = id => admis(id).length;
   const carteAct = a => { const n = nb(a.id), vide = n < (MINI[a.id] || 1), q = Math.min(SERIE, n);
@@ -606,9 +624,10 @@ function render() {
     h += `<div class="oi-bloc" style="--a:${o.a}"><div class="oi-tete"><span class="picto"><i style="--m:url(${PICTOS[o.id]})"></i></span><div><h3>${esc(o.nom)}</h3><p>${esc(o.desc)}</p></div></div>
       <div class="acts">${ACTIVITES.filter(a => a.oi === o.id).map(carteAct).join("")}</div></div>`;
   });
-  h += `</div><div class="exams"><p class="eyebrow">Mini-examen · toutes les OI · ${esc(nomChoix(ds))}</p><div class="exams-g">${[["examen5", 5], ["examen", 10]].map(([id, n]) =>
-    `<button class="act large" data-act="${id}"><span class="ic">📝</span><span><b>${n} questions</b><small>${n === 5 ? "Un tour rapide" : "Le grand tour"}</small></span>${faits[id] ? '<span class="fait">✓</span>' : ""}</button>`).join("")}</div></div>`;
+  h += `</div></details>`;
   $("ois").innerHTML = h;
+  // Le menu des OI reste ouvert ou fermé, comme l'élève l'a laissé.
+  $("ois").querySelector(".par-oi").addEventListener("toggle", e => store.set("ouvert-oi", e.target.open));
 }
 
 /* ============ Feuille ============ */

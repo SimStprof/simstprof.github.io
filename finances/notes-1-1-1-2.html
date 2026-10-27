@@ -3,7 +3,7 @@
 <head>
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-yBpTkTMo7adylWL1uXq/q4Lpe/yXP7+7W7pqHaykgbc=' 'sha256-quBjGPBlIhdLtYE3G4QLnR+0voYK8evfFYnDXu+4JVs=' 'sha256-7yC6QK9TMngTNAnPWUFqoNP/ZanrWhWmhX2rMtlJZNc=' 'sha256-7yC6QK9TMngTNAnPWUFqoNP/ZanrWhWmhX2rMtlJZNc='; style-src 'unsafe-inline' 'self'; font-src 'self'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-yBpTkTMo7adylWL1uXq/q4Lpe/yXP7+7W7pqHaykgbc=' 'sha256-7yC6QK9TMngTNAnPWUFqoNP/ZanrWhWmhX2rMtlJZNc=' 'sha256-quBjGPBlIhdLtYE3G4QLnR+0voYK8evfFYnDXu+4JVs='; style-src 'unsafe-inline' 'self'; font-src 'self'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Notes de cours 1.1 + 1.2 · Consommation</title>
@@ -321,6 +321,17 @@ footer .wrap { padding-block: 18px 40px; font-size: .85rem; color: var(--muted);
   table.mini > tbody > tr > td { font-size: 16px !important; }
 }
 </style>
+<style id="qr-notes-sec5">
+/* « Est-ce que j'ai compris? » en fin de section. Posé par [98] Coulisses/[05] Claude/outils/qr/qr-notes-sec5.js */
+.qr5{display:flex;align-items:center;gap:16px;max-width:760px;margin:28px auto 8px;padding:14px 18px;border:2px dashed currentColor;border-radius:14px;opacity:.95;break-inside:avoid;page-break-inside:avoid}
+.qr5 svg{display:none;width:1in;height:1in;flex:none}
+.qr5 b{display:block;font-size:1.15em;line-height:1.2}
+.qr5 span{display:block;margin-top:2px}
+.qr5 a{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:999px;border:2px solid currentColor;color:inherit;text-decoration:none;font-weight:700}
+.qr5 a i{font-style:normal}
+/* Sur papier : compact, pour ne pas tomber seul sur une page (une feuille de plus × 180 élèves) */
+@media print{.qr5{opacity:1;margin:10px 0 0;padding:6px 12px;gap:12px;font-size:.9em}.qr5 svg{display:block;width:.75in;height:.75in}.qr5 a{display:none}}
+</style>
 <link rel="stylesheet" href="../polices/d2b6d1b6a0.css">
 </head>
 <body>
@@ -530,7 +541,8 @@ footer .wrap { padding-block: 18px 40px; font-size: .85rem; color: var(--muted);
     </div>
   </section>
 
-  <!-- ===================== 1.2 ===================== -->
+  <!--qr5--><div class="qr5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h35v35H0z"/><path stroke="#000000" d="M1 1.5h7m5 0h1m3 0h1m1 0h6m2 0h7M1 2.5h1m5 0h1m2 0h1m2 0h1m2 0h1m2 0h1m2 0h1m4 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m1 0h2m2 0h1m1 0h1m3 0h3m3 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h1m6 0h1m2 0h1m2 0h1m2 0h1m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h5m2 0h3m3 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m1 0h5m5 0h2m1 0h1m1 0h2m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h1m3 0h1m1 0h1m1 0h1m1 0h4m1 0h1M1 9.5h1m1 0h5m4 0h4m2 0h1m1 0h2m1 0h3m1 0h5M1 10.5h1m1 0h1m1 0h1m2 0h1m4 0h2m2 0h2m1 0h2m1 0h2m2 0h2m1 0h2m1 0h1M1 11.5h1m2 0h1m2 0h3m1 0h8m2 0h1m1 0h1m1 0h1m3 0h1m1 0h2M3 12.5h2m1 0h1m1 0h1m2 0h2m1 0h1m2 0h3m6 0h2m1 0h3m1 0h1M1 13.5h2m1 0h2m1 0h1m5 0h1m1 0h1m1 0h1m2 0h6m3 0h2m1 0h2M3 14.5h1m2 0h1m2 0h1m2 0h3m1 0h1m2 0h1m2 0h1m2 0h3m3 0h3M1 15.5h1m1 0h1m3 0h1m2 0h3m1 0h1m1 0h2m3 0h1m4 0h2m1 0h2m1 0h1M1 16.5h1m3 0h2m2 0h3m3 0h2m5 0h1m2 0h3m1 0h3M3 17.5h1m1 0h6m2 0h4m1 0h1m4 0h1m1 0h2m1 0h2m3 0h1M1 18.5h1m1 0h1m1 0h1m5 0h3m5 0h4m1 0h1m1 0h3m1 0h2m1 0h1M3 19.5h2m1 0h4m4 0h4m1 0h1m1 0h2m3 0h4m1 0h2M2 20.5h2m7 0h3m3 0h1m2 0h4m2 0h1m1 0h5M5 21.5h4m1 0h2m1 0h1m5 0h1m2 0h1m1 0h1m4 0h2M1 22.5h2m1 0h1m1 0h1m1 0h6m1 0h3m3 0h1m1 0h6m1 0h2m1 0h1M1 23.5h1m1 0h1m3 0h1m5 0h1m1 0h1m2 0h3m2 0h1m1 0h1m3 0h4M1 24.5h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h2m2 0h1m1 0h6m1 0h2m1 0h5M1 25.5h1m2 0h2m1 0h2m1 0h1m2 0h3m2 0h3m2 0h8m2 0h1M9 26.5h2m2 0h2m2 0h5m3 0h1m3 0h1m1 0h1m1 0h1M1 27.5h7m3 0h1m2 0h5m4 0h3m1 0h1m1 0h1m1 0h2M1 28.5h1m5 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h4m2 0h2m3 0h3m1 0h1M1 29.5h1m1 0h3m1 0h1m1 0h5m1 0h1m1 0h1m2 0h4m1 0h6m1 0h2M1 30.5h1m1 0h3m1 0h1m1 0h3m2 0h3m1 0h2m2 0h1m1 0h3m2 0h1m1 0h1m1 0h1M1 31.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h4m2 0h1m1 0h1m3 0h2m1 0h1M1 32.5h1m5 0h1m6 0h3m2 0h1m2 0h1m6 0h1m1 0h1M1 33.5h7m1 0h1m4 0h1m1 0h1m1 0h1m6 0h2m1 0h1m3 0h1"/></svg><div><b>Est-ce que j'ai compris&nbsp;?</b><span>Teste-toi avec ton cellulaire : 5 questions sur la section 1.1.</span><a href="https://simleprof.github.io/finances/?s=1.1" target="_blank" rel="noopener"><i>Teste-toi sur la section 1.1 →</i></a></div></div><!--/qr5-->
+<!-- ===================== 1.2 ===================== -->
   <div class="section-head">
     <span class="num" aria-hidden="true">1.2</span>
     <h2>La publicité, un mal nécessaire?</h2>
@@ -629,7 +641,8 @@ footer .wrap { padding-block: 18px 40px; font-size: .85rem; color: var(--muted);
     </div>
   </section>
 
-  <!-- ===================== QUIZ ===================== -->
+  <!--qr5--><div class="qr5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h35v35H0z"/><path stroke="#000000" d="M1 1.5h7m5 0h1m3 0h1m1 0h6m2 0h7M1 2.5h1m5 0h1m2 0h2m1 0h1m2 0h1m2 0h1m2 0h1m4 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m1 0h2m2 0h1m1 0h1m3 0h3m3 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1m2 0h1m2 0h1m2 0h1m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m2 0h7m2 0h3m3 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m1 0h5m5 0h2m1 0h1m1 0h2m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h1m5 0h1m1 0h1m1 0h4m1 0h1M1 9.5h1m1 0h5m4 0h4m2 0h1m1 0h2m1 0h3m1 0h5M1 10.5h1m1 0h1m1 0h1m2 0h1m1 0h1m2 0h2m2 0h2m1 0h2m1 0h2m2 0h2m1 0h2m1 0h1M4 11.5h1m1 0h5m1 0h7m2 0h1m1 0h1m1 0h1m3 0h1m1 0h2M1 12.5h5m2 0h1m2 0h2m1 0h1m2 0h3m6 0h2m1 0h3m1 0h1M2 13.5h1m1 0h4m1 0h3m3 0h1m1 0h1m2 0h6m3 0h2m1 0h2M4 14.5h1m1 0h1m2 0h1m1 0h4m1 0h1m2 0h1m2 0h1m2 0h3m3 0h3M1 15.5h1m1 0h1m3 0h1m2 0h3m1 0h1m1 0h2m3 0h1m3 0h3m1 0h2m1 0h1M1 16.5h1m3 0h2m3 0h3m2 0h2m5 0h1m1 0h4m1 0h3M3 17.5h1m1 0h3m1 0h2m2 0h4m1 0h1m4 0h1m1 0h2m1 0h2m3 0h1M1 18.5h1m1 0h1m7 0h4m4 0h4m1 0h1m1 0h3m1 0h2m1 0h1M1 19.5h1m1 0h3m1 0h3m4 0h4m1 0h1m1 0h2m3 0h4m1 0h2M3 20.5h1m6 0h1m1 0h2m3 0h1m2 0h4m2 0h1m1 0h5M5 21.5h4m5 0h2m3 0h1m2 0h1m1 0h1m4 0h2M1 22.5h2m1 0h1m1 0h1m2 0h5m2 0h2m3 0h1m1 0h6m1 0h2m1 0h1M1 23.5h1m1 0h2m2 0h3m2 0h1m2 0h1m2 0h3m2 0h1m1 0h1m3 0h4M1 24.5h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h2m2 0h1m1 0h6m1 0h2m1 0h5M1 25.5h1m1 0h3m1 0h1m2 0h1m1 0h4m2 0h3m2 0h8m2 0h1M9 26.5h1m3 0h1m3 0h5m3 0h1m3 0h1m1 0h1m1 0h1M1 27.5h7m2 0h2m4 0h3m4 0h3m1 0h1m1 0h1m1 0h2M1 28.5h1m5 0h1m1 0h2m1 0h1m1 0h1m1 0h1m1 0h4m2 0h2m3 0h3m1 0h1M1 29.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m1 0h1m2 0h4m1 0h6m1 0h2M1 30.5h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m1 0h2m2 0h1m1 0h3m2 0h1m1 0h1m1 0h1M1 31.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h4m2 0h1m1 0h1m3 0h2m1 0h1M1 32.5h1m5 0h1m5 0h4m2 0h1m2 0h1m6 0h1m1 0h1M1 33.5h7m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m6 0h2m1 0h1m3 0h1"/></svg><div><b>Est-ce que j'ai compris&nbsp;?</b><span>Teste-toi avec ton cellulaire : 5 questions sur la section 1.2.</span><a href="https://simleprof.github.io/finances/?s=1.2" target="_blank" rel="noopener"><i>Teste-toi sur la section 1.2 →</i></a></div></div><!--/qr5-->
+<!-- ===================== QUIZ ===================== -->
   <div class="section-head" id="quiz">
     <span class="num" aria-hidden="true">?!</span>
     <h2>Teste-toi</h2>
