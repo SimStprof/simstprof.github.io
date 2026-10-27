@@ -483,8 +483,8 @@ const melange = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { cons
 const TOUTES = Object.keys(SECTIONS);
 const secs = () => { const v = store.get("sections"); return Array.isArray(v) && v.length ? v.filter(s => SECTIONS[s]) : TOUTES; };
 const questions = id => (Q[id] ? Q[id]() : []).filter(q => secs().includes(q.s)).map(q => ({ ...q, act: id }));
-// Une ligne du reçu de fin : assez courte pour tenir sur une ligne au cellulaire.
-const court = t => t.length > 24 ? t.slice(0, 23).trimEnd() + "…" : t;
+// Une ligne du reçu de fin : assez longue pour qu'on reconnaisse la question (elle peut aller à la ligne).
+const court = t => t.length > 70 ? t.slice(0, 69).trimEnd() + "…" : t;
 const resume = q => ({ swipe: q.t, pub: "Pub " + q.marque, marche: q.nom, caisse: q.court, texto: "Texto de " + q.nom, ordre: q.t }[q.type]);
 const page = q => `<span class="page">📒 Cahier p. ${q.p} · section ${q.s}</span>`;
 const BRAVO = ["Exact.", "Oui.", "Bien vu.", "C'est ça.", "Parfait."];

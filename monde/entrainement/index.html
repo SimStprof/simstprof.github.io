@@ -55,7 +55,7 @@ body:has(.jeu) .couv h1{font-size:26px;margin-top:4px}
 .visa{position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;width:100%;text-align:left;padding:14px 16px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;box-shadow:0 1px 0 var(--line)}
 .visa::before{content:"";position:absolute;inset:6px;border:1px dashed var(--line);border-radius:8px;pointer-events:none}
 .visa:disabled{opacity:.45;cursor:default}
-.v-code{grid-row:1/3;width:54px;height:54px;border-radius:50%;border:2px solid var(--bleu);color:var(--bleu);display:grid;place-items:center;font-family:var(--mono);font-size:15px}
+.v-code{grid-row:1/3;width:54px;height:54px;border-radius:50%;border:2px dashed var(--vc);outline:1.5px solid var(--vc);outline-offset:3px;color:var(--vc);display:grid;place-items:center;font-family:var(--mono);font-size:15px;transform:rotate(-8deg);margin:4px}
 .v-t{font-family:var(--serif);font-weight:800;font-size:22px;line-height:1.1}
 .v-d{font-style:normal;color:var(--ink-3);font-size:15px}
 .tampon-v{position:absolute;right:12px;top:50%;transform:translateY(-50%) rotate(-12deg);font-family:var(--mono);font-size:15px;color:var(--vert);border:2px solid var(--vert);border-radius:50%;width:74px;height:74px;display:grid;place-items:center;text-align:center;line-height:1.1;opacity:.85;font-style:normal}
@@ -102,11 +102,11 @@ footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--line);color:v
 @keyframes monte{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* Vérification des faits : un document à authentifier */
-.fc{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:18px 18px 24px}
+.fc{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:18px 18px 62px}
 .fc-k{display:block;font-family:var(--mono);color:var(--ink-3);font-size:15px;letter-spacing:.08em;text-transform:uppercase}
 .fc-q{display:block;font-family:var(--serif);font-size:25px;font-weight:600;line-height:1.25;margin-top:8px}
 .fc-q::before{content:"« "}.fc-q::after{content:" »"}
-.tampon{position:absolute;right:14px;bottom:-16px;font-family:var(--mono);font-size:22px;padding:6px 14px;border:3px double currentColor;border-radius:8px;background:var(--page);transform:rotate(-9deg);animation:tampon .3s cubic-bezier(.2,1.6,.4,1)}
+.tampon{position:absolute;right:14px;bottom:12px;font-family:var(--mono);font-size:22px;padding:6px 14px;border:3px double currentColor;border-radius:8px;background:var(--page);transform:rotate(-9deg);animation:tampon .3s cubic-bezier(.2,1.6,.4,1)}
 .tampon.v{color:var(--vert)}.tampon.f{color:var(--rouge)}
 @keyframes tampon{from{transform:rotate(-9deg) scale(2.2);opacity:0}}
 
@@ -152,7 +152,7 @@ footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--line);color:v
 .fp-l.cible{font-weight:700;border-top:1.5px solid var(--ink)}
 .fp-l.cible b{color:var(--rouge)}
 .fp-l.cible b.vu{color:var(--vert)}
-.fp::after{content:"P<QC<<POPULATION<<<<<<<<<<<<<<<<<<<<<<<<";display:block;padding:8px 14px;font-family:var(--mono);font-size:15px;letter-spacing:.12em;color:var(--ink-3);border-top:1px solid var(--line);white-space:nowrap;overflow:hidden}
+.fp::after{content:"P<QC<<POPULATION<<<<<<";display:block;padding:8px 14px;font-family:var(--mono);font-size:15px;letter-spacing:.08em;color:var(--ink-3);border-top:1px solid var(--line);white-space:nowrap;overflow:hidden}
 
 /* La ligne du temps : un itinéraire */
 .lt{list-style:none;position:relative;display:flex;flex-direction:column;gap:8px;padding-left:24px}
@@ -420,7 +420,7 @@ const $t = id => document.getElementById(id);
 const TOUTES = Object.keys(SECTIONS);
 const secs = () => { const v = store.get("sections"); return Array.isArray(v) && v.length ? v.filter(s => SECTIONS[s]) : TOUTES; };
 const questions = id => (Q[id] ? Q[id]() : []).filter(q => secs().includes(q.s)).map(q => ({ ...q, act: id }));
-const abrege = t => t.length > 34 ? t.slice(0, 33).trimEnd() + "…" : t;
+const abrege = t => t.length > 70 ? t.slice(0, 69).trimEnd() + "…" : t;
 const resume = q => q.type === "depeche" ? "Dépêche · " + q.bonne : q.type === "graph" ? q.titre : q.type === "entrevue" ? "Entrevue · " + q.nom : q.type === "demo" ? q.nom + " · " + q.cible.toLowerCase() : q.t;
 const renvoi = q => `<i class="renvoi">📘 Manuel p. ${PAGES_SEC[q.s]} · section ${q.s}</i>`;
 const BRAVO = ["Exact.", "Juste.", "Bien vu.", "C'est ça.", "Confirmé."];
@@ -572,8 +572,10 @@ function renderTrain() {
   const nx = EXAMENS.filter(x => finSemaine(x) >= today && SECTIONS_EXAMEN[x.id]).sort((a, b) => parse(a.semaine) - parse(b.semaine))[0];
   const nxs = nx ? SECTIONS_EXAMEN[nx.id] : [];
   // Un visa par rubrique ; une rubrique terminée reçoit son tampon (la date où elle l'a été).
-  const visa = a => { const n = questions(a.id).length, f = faits[a.id];
-    return `<button class="visa" data-act="${a.id}"${n ? "" : " disabled"}><b class="v-code">${a.rub}</b><strong class="v-t">${esc(a.nom)}</strong><i class="v-d">${n ? esc(a.desc) : "Pas dans ce choix"}</i>
+  // Chaque visa a sa couleur d'encre, comme les tampons de vrais pays.
+  const ENCRES = ["#2b59c3", "#b8322a", "#2e7d4f", "#7a3fa0", "#b06a12", "#0f7c80", "#9c2f6b", "#4a5a12"];
+  const visa = (a, i) => { const n = questions(a.id).length, f = faits[a.id];
+    return `<button class="visa" data-act="${a.id}" style="--vc:${ENCRES[i % ENCRES.length]}"${n ? "" : " disabled"}><b class="v-code">${a.rub}</b><strong class="v-t">${esc(a.nom)}</strong><i class="v-d">${n ? esc(a.desc) : "Pas dans ce choix"}</i>
       ${f && n ? `<i class="tampon-v">VALIDÉ<br>${esc(typeof f === "string" ? fmt(parse(f), { day: "numeric", month: "short" }) : "✓")}</i>` : n ? `<i class="v-n">${Math.min(SERIE, n)} q.</i>` : ""}</button>`; };
   $t("train").innerHTML = `
     <section class="intro"><h2>Enjeu 1 · La population</h2><p>Choisis tes destinations, puis un visa. Chaque série validée est tamponnée. Une erreur? La bonne réponse, et les pages du manuel à relire.</p></section>
