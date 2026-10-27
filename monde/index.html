@@ -4,557 +4,666 @@
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Le Fil · Monde contemporain</title>
-<meta name="theme-color" content="#f6f4ef">
-<link rel="stylesheet" href="../polices/d8aae1194a.css">
+<title>Tour du monde · Monde contemporain</title>
+<meta name="theme-color" content="#14213d">
+<link rel="stylesheet" href="../polices/c313932344.css">
 <style>
-/* Direction : une app de nouvelles. Manchette, bandeau « en direct », dossiers sous embargo, fil de dépêches. */
+/* Tour du monde : l'app d'entraînement de Monde contemporain (Sec 5), enjeu Population.
+   Direction : un passeport d'études. Couverture marine et or, pages crème guillochées, visas tamponnés, carte d'embarquement. */
 :root{
-  --paper:#f6f4ef; --surface:#fffdf9; --ink:#121212; --ink-2:#4a4741; --ink-3:#8a857b; --rule:#d9d5cb;
-  --red:#d42a1e; --red-soft:#fbe3e0;
-  --pop:#0f7c80; --rich:#a86a12; --conf:#8e3a8a;
-  --serif:"Newsreader",Georgia,"Times New Roman",serif;
-  --sans:"Inter Tight",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",Consolas,ui-monospace,monospace;
+  --cover:#14213d; --gold:#c9a227; --page:#f3ecdc; --card:#fbf7ee; --ink:#1d1a16; --ink-2:#5b5346; --ink-3:#857b6b; --line:#d6c9ab;
+  --bleu:#2b59c3; --rouge:#b8322a; --vert:#2e7d4f; --vert-soft:#dcebdf; --rouge-soft:#f6dcd7;
+  --serif:"Fraunces",Georgia,serif; --sans:"DM Sans",system-ui,sans-serif; --mono:"DM Mono",Consolas,ui-monospace,monospace;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#121211; --surface:#1b1b19; --ink:#f1efe9; --ink-2:#bdb8ad; --ink-3:#86817a; --rule:#302e2a;
-    --red:#ff5a4a; --red-soft:#3a1714; --pop:#4fc6c9; --rich:#e7b155; --conf:#d887d3;
-  }
+  :root:not([data-theme="light"]){ --cover:#0b1326; --page:#1b1915; --card:#24211c; --ink:#efe6d2; --ink-2:#c7bca6; --ink-3:#988d7a; --line:#3d362b; --bleu:#7da2ff; --rouge:#ff7a6b; --vert:#6fcf97; --vert-soft:#1e3326; --rouge-soft:#3d1d19; }
 }
-:root[data-theme="dark"]{
-  --paper:#121211; --surface:#1b1b19; --ink:#f1efe9; --ink-2:#bdb8ad; --ink-3:#86817a; --rule:#302e2a;
-  --red:#ff5a4a; --red-soft:#3a1714; --pop:#4fc6c9; --rich:#e7b155; --conf:#d887d3;
-}
+:root[data-theme="dark"]{ --cover:#0b1326; --page:#1b1915; --card:#24211c; --ink:#efe6d2; --ink-2:#c7bca6; --ink-3:#988d7a; --line:#3d362b; --bleu:#7da2ff; --rouge:#ff7a6b; --vert:#6fcf97; --vert-soft:#1e3326; --rouge-soft:#3d1d19; }
 
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.45;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
-a{color:inherit}
+body{font-family:var(--sans);font-size:17px;line-height:1.45;color:var(--ink);
+  background:var(--page) repeating-radial-gradient(circle at 50% 0,transparent 0 14px,color-mix(in srgb,var(--line) 35%,transparent) 14px 15px)}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
 svg{width:1em;height:1em;flex:none}
-.wrap{max-width:1180px;margin:0 auto;padding:0 16px 16px}
-.mono{font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
-.e-pop{--c:var(--pop)} .e-rich{--c:var(--rich)} .e-conf{--c:var(--conf)}
 
-/* ============ Manchette ============ */
-.mast{padding:14px 0 0;text-align:center;border-bottom:3px double var(--ink)}
-.mast .dateline{display:flex;justify-content:space-between;color:var(--ink-3);padding-bottom:8px;border-bottom:1px solid var(--rule)}
-.mast h1{font-family:var(--serif);font-weight:800;font-size:clamp(46px,14vw,78px);line-height:.95;letter-spacing:-.035em;margin:10px 0 2px}
-.mast h1 i{font-style:normal;color:var(--red)}
-.mast .tag{color:var(--ink-2);padding-bottom:10px}
-.topnav{display:none;justify-content:center;gap:22px;padding:10px 0;border-top:1px solid var(--rule)}
-.topnav button{font-weight:700;font-size:14px;color:var(--ink-2);padding:2px 0;border-bottom:2px solid transparent}
-.topnav button[aria-current="true"]{color:var(--ink);border-color:var(--red)}
+/* La couverture */
+.couv{background:var(--cover);color:var(--gold);padding:18px 16px 22px;text-align:center;border-bottom:4px solid var(--gold)}
+.couv-in{max-width:1000px;margin:0 auto;border:1.5px solid color-mix(in srgb,var(--gold) 60%,transparent);border-radius:10px;padding:14px 12px 16px;position:relative}
+.couv a{position:absolute;left:12px;top:12px;color:var(--gold);font-family:var(--mono);font-size:15px;text-decoration:none}
+.embleme{width:58px;height:58px;margin:18px auto 8px;display:block}
+.couv h1{font-family:var(--serif);font-weight:800;font-size:clamp(34px,10vw,58px);letter-spacing:.08em;text-transform:uppercase;line-height:1}
+.couv p{font-family:var(--mono);font-size:15px;letter-spacing:.14em;text-transform:uppercase;margin-top:8px;opacity:.85}
 
-/* Bandeau en direct */
-.live{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule);font-size:14px}
-.live .on{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex:none;background:var(--red);color:#fff;padding:3px 8px;border-radius:3px}
-.live .on::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.6s infinite}
-@keyframes pulse{50%{opacity:.25}}
-@media (prefers-reduced-motion: reduce){.live .on::before{animation:none}}
-.live b{font-weight:700}
-.live span.rest{color:var(--ink-3);margin-left:auto;white-space:nowrap}
-.year{display:flex;gap:4px;padding:10px 0 14px}
-.year div{flex:1;min-width:0}
-.year .bar{height:4px;background:var(--rule);border-radius:2px;overflow:hidden}
-.year .bar i{display:block;height:100%;background:var(--c)}
-.year small{display:block;margin-top:5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.year .now small{color:var(--c)}
+/* Pendant une série, la couverture se fait discrète */
+body:has(.jeu) .couv{padding:10px 16px 12px}
+body:has(.jeu) .couv .embleme,body:has(.jeu) .couv p{display:none}
+body:has(.jeu) .couv h1{font-size:26px;margin-top:4px}
+.wrap{max-width:1000px;margin:0 auto;padding:22px 16px 40px}
+#train{display:flex;flex-direction:column;gap:24px}
+.intro h2{font-family:var(--serif);font-weight:800;font-size:clamp(30px,8vw,44px);line-height:1.05;letter-spacing:-.01em}
+.intro p{font-size:18px;color:var(--ink-2);margin-top:8px;max-width:56ch}
+.lab{display:block;font-family:var(--mono);font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+.secs-g{display:flex;flex-wrap:wrap;gap:8px}
+.sx{padding:8px 14px;border:1.5px solid var(--ink);border-radius:999px;font-weight:700;font-size:15px;background:var(--card)}
+.sx.on{background:var(--cover);color:var(--gold);border-color:var(--cover)}
+.sx-exam{display:block;width:100%;margin-top:10px;padding:12px;border:1.5px dashed var(--rouge);border-radius:10px;color:var(--rouge);font-weight:700;font-size:16px;text-align:left}
 
-/* ============ Vues ============ */
-.view{display:none;flex-direction:column;gap:22px}
-.view.on{display:flex}
-.sec-t{display:flex;align-items:center;gap:10px;padding-top:4px}
-.sec-t h2{font-family:var(--serif);font-size:22px;font-weight:800;letter-spacing:-.01em}
-.sec-t::after{content:"";flex:1;height:1px;background:var(--ink)}
+/* Les visas */
+.visas{display:grid;grid-template-columns:1fr;gap:12px}
+.visa{position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;width:100%;text-align:left;padding:14px 16px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;box-shadow:0 1px 0 var(--line)}
+.visa::before{content:"";position:absolute;inset:6px;border:1px dashed var(--line);border-radius:8px;pointer-events:none}
+.visa:disabled{opacity:.45;cursor:default}
+.v-code{grid-row:1/3;width:54px;height:54px;border-radius:50%;border:2px dashed var(--vc);outline:1.5px solid var(--vc);outline-offset:3px;color:var(--vc);display:grid;place-items:center;font-family:var(--mono);font-size:15px;transform:rotate(-8deg);margin:4px}
+.v-t{font-family:var(--serif);font-weight:800;font-size:22px;line-height:1.1}
+.v-d{font-style:normal;color:var(--ink-3);font-size:15px}
+.tampon-v{position:absolute;right:12px;top:50%;transform:translateY(-50%) rotate(-12deg);font-family:var(--mono);font-size:15px;color:var(--vert);border:2px solid var(--vert);border-radius:50%;width:74px;height:74px;display:grid;place-items:center;text-align:center;line-height:1.1;opacity:.85;font-style:normal}
+.v-n{position:absolute;right:16px;bottom:10px;font-style:normal;font-family:var(--mono);font-size:15px;color:var(--ink-3)}
+/* Mes notes de cours */
+.notes-l{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (min-width: 700px){ .notes-l{grid-template-columns:repeat(4,1fr)} }
+.note{display:flex;flex-direction:column;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);text-decoration:none}
+a.note{border-color:var(--ink)}
+.note b{font-weight:700;font-size:17px}
+.note small{font-size:15px;color:var(--ink-3)}
+.note.off{opacity:.6;border-style:dashed}
+/* Un seul geste pour commencer ; les visas sont repliés dans un menu */
+.go-g{display:grid;gap:12px}
+.gros.go{flex-direction:column;padding:22px 16px;font-family:var(--serif);font-size:25px;font-weight:800}
+.gros.go small{font-family:var(--mono);font-size:15px;font-weight:500;margin-top:4px;opacity:.85}
+.types summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 4px;border-top:1px solid var(--line);font-weight:700;font-size:17px}
+.types summary::-webkit-details-marker{display:none}
+.types summary::before{content:"+";font-family:var(--mono);font-size:20px;line-height:1;width:28px;height:28px;display:grid;place-items:center;border:1.5px solid var(--ink);border-radius:50%}
+.types[open] summary::before{content:"−"}
+.types summary i{font-style:normal;font-family:var(--mono);font-size:15px;color:var(--ink-3)}
+.exam-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gros{display:flex;align-items:center;justify-content:center;width:100%;padding:15px;border-radius:12px;background:var(--cover);color:var(--gold);font-weight:700;font-size:17px;border:1.5px solid var(--cover)}
+.gros.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.gros:disabled{opacity:.35;cursor:default}
+.t-note{color:var(--ink-3);font-size:15px;text-align:center}
+footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--line);color:var(--ink-3);font-size:15px;text-align:center}
 
-/* À la une */
-.une .kick{color:var(--c);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.une .when{color:var(--red);background:var(--red-soft);padding:3px 8px;border-radius:3px}
-.une h2{font-family:var(--serif);font-weight:800;font-size:clamp(34px,9.5vw,52px);line-height:1;letter-spacing:-.025em;margin:10px 0 10px}
-.une .deck{font-family:var(--serif);font-size:19px;line-height:1.35;color:var(--ink-2)}
-.une .by{color:var(--ink-3);margin-top:10px;padding-bottom:14px;border-bottom:1px solid var(--rule)}
-.dossier{margin-top:14px}
-.dossier h3{color:var(--ink-3);margin-bottom:6px}
-.dossier ol{list-style:none;counter-reset:s}
-.dossier li{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--rule)}
-.dossier li::before{counter-increment:s;content:counter(s);font-family:var(--serif);font-weight:800;font-size:20px;color:var(--c);line-height:1}
-.dossier li b{font-weight:600}
-.dossier li span{color:var(--ink-3);white-space:nowrap}
-.format{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.format span{border:1px solid var(--ink);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600}
-.read{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding:15px 16px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:700;border-radius:4px}
-.read.off{background:var(--rule);color:var(--ink-3)}
-.read .arr{font-size:20px}
+/* Le joueur */
+.jeu{width:100%;max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.jeu-h{display:flex;align-items:center;gap:12px}
+.retour{border:1.5px solid var(--ink);border-radius:999px;padding:7px 13px;font-weight:700;font-size:15px;background:var(--card)}
+.jeu-t{flex:1;min-width:0}
+.jeu-t strong{display:block;font-family:var(--serif);font-size:23px;font-weight:800;line-height:1.1}
+.jeu-t em{display:block;font-style:normal;color:var(--ink-3);font-size:15px}
+/* La route : une escale par question */
+.seg-bar{display:flex;align-items:center;gap:0;padding:6px 4px}
+.seg-bar i{position:relative;flex:1;height:14px;display:flex;align-items:center}
+.seg-bar i::before{content:"";flex:1;border-top:2px dashed var(--line)}
+.seg-bar i::after{content:"";width:14px;height:14px;border-radius:50%;border:2px solid var(--ink-3);background:var(--page)}
+.seg-bar i.cur::after{border-color:var(--bleu);background:var(--bleu);box-shadow:0 0 0 4px color-mix(in srgb,var(--bleu) 25%,transparent)}
+.seg-bar i.ok::after{border-color:var(--vert);background:var(--vert)}
+.seg-bar i.ko::after{border-color:var(--rouge);background:var(--rouge)}
+.q-kick{font-family:var(--mono);color:var(--bleu);font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+.q-txt{font-size:19px;font-weight:700}
+.scene{display:flex;flex-direction:column;gap:14px}
+.choix{display:grid;gap:9px}
+.choix.deux{grid-template-columns:1fr 1fr}
+.ch{padding:14px 15px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);font-weight:600;font-size:17px;text-align:left;line-height:1.3}
+.choix.deux .ch{text-align:center;font-weight:800}
+.ch:not(:disabled):hover{border-color:var(--ink)}
+.ch.ok{border-color:var(--vert);background:var(--vert-soft)}
+.ch.ko{border-color:var(--rouge);background:var(--rouge-soft)}
+.ch:disabled{cursor:default}
+.retro{border-radius:12px;background:var(--card);border:1.5px solid var(--vert);padding:12px 14px;display:flex;flex-direction:column;gap:4px;font-size:17px;animation:monte .25s ease-out}
+.retro.faux{border-color:var(--rouge)}
+.retro strong{font-size:18px}
+.retro i{font-style:normal}
+.renvoi{font-family:var(--mono);font-size:15px;color:var(--ink-2)}
+.suite{margin-top:12px}
+@keyframes monte{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* Je suis prêt */
-.ready{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px}
-.ready-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.ready-h b{font-family:var(--serif);font-size:20px;font-weight:800}
-.meter{height:4px;background:var(--rule);margin:10px 0 4px}
-.meter i{display:block;height:100%;background:var(--c);transition:width .3s}
-.check{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--rule);cursor:pointer}
-.check:last-child{border-bottom:0}
-.check input{appearance:none;-webkit-appearance:none;width:20px;height:20px;border:2px solid var(--ink-3);border-radius:3px;flex:none;margin-top:1px;display:grid;place-content:center;cursor:pointer}
-.check input:checked{background:var(--c);border-color:var(--c)}
-.check input:checked::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
-.check input:checked + span{color:var(--ink-3);text-decoration:line-through}
+/* Vérification des faits : un document à authentifier */
+.fc{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:18px 18px 62px}
+.fc-k{display:block;font-family:var(--mono);color:var(--ink-3);font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+.fc-q{display:block;font-family:var(--serif);font-size:25px;font-weight:600;line-height:1.25;margin-top:8px}
+.fc-q::before{content:"« "}.fc-q::after{content:" »"}
+.tampon{position:absolute;right:14px;bottom:12px;font-family:var(--mono);font-size:22px;padding:6px 14px;border:3px double currentColor;border-radius:8px;background:var(--page);transform:rotate(-9deg);animation:tampon .3s cubic-bezier(.2,1.6,.4,1)}
+.tampon.v{color:var(--vert)}.tampon.f{color:var(--rouge)}
+@keyframes tampon{from{transform:rotate(-9deg) scale(2.2);opacity:0}}
 
-/* Le chiffre du monde */
-.fig{border-top:3px solid var(--ink);padding-top:12px}
-.fig .big{font-family:var(--serif);font-weight:800;font-size:56px;line-height:1;letter-spacing:-.03em;margin:6px 0 8px}
-.fig p{font-family:var(--serif);font-size:18px;line-height:1.35}
-.fig small{display:block;margin-top:8px;color:var(--ink-3)}
+/* La dépêche : une carte postale */
+.dp{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:16px 16px 18px;box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.dp::after{content:"";position:absolute;top:12px;right:12px;width:44px;height:52px;border:2px dotted var(--rouge);border-radius:3px;background:repeating-linear-gradient(45deg,transparent 0 5px,color-mix(in srgb,var(--rouge) 15%,transparent) 5px 7px)}
+.dp-l{display:block;font-family:var(--mono);color:var(--rouge);font-size:15px;padding-right:60px}
+.dp-t{font-family:var(--serif);font-size:23px;line-height:1.4;margin-top:8px;padding-right:10px}
+.trou{display:inline-block;min-width:110px;border-bottom:2px solid var(--ink);color:transparent}
+.trou.rempli{color:var(--bleu);min-width:0;padding:0 2px}
 
-/* Dossiers (notes) */
-.cards{display:grid;gap:14px}
-.card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--rule);border-left:5px solid var(--c);border-radius:4px;padding:14px 16px}
-.card .k{color:var(--c);display:flex;justify-content:space-between;gap:8px}
-.card h3{font-family:var(--serif);font-weight:700;font-size:23px;line-height:1.1;letter-spacing:-.01em;margin:6px 0 4px}
-.card p{color:var(--ink-2);font-size:14px}
-.card .st{margin-top:10px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
-.card.emb{border-left-style:dashed;background:transparent}
-.card.emb h3{color:var(--ink-2)}
-.card.emb .st{color:var(--ink-3)}
-.stamp{color:var(--red);border:1.5px solid var(--red);padding:2px 7px;border-radius:3px;transform:rotate(-2deg)}
-.new{background:var(--red);color:#fff;padding:2px 7px;border-radius:3px}
+/* Le graphique du jour */
+.gr{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px}
+.gr-k{display:block;font-family:var(--mono);color:var(--bleu);font-size:15px;text-transform:uppercase;letter-spacing:.06em}
+.gr-t{display:block;font-family:var(--serif);font-size:21px;font-weight:800;line-height:1.15;margin:4px 0 10px}
+.gr svg{width:100%;height:auto;display:block;margin-bottom:6px}
+.gr svg text{fill:var(--ink);font-family:var(--sans)}
+.gr svg .v{font-family:var(--mono)}
+.gr svg .b{fill:var(--bleu)}.gr svg .b.n{fill:var(--rouge)}
+.gr svg .ax{stroke:var(--ink-3)}
+.gr-s{display:block;font-style:normal;color:var(--ink-3);font-size:15px;font-family:var(--mono)}
 
-/* Agenda */
-.ag{display:grid;grid-template-columns:62px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule)}
-.ag .d{text-align:center;border-right:1px solid var(--rule);padding-right:12px}
-.ag .d b{display:block;font-family:var(--serif);font-weight:800;font-size:30px;line-height:1}
-.ag .d small{display:block;color:var(--ink-3);font-size:10px;white-space:nowrap}
-.ag .k{color:var(--c)}
-.ag h3{font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.15;margin:3px 0}
-.ag p{color:var(--ink-3);font-size:13.5px}
-.ag.past{opacity:.45}
-.ag.now .d b{color:var(--red)}
+/* Deux colonnes : départ et arrivée */
+.dm{font-family:var(--serif);font-size:24px;font-weight:600;line-height:1.3;text-align:center;padding:20px 12px;background:var(--card);border:1.5px solid var(--line);border-radius:12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.col{padding:18px 10px;font-weight:800;font-size:17px;text-align:center;line-height:1.2;background:var(--card);border:1.5px solid var(--ink);border-radius:12px}
+.col small{display:block;font-family:var(--mono);font-weight:500;color:var(--ink-3);margin-top:4px;font-size:15px}
+.col.ok{border-color:var(--vert);background:var(--vert-soft)}
+.col.ko{border-color:var(--rouge);background:var(--rouge-soft)}
 
-/* Dépêches */
-.wire{border-top:1px solid var(--ink)}
-.dep{display:grid;grid-template-columns:60px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--rule)}
-.dep .t{color:var(--red)}
-.dep b{display:block;font-weight:700}
-.dep span{color:var(--ink-3);font-size:13.5px}
-.empty{color:var(--ink-3);padding:14px 0}
+/* L'entrevue */
+.iv{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:start}
+.iv-av{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-weight:800;font-size:26px;color:#fff;background:hsl(var(--h) 45% 38%)}
+.iv-n{display:block;font-weight:700;font-size:17px}
+.iv-r{display:block;font-style:normal;color:var(--ink-3);font-size:15px;font-family:var(--mono)}
+.iv-q{grid-column:1/-1;font-family:var(--serif);font-size:23px;line-height:1.35;font-style:italic;border-left:4px solid var(--gold);padding-left:14px}
 
-footer{color:var(--ink-3);font-size:12px;text-align:center;padding:28px 0 6px;border-top:1px solid var(--rule);margin-top:28px}
+/* Le démographe : la page de données d'un passeport */
+.fp{background:var(--card);border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.fp-h{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--cover);color:var(--gold);font-family:var(--mono);font-size:15px}
+.fp-l{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--line);font-size:17px}
+.fp-l b{font-family:var(--mono);font-weight:500;white-space:nowrap}
+.fp-l.cible{font-weight:700;border-top:1.5px solid var(--ink)}
+.fp-l.cible b{color:var(--rouge)}
+.fp-l.cible b.vu{color:var(--vert)}
+.fp::after{content:"P<QC<<POPULATION<<<<<<";display:block;padding:8px 14px;font-family:var(--mono);font-size:15px;letter-spacing:.08em;color:var(--ink-3);border-top:1px solid var(--line);white-space:nowrap;overflow:hidden}
 
-/* Barre du bas */
-nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;justify-content:space-around;
-  padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--paper) 86%,transparent);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--ink)}
-nav.bottom button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--ink-3);padding:6px 10px;position:relative}
-nav.bottom button svg{width:22px;height:22px}
-nav.bottom button[aria-current="true"]{color:var(--ink)}
-nav.bottom button[aria-current="true"] svg{color:var(--red)}
-.dot{position:absolute;top:4px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--red)}
+/* La ligne du temps : un itinéraire */
+.lt{list-style:none;position:relative;display:flex;flex-direction:column;gap:8px;padding-left:24px}
+.lt::before{content:"";position:absolute;left:8px;top:10px;bottom:10px;border-left:2px dashed var(--bleu)}
+.slot{position:relative;display:flex;align-items:center;gap:10px;min-height:50px;padding:8px 12px;border:1.5px dashed var(--line);border-radius:10px;cursor:pointer;background:var(--page)}
+.slot::before{content:"";position:absolute;left:-21px;width:12px;height:12px;border-radius:50%;background:var(--page);border:2px solid var(--bleu)}
+.slot b{font-family:var(--mono);font-weight:500;color:var(--ink-3);font-size:15px}
+.slot em{font-style:normal;font-weight:700;font-size:17px}
+.slot.plein{border-style:solid;border-color:var(--ink);background:var(--card)}
+.slot.ok{border-color:var(--vert)}.slot.ok::before{background:var(--vert);border-color:var(--vert)}
+.slot.ko{border-color:var(--rouge)}.slot.ko::before{background:var(--rouge);border-color:var(--rouge)}
+.pile{display:flex;flex-wrap:wrap;gap:8px}
+.pc{padding:10px 14px;border:1.5px solid var(--cover);border-radius:999px;background:var(--cover);color:var(--gold);font-weight:700;font-size:16px}
 
-.prof{position:fixed;right:12px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:20;background:var(--ink);color:var(--paper);border-radius:6px;padding:10px 12px;font-size:12px;font-weight:700;display:flex;gap:8px;align-items:center}
-.prof input{font:inherit;border:0;border-radius:4px;padding:4px 6px}
-#sansjs{padding:20px 0}
+/* La carte d'embarquement (fin) */
+.cb{display:grid;grid-template-columns:1fr;background:var(--card);border:1.5px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.cb-h{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--cover);color:var(--gold);padding:12px 16px;font-family:var(--mono);font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+.cb-b{padding:16px}
+.cb-route{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.cb-route b{font-family:var(--serif);font-weight:800;font-size:30px;line-height:1}
+.cb-route b:last-child{text-align:right}
+.cb-route small{display:block;font-family:var(--mono);font-size:15px;color:var(--ink-3);font-weight:500}
+.cb-route i{font-style:normal;font-size:24px;color:var(--bleu)}
+.cb-champs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;padding-top:12px;border-top:1px dashed var(--line)}
+.cb-champs small{display:block;font-family:var(--mono);font-size:15px;color:var(--ink-3)}
+.cb-champs b{font-family:var(--serif);font-size:24px;font-weight:800}
+.cb ol{list-style:none;margin-top:14px;border-top:1px dashed var(--line)}
+.cb li{display:grid;grid-template-columns:1fr auto;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:16px}
+.cb li.ko{color:var(--rouge)}
+.cb li i{font-style:normal;font-family:var(--mono)}
+.cb-r{display:block;margin-top:12px;font-family:var(--mono);font-size:15px}
+.cb-code{height:52px;margin:0 16px 16px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 7px,transparent 7px 9px,var(--ink) 9px 10px,transparent 10px 13px);border-top:2px dashed var(--line);padding-top:12px;background-clip:content-box}
+.fin-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* ============ Ordinateur : une vraie une de journal ============ */
-@media (min-width: 900px){
-  body{padding-bottom:0}
-  .wrap{padding:0 32px 24px}
-  nav.bottom{display:none}
-  .topnav{display:flex}
-  .prof{bottom:20px}
-  main.dash{display:grid;grid-template-columns:1.6fr 1fr;gap:0 40px;align-items:start}
-  main.dash .view{display:flex}
-  main.dash .view[data-v="une"]{grid-row:1 / span 2;padding-right:40px;border-right:1px solid var(--rule)}
-  main.dash .view[data-v="dossiers"]{grid-column:2;grid-row:1}
-  main.dash .view[data-v="depeches"]{grid-column:2;grid-row:2;margin-top:28px}
-  main.dash .view[data-v="agenda"]{grid-column:1 / -1;margin-top:28px}
-  main.dash .view[data-v="une"] .une h2{font-size:58px}
-}
-</style>
-
-<style id="app">
-/* La carte qui mène à l'app d'entraînement « Tour du monde » (2026-10-26) */
-.tease{display:block;text-decoration:none;border-top:3px solid var(--ink);border-bottom:1px solid var(--rule);padding:14px 0 16px}
-.tease i,.tease strong,.tease em,.tease b{display:block;font-style:normal}
-.tease-k{color:var(--red);font-size:15px}
-.tease-t{font-family:var(--serif);font-size:26px;font-weight:800;line-height:1.1;letter-spacing:-.01em;margin:6px 0}
-.tease-d{color:var(--ink-2);font-size:16px}
-.tease-go{margin-top:12px;display:inline-block !important;background:var(--ink);color:var(--paper);padding:11px 16px;border-radius:3px;font-weight:700;font-size:16px}
-</style>
-
-<style id="texte-lisible">
-/* Texte lisible (2026-10-25) : étiquettes ≥ 15 px, texte courant ≥ 16 px, au cell et à l'ordi seulement (le TBI et l'impression gardent leurs tailles). */
-@media screen and (max-width: 1400px) {
-  #dateline,
-  #edition,
-  #live > b,
-  button,
-  div > span,
-  div.format > span,
-  div.k.mono > span,
-  div.st,
-  footer > b,
-  h3.mono,
-  small.mono,
-  span.mono,
-  span.on.mono,
-  span.rest.mono,
-  span.stamp.mono,
-  span.t.mono,
-  span.when { font-size: 15px !important; }
-  a.card.e-pop > p,
-  div.ag.e-conf > div > p,
-  div.ag.e-pop > div > p,
-  div.ag.e-rich > div > p,
-  div.ag.now.e-pop > div > p,
-  div.card.e-conf.emb > p,
-  div.card.e-pop.emb > p,
-  div.card.e-rich.emb > p,
-  footer,
-  label.check > span,
-  li > b,
-  p.by.mono,
-  p.k.mono,
-  p.kick.mono > span,
-  p.tag.mono { font-size: 16px !important; }
-}
+@media (min-width: 700px){ .visas{grid-template-columns:1fr 1fr} }
+@media (min-width: 900px){ .wrap{padding:30px 32px 48px} }
+/* Au TBI : tout 1,6 fois plus gros (15 px deviennent 24 px) */
+@media (min-width: 1600px){ .wrap,.couv-in{zoom:1.6} }
+@media (prefers-reduced-motion: reduce){ .retro,.tampon{animation:none} }
 </style>
 </head>
 <body>
+<header class="couv"><div class="couv-in">
+  <svg class="embleme" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2"><circle cx="32" cy="32" r="26"/><ellipse cx="32" cy="32" rx="11" ry="26"/><path d="M6 32h52M10 19h44M10 45h44"/></svg>
+  <h1>Tour du monde</h1>
+  <p>Passeport d'études · Monde contemporain · Sec 5</p>
+</div></header>
 <div class="wrap">
-  <header class="mast">
-    <div class="dateline mono"><span id="dateline"></span><span id="edition"></span></div>
-    <h1>Le Fil<i>.</i></h1>
-    <p class="tag mono">Monde contemporain · Secondaire 5</p>
-    <nav class="topnav" id="topnav">
-      <button data-go="all" aria-current="true">La une</button>
-      <button data-go="agenda">Agenda</button>
-      <button data-go="dossiers">Dossiers</button>
-      <button data-go="depeches">Dépêches</button>
-    </nav>
-  </header>
-  <div class="live" id="live"></div>
-  <div class="year" id="year"></div>
-
-  <main id="main" class="dash">
-    <div id="sansjs">
-      <p class="mono" style="color:var(--red)">Oups</p>
-      <p style="font-family:var(--serif);font-size:22px;font-weight:700;margin:4px 0">Ouvre cette page dans ton navigateur</p>
-      <p style="color:var(--ink-3)">L'aperçu de ton application (OneDrive, Teams, courriel…) n'affiche pas le hub. Ouvre-le avec Safari, Chrome ou Edge.</p>
-    </div>
-
-    <section class="view on" data-v="une">
-      <article class="une" id="une"></article>
-      <a class="tease e-pop" href="entrainement/">
-        <i class="tease-k mono">Nouveau · bêta · Tour du monde</i>
-        <strong class="tease-t">Es-tu prêt pour la population?</strong>
-        <em class="tease-d">8 rubriques et des mini-examens. Une erreur? La bonne réponse et la page du manuel.</em>
-        <b class="tease-go">Ouvrir Tour du monde →</b>
-      </a>
-      <div class="ready" id="ready"></div>
-      <div class="fig" id="fig"></div>
-    </section>
-
-    <section class="view" data-v="dossiers">
-      <div class="sec-t"><h2>Les dossiers</h2></div>
-      <div class="cards" id="cards"></div>
-    </section>
-
-    <section class="view" data-v="depeches">
-      <div class="sec-t"><h2>Dépêches</h2></div>
-      <div class="wire" id="wire"></div>
-    </section>
-
-    <section class="view" data-v="agenda">
-      <div class="sec-t"><h2>L'agenda de l'année</h2></div>
-      <div id="agenda"></div>
-    </section>
-  </main>
-
-  <footer>Monde contemporain · Secondaire 5<br>
-    <b>Confidentialité :</b> aucun compte, aucun cookie, aucune statistique de visite. Tes crochets restent sur ton appareil.
-    Comme tout hébergeur, GitHub garde un journal technique des visites (adresse IP) pour la sécurité de ses serveurs.</footer>
+  <main id="train"><p>Ouvre cette page dans ton navigateur (Safari, Chrome ou Edge) : l'aperçu de ton application ne l'affiche pas.</p></main>
+  <footer>Monde contemporain · Secondaire 5 · <b>Confidentialité :</b> aucun compte, aucun cookie, aucune statistique. Tes choix restent sur ton appareil. Comme tout hébergeur, GitHub garde un journal technique des visites (adresse IP).</footer>
 </div>
-
-<nav class="bottom" id="bottom">
-  <button data-go="une" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h13v16H6a2 2 0 0 1-2-2z"/><path d="M17 8h3v10a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3"/></svg>La une</button>
-  <button data-go="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button>
-  <button data-go="dossiers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Dossiers</button>
-  <button data-go="depeches"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5"/></svg>Dépêches<i class="dot" id="wireDot" hidden></i></button>
-</nav>
-
 <script>
-/* =====================================================================
-   CONTENU DU HUB : c'est ici qu'on modifie les semaines et les ressources.
-   Dates au format AAAA-MM-JJ. Un examen est donné par sa semaine (le lundi) :
-   le jour exact dépend du groupe. ⚠ Semaines de la bêta = à confirmer.
-   ===================================================================== */
-const HUB = {
-  annee: { debut: "2026-08-27", fin: "2027-06-18" },
-  etapes: [
-    { nom: "Étape 1", enjeu: "pop", debut: "2026-08-27", fin: "2026-11-13" },
-    { nom: "Étape 2", enjeu: "rich", debut: "2026-11-16", fin: "2027-02-05" },
-    { nom: "Étape 3", enjeu: "conf", debut: "2027-02-08", fin: "2027-06-18" }
-  ],
-  enjeux: {
-    pop: { nom: "Population", classe: "e-pop" },
-    rich: { nom: "Richesse", classe: "e-rich" },
-    conf: { nom: "Tensions et conflits", classe: "e-conf" }
-  },
 
-  // Les dossiers (notes de cours) sortent à leur date « dispo ». fichier: null = pas encore écrit / publié.
-  notes: [
-    { id: "p13", enjeu: "pop", titre: "Huit milliards de trajectoires", sujet: "Population · sections 1 à 3 : évolution, caractéristiques, migrants",
-      fichier: "population-s1-s3.html", dispo: "2026-10-05" },
-    { id: "p45", enjeu: "pop", titre: "Partir, travailler, s'installer", sujet: "Population · sections 4 et 5 : migrations, travail, villes",
-      fichier: null, dispo: "2026-10-30" },
-    { id: "r", enjeu: "rich", titre: "La richesse", sujet: "Disparités, Nord-Sud, mondialisation, OI et ONG",
-      fichier: null, dispo: "2026-11-30" },
-    { id: "c", enjeu: "conf", titre: "Les tensions et les conflits", sujet: "Relations internationales, ONU, alliances, ONG",
-      fichier: null, dispo: "2027-02-22" }
-  ],
-
-  examens: [
-    { id: "mi1", enjeu: "pop", titre: "Examen de mi-étape 1", manchette: "La population sous la loupe",
-      semaine: "2026-10-26", deck: "Comment la planète est passée à huit milliards, qui part, et pourquoi.",
-      sections: [
-        ["Comment la population a-t-elle évolué?", "p. 36-38"],
-        ["Les caractéristiques de la population", "p. 39-43"],
-        ["Qui sont les migrants et pourquoi partent-ils?", "p. 45-49"]
-      ],
-      format: ["Vrai ou faux", "Choix multiples", "Réponses courtes", "Associer des définitions", "Développement", "Opinion"],
-      notes: ["p13"],
-      pret: [
-        "Définir en une phrase le taux de natalité, le taux de mortalité et l'espérance de vie",
-        "Expliquer la transition démographique : la mortalité baisse avant la natalité",
-        "Dire quelle région grandit le plus vite (l'Afrique), laquelle est la plus peuplée (l'Asie) et laquelle stagne (l'Europe)",
-        "Donner trois raisons de la faible densité de certaines régions",
-        "Distinguer l'accroissement naturel, le solde migratoire et l'accroissement total; savoir que 2,1 est le seuil de renouvellement",
-        "Comparer les pays développés et en développement (natalité, mortalité, espérance de vie, migrations)",
-        "Expliquer le vieillissement et ses causes, les mesures natalistes et la politique de l'enfant unique",
-        "Distinguer immigrant et émigrant, migration temporaire et définitive, réfugié et clandestin"
-      ] },
-    { id: "e1", enjeu: "pop", titre: "Examen d'étape 1", manchette: "Partir, travailler, s'installer",
-      semaine: "2026-11-09", deck: "Les migrations, le monde du travail et les villes qui se transforment. Avec des rappels de la mi-étape.",
-      sections: [
-        ["Les migrations et le monde du travail", "p. 52-61"],
-        ["Les migrations transforment les villes", "p. 64-67"],
-        ["Rappels des sections 1 à 3", "p. 36-49"]
-      ],
-      format: ["Vrai ou faux à corriger", "Choix multiples", "« Nomme-moi trois… »", "Développement", "Opinion", "Cumulatif"],
-      notes: ["p45", "p13"],
-      pret: [
-        "Expliquer pourquoi les pays développés recrutent des immigrants, et nommer les secteurs qui manquent de travailleurs",
-        "Nommer des critères de sélection (système de points) et des mesures d'intégration",
-        "Définir l'intégration et expliquer son importance pour la paix sociale",
-        "Nommer la plus grande contrainte des immigrants qualifiés et les trois difficultés de la reconnaissance des diplômes",
-        "Définir la discrimination positive et donner mon opinion avec deux raisons",
-        "Nommer trois effets de la mobilité de la main-d'œuvre et définir l'exode des cerveaux",
-        "Définir l'économie parallèle et nommer ce qui rend un immigrant vulnérable aux abus",
-        "Expliquer l'exode rural et donner deux conséquences de l'urbanisation rapide au Sud",
-        "Comparer les villes du Nord (quartiers ethniques) et celles du Sud (bidonvilles)",
-        "Réussir toutes les cartes de rappel de la mi-étape"
-      ] },
-    { id: "e2", enjeu: "rich", titre: "Examen d'étape 2", manchette: "Qui s'enrichit, qui reste derrière?",
-      semaine: "2027-01-25", deck: "Colonisation, disparités, Nord-Sud, mondialisation, et ceux qui tentent de réduire l'écart.",
-      sections: [
-        ["Colonisation, décolonisation et néocolonisation", "p. 80-83"],
-        ["Les disparités dans la répartition de la richesse", "p. 84-92"],
-        ["La division Nord-Sud et les économies émergentes", "p. 93-98"],
-        ["La création de richesse", "p. 99-102"],
-        ["La mondialisation et les disparités", "p. 103-108"],
-        ["OI et ONG pour réduire les disparités", "p. 109-113"]
-      ],
-      format: [], notes: ["r"], pret: [] },
-    { id: "e3", enjeu: "conf", titre: "Examen d'étape 3", manchette: "Le monde en tensions",
-      semaine: "2027-06-07", deck: "Comment les États, l'ONU, les alliances et les ONG gèrent les conflits depuis 1945.",
-      sections: [
-        ["Les relations internationales depuis 1945", "p. 128-131"],
-        ["Les interventions extérieures", "p. 132-135"],
-        ["Les sources de tensions et de conflits", "p. 137-149"],
-        ["Le rôle de l'ONU", "p. 150-155"],
-        ["Les missions de maintien de la paix", "p. 156-159"],
-        ["Organisations et alliances", "p. 162-171"],
-        ["Les ONG en territoire souverain", "p. 172-175"]
-      ],
-      format: [], notes: ["c"], pret: [] }
-  ],
-
-  // Dépêches de l'enseignant (visibles à partir de leur date). Les sorties de dossiers et les examens s'ajoutent tout seuls.
-  depeches: [
-    { date: "2026-10-23", texte: "Le Fil est en ligne", detail: "Ton hub pour savoir quoi étudier, et quand." },
-    { date: "2026-10-26", texte: "Mi-étape cette semaine", detail: "Relis « Je suis prêt si je peux… » à la une." }
-  ],
-
-  // Le chiffre du monde (un par semaine, en boucle).
-  chiffres: [
-    { gros: "8 milliards", texte: "Le cap a été franchi en novembre 2022. Il a fallu 12 ans pour passer de 7 à 8.", source: "ONU" },
-    { gros: "2,1", texte: "Enfants par femme : le seuil de renouvellement. En dessous, une population vieillit et finit par baisser sans immigration.", source: "Manuel, section 2" },
-    { gros: "281 millions", texte: "Migrants internationaux dans le monde en 2020, soit environ 1 personne sur 30.", source: "OIM" },
-    { gros: "55 %", texte: "De la population mondiale vit en ville. L'ONU prévoit près de 70 % en 2050.", source: "ONU" }
-  ]
-};
-
-/* ============ Outils ============ */
-const params = new URLSearchParams(location.search);
+/* ============ Outils de l'app (elle est autonome : rien ne vient du site du cours) ============ */
 const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
 const iso = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 const DAY = 864e5;
-const diff = (a, b) => Math.round((parse(iso(b)) - parse(iso(a))) / DAY);
 const fmt = (d, o) => d.toLocaleDateString("fr-CA", o);
-const court = d => fmt(d, { day: "numeric", month: "short" }).replace(".", "");
-const lundiDe = d => new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() + 6) % 7);
-const finSemaine = x => new Date(parse(x.semaine).getTime() + 4 * DAY);
-const semainesAvant = (x, today) => Math.round(diff(lundiDe(today), parse(x.semaine)) / 7);
-const store = {
-  get(k) { try { return JSON.parse(localStorage.getItem("hubmonde:" + k)); } catch (e) { return null; } },
-  set(k, v) { try { localStorage.setItem("hubmonde:" + k, JSON.stringify(v)); } catch (e) {} }
-};
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const noteById = id => HUB.notes.find(n => n.id === id);
-const ouverte = (n, today) => parse(n.dispo) <= today && !!n.fichier;
-const enj = k => HUB.enjeux[k];
-const pages = x => x.sections.flatMap(s => s[1].match(/\d+/g).map(Number));
-const quand = w => w === 0 ? "Cette semaine" : w === 1 ? "La semaine prochaine" : "Dans " + w + " semaines";
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem("tourdumonde:" + k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem("tourdumonde:" + k, JSON.stringify(v)); } catch (e) {} }
+};
+const NOW = new URLSearchParams(location.search).get("date") ? parse(new URLSearchParams(location.search).get("date")) : new Date();
+const finSemaine = x => new Date(parse(x.semaine).getTime() + 4 * DAY);
+/* =====================================================================
+   LES NOTES DE COURS : une note apparaît (lien actif) à partir de sa date « dispo ».
+   publier.js lit cet objet : il met en ligne seulement les notes dont la date est arrivée.
+   fichier : chemin relatif à cette page (dans les coulisses) ; null = pas encore écrite.
+   ===================================================================== */
+const HUB = {
+  notes: [
+    { id: "p13", titre: "Population S1 à S3", sujet: "Évolution · caractéristiques · migrants", fichier: "population-s1-s3.html", dispo: "2026-10-05" },
+    { id: "p45", titre: "Population S4 et S5", sujet: "Travail · villes", fichier: null, dispo: "2026-10-30" },
+    { id: "r", titre: "La richesse", sujet: "Enjeu 2", fichier: null, dispo: "2026-11-30" },
+    { id: "c", titre: "Tensions et conflits", sujet: "Enjeu 3", fichier: null, dispo: "2027-02-22" }
+  ]
+};
+// Les examens de l'enjeu (pour le bouton « Seulement la matière de ton examen » ; leurs sections sont dans SECTIONS_EXAMEN).
+const EXAMENS = [
+  { id: "mi1", titre: "Examen de mi-étape 1", semaine: "2026-10-26" },
+  { id: "e1", titre: "Examen d'étape 1", semaine: "2026-11-09" }
+];
 
-let NOW = params.get("date") ? parse(params.get("date")) : new Date();
+/* =====================================================================
+   TOUR DU MONDE : l'entraînement de l'enjeu Population (bêta, 2026-10-26).
+   Même principe que le site Histoire et l'onglet de Finances : on choisit ses sections, une rubrique, 5 questions ;
+   une erreur donne la bonne réponse et les pages du manuel. Visuel : un passeport d'études (les rubriques sont des visas).
+   Source : les notes de cours Population S1 à S5 (manuel p. 36 à 67). Jamais une question d'examen recopiée.
+   ===================================================================== */
+const SECTIONS = { "1": "L'évolution", "2": "Les caractéristiques", "3": "Les migrants", "4": "Le travail", "5": "Les villes" };
+const PAGES_SEC = { "1": "36-38", "2": "39-43", "3": "45-49", "4": "52-61", "5": "64-67" };
+// Les sections de chaque examen (HUB.examens, par id)
+const SECTIONS_EXAMEN = { mi1: ["1", "2", "3"], e1: ["1", "2", "3", "4", "5"] };
+const SERIE = 5;
 
-/* ============ Rendu ============ */
-function render() {
-  document.getElementById("sansjs")?.remove();
+// Vérification des faits : [affirmation, vraie?, explication, section]
+const FAITS = [
+  ["Pendant la transition démographique, la natalité baisse avant la mortalité.", false, "C'est l'inverse : la mortalité baisse d'abord. C'est ce qui fait exploser la population.", "1"],
+  ["Au XIXe siècle, l'hygiène, l'alimentation et la médecine font baisser la mortalité.", true, "Les naissances dépassent alors les décès : la croissance décolle.", "1"],
+  ["L'Asie est la région qui grandit le plus vite depuis 1990.", false, "C'est l'Afrique (+113 %). L'Asie, elle, est la plus peuplée.", "1"],
+  ["De 1990 à 2020, la population de l'Europe n'a augmenté que d'environ 3 %.", true, "L'Europe stagne. Elle devrait même diminuer d'ici 2030.", "1"],
+  ["La population mondiale gagne environ 80 millions de personnes par année.", true, "Environ deux fois la population du Canada, chaque année (ONU, 2022).", "1"],
+  ["Un taux de natalité, c'est le nombre total de naissances dans un pays.", false, "Un taux se calcule par 1 000 habitants. Le total, c'est un nombre.", "1"],
+  ["Près de 60 % de l'humanité vit en Asie.", true, "59 %, soit environ 4,7 milliards de personnes.", "2"],
+  ["La plupart des pays développés ont moins de 2,1 enfants par femme.", true, "Ils sont sous le seuil de renouvellement.", "2"],
+  ["L'accroissement naturel tient compte de l'immigration.", false, "Il compte seulement les naissances et les décès. Avec les migrations, c'est l'accroissement total.", "2"],
+  ["Un pays où il meurt plus de gens qu'il en naît perd forcément de la population.", false, "L'immigration peut compenser. C'est le cas de l'Europe.", "2"],
+  ["Dans les pays en développement, la fécondité augmente.", false, "Elle baisse. Mais il y a encore plus de naissances que de décès, donc la population augmente.", "2"],
+  ["L'Australie est au sud, donc c'est un pays en développement.", false, "Nord et Sud parlent du niveau de développement, pas des hémisphères.", "2"],
+  ["Une amende au 2e enfant est une mesure nataliste.", false, "Une mesure nataliste encourage les naissances. L'amende, c'est du contrôle : le contraire.", "2"],
+  ["Depuis 2008, plus de la moitié de l'humanité vit en ville.", true, "Et la part des citadins continue de monter.", "2"],
+  ["La plupart des migrants internationaux sont des retraités.", false, "Environ 73 % ont de 20 à 64 ans : ils sont en âge de travailler.", "3"],
+  ["Les grands flux migratoires vont surtout du Sud vers le Nord.", true, "Des pays en développement vers les pays développés.", "3"],
+  ["Une sécheresse dans ton pays est un facteur d'attraction.", false, "Elle pousse à partir, mais elle n'attire vers aucun pays précis.", "3"],
+  ["Un étudiant étranger devient résident permanent simplement en restant au pays.", false, "Il doit faire une demande officielle et être accepté. Sinon, il devient sans-papiers.", "3"],
+  ["La Convention de Genève (1951) oblige les pays signataires à accorder l'asile.", true, "Le réfugié doit, en retour, respecter les lois du pays.", "3"],
+  ["L'espace Schengen supprime les contrôles aux frontières entre plusieurs pays européens.", true, "Il a été créé en 1995.", "3"],
+  ["Ce sont les Nations unies qui décident combien d'immigrants le Canada accepte.", false, "Chaque pays est souverain : il fixe ses critères et son plafond.", "4"],
+  ["Au Québec, les personnes nées ailleurs sont plus souvent diplômées de l'université.", true, "65 %, contre 45 % chez les personnes nées au Québec.", "4"],
+  ["S'intégrer, c'est abandonner sa culture.", false, "C'est devenir membre de la société d'accueil et en partager les règles, tout en gardant sa culture.", "4"],
+  ["La discrimination positive cherche à contrer la discrimination à l'embauche.", true, "Elle favorise les groupes qui ont moins accès à l'emploi.", "4"],
+  ["Les migrants envoient à leur famille plus d'argent que l'aide internationale des pays développés.", true, "Environ trois fois plus.", "4"],
+  ["Un employeur qui embauche au noir paie quand même ses charges sociales.", false, "Non : c'est justement une des raisons pour lesquelles il le fait.", "4"],
+  ["La majorité des professions au Canada sont réglementées par un ordre professionnel.", false, "Environ 20 % seulement. Pour les autres, c'est l'employeur qui juge.", "4"],
+  ["Dans les pays développés, les villes grandissent surtout grâce à l'exode rural.", false, "Surtout grâce aux immigrants internationaux. L'exode rural, c'est surtout au Sud.", "5"],
+  ["L'Afrique est la région la moins urbanisée, mais ses villes grossissent le plus vite.", true, "43 % de citadins en 2018, et une croissance urbaine très rapide.", "5"],
+  ["La part des citadins qui vivent en bidonville baisse, mais leur nombre augmente.", true, "Un plus petit pourcentage d'une population urbaine beaucoup plus grande, ça fait plus de monde.", "5"]
+];
+
+// La dépêche : [phrase avec ___, mot qui manque, autres choix, explication, section]
+const DEPECHES = [
+  ["Le ___ est le nombre de décès par 1 000 habitants dans une année.", "taux de mortalité", ["taux de natalité", "solde migratoire", "indice de fécondité"], "", "1"],
+  ["Une population où la proportion d'aînés augmente chaque année est une population ___.", "vieillissante", ["jeune", "stable", "en explosion"], "Deux causes : moins de naissances, et on vit plus longtemps.", "2"],
+  ["Le passage d'une société où tout est haut (naissances, décès) à une société où tout est bas s'appelle la ___.", "transition démographique", ["explosion démographique", "mondialisation", "urbanisation"], "", "1"],
+  ["Avec 2,1 enfants par femme, un pays atteint son ___.", "seuil de renouvellement", ["indice de fécondité", "accroissement total", "taux de natalité"], "En dessous, la population vieillit.", "2"],
+  ["Une ville compte 4 000 habitants au km² : c'est sa ___.", "densité de population", ["population urbaine", "démographie", "superficie"], "", "2"],
+  ["La ___ est la science qui étudie les populations.", "démographie", ["économie", "météorologie", "densité"], "", "2"],
+  ["Les Haïtiens établis à Montréal font partie de la ___ haïtienne.", "diaspora", ["perméabilité", "migration temporaire", "densité"], "Un peuple dispersé à travers le monde, ou cette communauté elle-même.", "3"],
+  ["Une frontière qui se laisse traverser facilement a une grande ___.", "perméabilité", ["densité", "diaspora", "souveraineté"], "", "3"],
+  ["En 1979, la Chine impose la politique de ___.", "l'enfant unique", ["l'immigration choisie", "trois enfants", "deux enfants"], "Puis deux enfants en 2015, et trois en 2021.", "2"],
+  ["Le ___ est le droit d'une personne persécutée d'être protégée par le pays où elle en fait la demande.", "droit d'asile", ["solde migratoire", "permis de travail", "système de points"], "", "3"],
+  ["Le Canada choisit ses immigrants avec un ___ : âge, langue, instruction, expérience.", "système de points", ["tirage au sort", "quota fixé par l'ONU", "droit d'asile"], "", "4"],
+  ["Une ingénieure formée à l'étranger qui travaille comme caissière est ___.", "surqualifiée", ["sous-qualifiée", "clandestine", "réfugiée"], "Son diplôme n'est pas reconnu par l'ordre professionnel.", "4"],
+  ["Le départ permanent de médecins et d'ingénieurs vers l'étranger s'appelle l'___.", "exode des cerveaux", ["exode rural", "économie parallèle", "intégration"], "Le pays d'origine perd leurs compétences, leurs impôts et l'argent investi pour les former.", "4"],
+  ["Un travail payé mais non déclaré à l'État, c'est du ___.", "travail au noir", ["travail temporaire", "travail saisonnier", "bénévolat"], "", "4"],
+  ["Les mesures qui favorisent, à l'embauche, les groupes qui ont moins accès à l'emploi s'appellent la ___.", "discrimination positive", ["francisation", "mondialisation", "économie parallèle"], "", "4"],
+  ["Le processus par lequel un immigrant devient membre de la société d'accueil, tout en gardant sa culture, c'est l'___.", "intégration", ["assimilation", "émigration", "exode rural"], "", "4"],
+  ["Le départ des gens de la campagne vers la ville s'appelle l'___.", "exode rural", ["exode des cerveaux", "émigration", "étalement urbain"], "C'est ce qui fait grossir les villes du Sud.", "5"],
+  ["Un quartier d'habitations précaires, sans eau courante ni égouts, en périphérie d'une grande ville : un ___.", "bidonville", ["quartier ethnique", "centre-ville", "village"], "", "5"],
+  ["Une ville de plus de 10 millions d'habitants est une ___.", "mégapole", ["capitale", "banlieue", "bourgade"], "Il y en avait 10 en 1990, et 36 en 2021.", "5"],
+  ["Une ville centre et ses banlieues forment une ___.", "agglomération urbaine", ["diaspora", "région rurale", "frontière"], "Exemple : le Grand Montréal.", "5"]
+];
+
+// Deux mondes : [caractéristique, 0 = pays développés, 1 = pays en développement, explication, section]
+const MONDES = [
+  ["Une natalité faible, souvent sous 2,1 enfants par femme", 0, "", "2"],
+  ["Une population qui continue de croître, même si la fécondité baisse", 1, "Il y a encore plus de naissances que de décès.", "2"],
+  ["C'est l'immigration qui fait croître la population", 0, "Sans elle, plusieurs de ces pays perdraient des habitants.", "2"],
+  ["L'émigration est en hausse", 1, "", "2"],
+  ["Une population vieillissante", 0, "Moins de naissances, et on vit plus longtemps.", "2"],
+  ["Une pyramide des âges large à la base et pointue au sommet", 1, "Une population jeune : beaucoup de naissances, peu d'aînés.", "2"],
+  ["Environ 83,5 % de l'humanité y vit", 1, "", "2"],
+  ["Des politiques pour encourager les naissances", 0, "Allocations, congés parentaux, garderies…", "2"],
+  ["Les villes grandissent surtout par l'exode rural", 1, "", "5"],
+  ["Des quartiers ethniques se forment autour de la diaspora", 0, "Ex. : le quartier chinois de San Francisco.", "5"],
+  ["Des bidonvilles poussent en périphérie des villes", 1, "La ville n'arrive pas à suivre la croissance.", "5"],
+  ["Une pénurie de main-d'œuvre, causée par le vieillissement", 0, "", "4"],
+  ["Un chômage élevé : la population augmente plus vite que les emplois", 1, "", "4"]
+];
+// Partir ou venir? : [facteur, 0 = pousse à partir, 1 = attire vers un pays, explication, section]
+const PARTIR = [
+  ["Le chômage et la pauvreté", 0, "", "3"],
+  ["Une guerre", 0, "", "3"],
+  ["Des emplois et de meilleurs salaires", 1, "", "3"],
+  ["Une sécheresse qui ruine les récoltes", 0, "Elle pousse à partir, mais n'attire vers aucun pays précis.", "3"],
+  ["La sécurité et la stabilité", 1, "", "3"],
+  ["Une diaspora déjà installée", 1, "Elle facilite l'arrivée.", "3"],
+  ["La persécution politique", 0, "", "3"],
+  ["Des écoles et des hôpitaux accessibles", 1, "", "3"],
+  ["Une langue que tu parles déjà", 1, "", "3"],
+  ["Une population qui augmente trop vite pour les emplois disponibles", 0, "", "3"],
+  ["Une pénurie de main-d'œuvre", 1, "Les pays développés manquent de travailleurs.", "4"]
+];
+
+// L'entrevue : [prénom, qui c'est, propos, question, bonne réponse, autres choix, explication, section]
+const ENTREVUES = [
+  ["Amina", "journaliste", "J'ai écrit des articles contre le gouvernement. On m'a menacée de prison, alors j'ai fui et demandé la protection du Canada.", "Quel est son statut?", "Réfugiée", ["Migrante temporaire", "Immigrante clandestine", "Résidente permanente"], "Elle fuit une persécution politique et demande l'asile.", "3"],
+  ["Diego", "travailleur agricole", "Chaque été, je viens cueillir des fraises au Québec. En octobre, je rentre chez moi au Mexique.", "Quel genre de migration?", "Une migration temporaire", ["Une migration définitive", "L'exode rural", "Une demande d'asile"], "Il garde sa résidence dans son pays et il y revient.", "3"],
+  ["Sofia", "née à Lyon", "Je vis maintenant à Québec, pour de bon.", "Pour la France, Sofia est…", "Une émigrante", ["Une immigrante", "Une réfugiée", "Une travailleuse temporaire"], "Elle quitte la France. Pour le Canada, c'est une immigrante. Émigrer, c'est l'Exit.", "3"],
+  ["Kenji", "arrivé de Tokyo", "Je me suis installé à Vancouver pour y vivre.", "Pour le Canada, Kenji est…", "Un immigrant", ["Un émigrant", "Un réfugié", "Un clandestin"], "Il entre au Canada pour s'y installer. Immigrer, c'est In.", "3"],
+  ["Lukas", "étudiant allemand","Mon permis d'études est expiré depuis un an, mais je suis resté.", "Quel est son statut?", "Sans-papiers (clandestin)", ["Résident permanent", "Réfugié", "Citoyen"], "Rester après la fin de son permis rend sa situation illégale.", "3"],
+  ["Joy", "arrivée de Manille", "Ma sœur vit au Canada depuis dix ans, alors je suis venue la rejoindre.", "Quel facteur a guidé son choix?", "La diaspora", ["La langue", "La proximité", "L'histoire"], "P·L·D·H·E : proximité, langue, diaspora, histoire, emploi.", "3"],
+  ["Abebe", "arrivé d'Éthiopie", "L'Arabie saoudite, c'est juste de l'autre côté de la mer Rouge.", "Quel facteur a guidé son choix?", "La proximité", ["La langue", "L'histoire", "La diaspora"], "", "3"],
+  ["Rafael", "arrivé du Portugal", "Je suis parti au Brésil parce qu'on y parle portugais, comme chez moi.", "Quel facteur a guidé son choix?", "La langue", ["La proximité", "La diaspora", "L'emploi"], "", "3"],
+  ["Valentina", "ingénieure colombienne", "À Montréal, je travaille comme caissière : l'ordre des ingénieurs ne reconnaît pas mon diplôme.", "Quel est son plus grand obstacle?", "La reconnaissance des diplômes", ["Le système de points", "Le droit d'asile", "L'exode rural"], "Elle est surqualifiée pour son emploi.", "4"],
+  ["Rodel", "infirmier philippin", "Je travaille au Canada et j'envoie la moitié de mon salaire à ma famille.", "Ces transferts d'argent avantagent surtout…", "Les Philippines, son pays de départ", ["Le Canada, son pays d'accueil", "Aucun des deux pays"], "L'argent soutient sa famille et l'économie des Philippines.", "4"],
+  ["Chidi", "médecin", "J'ai quitté le Nigeria pour de bon, pour travailler à Londres.", "Pour le Nigeria, c'est…", "L'exode des cerveaux", ["L'exode rural", "Une migration temporaire", "Une mesure d'intégration"], "Le pays perd un travailleur qualifié et l'argent investi pour le former.", "4"],
+  ["Luis", "ouvrier en construction", "Le patron me paie comptant : pas de talon de paie, pas d'assurance, pas de congés.", "Comment s'appelle ce genre de travail?", "Le travail au noir", ["La discrimination positive", "Un permis de travail", "Le travail saisonnier"], "Un travail payé, mais non déclaré à l'État.", "4"],
+  ["Olena", "aide domestique sans papiers", "Ma patronne ne respecte rien, mais je ne dirai rien à personne.", "Pourquoi n'ose-t-elle pas porter plainte?", "Elle a peur d'être expulsée", ["Elle est mieux payée que les autres", "La loi lui interdit de parler", "Elle connaît trop bien ses droits"], "Être sans papiers rend vulnérable aux abus.", "4"],
+  ["Fatou", "arrivée du Sénégal", "J'ai suivi des cours de francisation, et un organisme m'a aidée à trouver un logement.", "De quoi a-t-elle profité?", "De mesures d'intégration", ["De critères de sélection", "De discrimination positive", "Du droit d'asile"], "Cours de langue, aide au logement et à l'emploi, traduction, organismes.", "4"],
+  ["Priya", "agricultrice", "Ma terre ne nourrit plus ma famille. Je pars travailler en ville, à Mumbai.", "Quel phénomène vit-elle?", "L'exode rural", ["L'exode des cerveaux", "Une migration internationale", "Une demande d'asile"], "Une migration interne, de la campagne vers la ville.", "5"],
+  ["Mei", "née en Chine", "Mes parents n'avaient droit qu'à un enfant. Pour mon petit frère, ils ont payé une amende.", "De quelle politique parle-t-elle?", "L'enfant unique (1979)", ["Une mesure nataliste", "Les trois enfants (2021)", "Le système de points"], "Une amende, c'est du contrôle des naissances, pas une mesure nataliste.", "2"]
+];
+
+// Le démographe : [nom, lignes de la fiche, ce qu'on cherche, bonne réponse, autres choix, explication, section]
+const FICHES = [
+  ["Pays A · 2025", [["Naissances", "40 000"], ["Décès", "52 000"], ["Immigrants", "25 000"], ["Émigrants", "3 000"]], "Accroissement naturel", "−12 000", ["+12 000", "+10 000", "−15 000"], "Naissances − décès : 40 000 − 52 000 = −12 000. Les migrations ne comptent pas.", "2"],
+  ["Pays A · 2025", [["Naissances", "40 000"], ["Décès", "52 000"], ["Immigrants", "25 000"], ["Émigrants", "3 000"]], "Solde migratoire", "+22 000", ["+25 000", "−12 000", "+28 000"], "Immigrants − émigrants : 25 000 − 3 000 = +22 000.", "2"],
+  ["Pays A · 2025", [["Naissances", "40 000"], ["Décès", "52 000"], ["Immigrants", "25 000"], ["Émigrants", "3 000"]], "Accroissement total", "+10 000", ["−12 000", "+22 000", "+13 000"], "(40 000 + 25 000) − (52 000 + 3 000) = +10 000. L'immigration compense.", "2"],
+  ["Pays B · 2025", [["Naissances", "90 000"], ["Décès", "30 000"], ["Immigrants", "5 000"], ["Émigrants", "20 000"]], "Accroissement naturel", "+60 000", ["+45 000", "+120 000", "−60 000"], "90 000 − 30 000 = +60 000.", "2"],
+  ["Pays B · 2025", [["Naissances", "90 000"], ["Décès", "30 000"], ["Immigrants", "5 000"], ["Émigrants", "20 000"]], "Solde migratoire", "−15 000", ["+15 000", "+25 000", "+60 000"], "5 000 − 20 000 = −15 000 : plus de gens partent qu'il en arrive.", "2"],
+  ["Pays B · 2025", [["Naissances", "90 000"], ["Décès", "30 000"], ["Immigrants", "5 000"], ["Émigrants", "20 000"]], "Accroissement total", "+45 000", ["+60 000", "+75 000", "−15 000"], "(90 000 + 5 000) − (30 000 + 20 000) = +45 000.", "2"],
+  ["Ville C", [["Habitants", "2 000 000"], ["Superficie", "500 km²"]], "Densité", "4 000 hab./km²", ["250 hab./km²", "400 hab./km²", "40 000 hab./km²"], "Habitants ÷ superficie : 2 000 000 ÷ 500 = 4 000.", "2"],
+  ["Pays D", [["Habitants", "8 000 000"], ["Superficie", "80 000 km²"]], "Densité", "100 hab./km²", ["10 hab./km²", "1 000 hab./km²", "10 000 hab./km²"], "8 000 000 ÷ 80 000 = 100.", "2"],
+  ["Pays E · 2025", [["Habitants", "1 000 000"], ["Naissances", "12 000"]], "Taux de natalité", "12 pour 1 000", ["1,2 pour 1 000", "120 pour 1 000", "12 000 pour 1 000"], "12 000 naissances pour 1 000 000 d'habitants, c'est 12 pour 1 000 habitants.", "1"],
+  ["Pays F", [["Indice de fécondité", "1,4"], ["Immigration", "aucune"]], "À long terme, sa population…", "vieillit", ["rajeunit", "explose", "fait plus d'enfants"], "1,4 est sous le seuil de renouvellement de 2,1 : la population vieillit.", "2"]
+];
+
+// Le graphique du jour : [titre, graphique, question, bonne réponse, autres choix, explication, section, source]
+const G_CROISS = { barres: [["Afrique", 113], ["Océanie", 63], ["Amér. latine", 47], ["Asie", 45], ["Amér. du Nord", 36], ["Europe", 3]], unite: " %", signe: true };
+const G_URB = { barres: [["Amér. du Nord", 82], ["Amér. latine", 81], ["Europe", 75], ["Océanie", 68], ["Asie", 50], ["Afrique", 43]], unite: " %" };
+const G_ACCR = { barres: [["Asie", 216.2], ["Afrique", 160.5], ["Amér. du Nord", 5.9], ["Europe", -2.2]], unite: " M", signe: true };
+const G_POP = { barres: [["−10 000 ans", 0.015], ["Début XIXe s.", 1], ["1990", 5.3], ["2023", 8]], unite: " G" };
+const GRAPHIQUES = [
+  ["Croissance de la population, 1990-2020", G_CROISS, "Quelle région a grandi le plus vite?", "L'Afrique", ["L'Asie", "L'Océanie", "L'Amérique latine"], "Elle a plus que doublé : de 638 à 1 361 millions.", "1", "ONU"],
+  ["Croissance de la population, 1990-2020", G_CROISS, "Quelle région stagne?", "L'Europe", ["L'Amérique du Nord", "L'Asie", "L'Océanie"], "À peine +3 % en 30 ans.", "1", "ONU"],
+  ["Population mondiale (en milliards)", G_POP, "Environ combien de temps a-t-il fallu pour passer de 1 à 8 milliards?", "Environ 200 ans", ["Environ 20 ans", "Environ 2 000 ans", "Environ 10 000 ans"], "Du début du XIXe siècle à 2023 : l'explosion démographique.", "1", "ONU"],
+  ["Accroissement naturel, 2010-2020", G_ACCR, "Dans quelle région meurt-il plus de gens qu'il en naît?", "L'Europe", ["L'Amérique du Nord", "L'Afrique", "L'Asie"], "−2,2 millions. L'immigration empêche sa population de baisser.", "2", "Manuel, d'après l'ONU"],
+  ["Accroissement naturel, 2010-2020", G_ACCR, "Si la population de l'Europe ne baisse pas, c'est grâce…", "à l'immigration", ["à la natalité", "à l'exode rural", "à la baisse de l'espérance de vie"], "L'accroissement naturel est négatif : l'immigration compense.", "2", "Manuel, d'après l'ONU"],
+  ["Pyramide des âges", { pyramide: "jeune" }, "Cette pyramide montre une population…", "jeune, typique d'un pays en développement", ["vieillissante, typique d'un pays développé", "stable, sans naissances", "qui a perdu tous ses aînés"], "Large à la base : beaucoup de naissances, peu d'aînés.", "2", "Silhouette typique"],
+  ["Pyramide des âges", { pyramide: "vieille" }, "Cette pyramide montre une population…", "vieillissante, typique d'un pays développé", ["jeune, typique d'un pays en développement", "en pleine explosion démographique", "qui fait beaucoup d'enfants"], "Étroite à la base : peu de naissances, beaucoup d'aînés.", "2", "Silhouette typique"],
+  ["Part de la population qui vit en ville, 2018", G_URB, "Quelle région est la moins urbanisée?", "L'Afrique", ["L'Asie", "L'Océanie", "L'Europe"], "43 %, mais ses villes grossissent le plus vite.", "5", "ONU"],
+  ["Part de la population qui vit en ville, 2018", G_URB, "Quelle région est la plus urbanisée?", "L'Amérique du Nord", ["L'Europe", "L'Amérique latine", "L'Océanie"], "82 %, suivie de près par l'Amérique latine (81 %).", "5", "ONU"],
+  ["Diplôme universitaire au Québec", { barres: [["Nés ailleurs", 65], ["Nés au Québec", 45]], unite: " %" }, "Quel groupe est le plus souvent diplômé de l'université?", "Les personnes nées ailleurs", ["Les personnes nées au Québec", "Les deux groupes, à égalité"], "65 % contre 45 %. Pourtant, beaucoup d'immigrants occupent un emploi sous leurs compétences : leurs diplômes ne sont souvent pas reconnus.", "4", "Manuel"],
+  ["Les bidonvilles, 2000 et 2018", { barres: [["Part · 2000", 28], ["Part · 2018", 24]], unite: " %", bis: { barres: [["Nombre · 2000", 803], ["Nombre · 2018", 1000]], unite: " M" } }, "La part baisse, mais le nombre monte. Pourquoi?", "La population urbaine grossit très vite", ["Les bidonvilles sont plus grands", "Les gens quittent les villes", "Les chiffres se contredisent"], "Un plus petit pourcentage d'une population beaucoup plus grande, ça fait plus de monde.", "5", "ONU-Habitat"]
+];
+
+// La ligne du temps : [consigne, éléments dans l'ordre, explication, section, nombre à placer]
+const TEMPS = [
+  ["Les phases de la transition démographique", ["Natalité et mortalité élevées", "La mortalité baisse", "La natalité baisse à son tour", "Natalité et mortalité basses"], "La clé : la mortalité baisse avant la natalité.", "1"],
+  ["L'histoire de la population mondiale",["Le début de l'agriculture", "La médecine fait baisser la mortalité", "L'explosion démographique", "8 milliards d'humains"], "−10 000 ans, XIXe siècle, dès 1950, 2023.", "1"],
+  ["Les grandes vagues migratoires", ["Le passage par la Béringie", "Les Vikings à Terre-Neuve", "Des Européens de l'Est vers l'Ouest", "La traversée de la Méditerranée"], "−30 000 ans, IXe-XIe siècles, années 1990, années 2010.", "1"],
+  ["La Chine et les naissances", ["L'enfant unique", "Deux enfants permis", "Trois enfants permis"], "1979, 2015, 2021.", "2"],
+  ["Les ententes sur les migrations", ["La Convention de Genève", "L'espace Schengen", "L'entente France–Québec", "L'AECG Canada–Union européenne"], "1951, 1995, 2008, 2017.", "3"],
+  ["Le monde devient urbain", ["Une petite minorité de citadins", "La moitié de l'humanité en ville", "57 % de citadins", "68 % de citadins prévus"], "1800, 2008, 2022, 2050.", "5"]
+];
+
+/* ============ Les rubriques ============ */
+const ACTS = [
+  { id: "faits", rub: "A1", nom: "Vérification des faits", desc: "Vrai ou faux? Le verdict.", oi: "Établir des faits" },
+  { id: "depeche", rub: "A2", nom: "La dépêche", desc: "Le mot qui manque", oi: "Établir des faits" },
+  { id: "graph", rub: "A3", nom: "Le graphique du jour", desc: "Lis les données", oi: null },
+  { id: "mondes", rub: "A4", nom: "Deux mondes", desc: "Pays développés ou en développement?", oi: "Différences et similitudes" },
+  { id: "partir", rub: "A5", nom: "Partir ou venir?", desc: "Ce qui pousse, ce qui attire", oi: "Causes et conséquences" },
+  { id: "entrevue", rub: "A6", nom: "L'entrevue", desc: "Qui est cette personne?", oi: "Mettre en relation des faits" },
+  { id: "demo", rub: "A7", nom: "Le démographe", desc: "Calcule comme un pro", oi: null },
+  { id: "temps", rub: "A8", nom: "La ligne du temps", desc: "Remets dans l'ordre", oi: "Situer dans le temps" }
+];
+const actDe = id => ACTS.find(a => a.id === id) || { id, nom: id === "examen10" ? "Mini-examen · 10 questions" : "Teste-toi · un peu de tout" };
+const melange = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const avec = (bonne, autres) => melange([bonne, ...autres]);
+const Q = {
+  faits: () => FAITS.map(([t, vrai, ex, s]) => ({ type: "faits", t, bonne: vrai ? "Vrai" : "Faux", ex, s })),
+  depeche: () => DEPECHES.map(([t, rep, autres, ex, s]) => ({ type: "depeche", t, bonne: rep, options: avec(rep, autres), ex, s })),
+  graph: () => GRAPHIQUES.map(([titre, g, q, rep, autres, ex, s, src]) => ({ type: "graph", titre, g, q, bonne: rep, options: avec(rep, autres), ex, s, src })),
+  mondes: () => MONDES.map(([t, i, ex, s]) => ({ type: "deux", t, cotes: ["Pays développés", "Pays en développement"], notes: ["surtout au Nord", "surtout au Sud"], bonne: ["Pays développés", "Pays en développement"][i], ex, s })),
+  partir: () => PARTIR.map(([t, i, ex, s]) => ({ type: "deux", t, cotes: ["Pousse à partir", "Attire vers un pays"], notes: ["pays d'origine", "pays d'accueil"], bonne: ["Pousse à partir", "Attire vers un pays"][i], ex, s })),
+  entrevue: () => ENTREVUES.map(([nom, qui, dit, q, rep, autres, ex, s], i) => ({ type: "entrevue", nom, qui, dit, q, bonne: rep, options: avec(rep, autres), ex, s, h: (i * 53) % 360 })),
+  demo: () => FICHES.map(([nom, lignes, cible, rep, autres, ex, s]) => ({ type: "demo", nom, lignes, cible, bonne: rep, options: avec(rep, autres), ex, s })),
+  temps: () => TEMPS.map(([t, items, ex, s]) => ({ type: "temps", t, items, ex, s }))
+};
+
+/* ============ Outils ============ */
+const $t = id => document.getElementById(id);
+const TOUTES = Object.keys(SECTIONS);
+const secs = () => { const v = store.get("sections"); return Array.isArray(v) && v.length ? v.filter(s => SECTIONS[s]) : TOUTES; };
+const questions = id => (Q[id] ? Q[id]() : []).filter(q => secs().includes(q.s)).map(q => ({ ...q, act: id }));
+const abrege = t => t.length > 70 ? t.slice(0, 69).trimEnd() + "…" : t;
+const resume = q => q.type === "depeche" ? "Dépêche · " + q.bonne : q.type === "graph" ? q.titre : q.type === "entrevue" ? "Entrevue · " + q.nom : q.type === "demo" ? q.nom + " · " + q.cible.toLowerCase() : q.t;
+const renvoi = q => `<i class="renvoi">📘 Manuel p. ${PAGES_SEC[q.s]} · section ${q.s}</i>`;
+const BRAVO = ["Exact.", "Juste.", "Bien vu.", "C'est ça.", "Confirmé."];
+const choixHtml = opts => `<div class="choix">${opts.map((o, i) => `<button class="ch" data-i="${i}">${esc(o)}</button>`).join("")}</div>`;
+
+/* ============ Le joueur ============ */
+function lancer(id) {
+  let qs;
+  if (id.startsWith("examen")) {
+    // Un peu de tout : on pige à tour de rôle dans chaque rubrique.
+    const n = id === "examen10" ? 10 : 5, pools = melange(ACTS.map(a => melange(questions(a.id))).filter(l => l.length));
+    qs = [];
+    while (qs.length < n && pools.some(l => l.length)) pools.forEach(l => { if (l.length && qs.length < n) qs.push(l.pop()); });
+    qs = melange(qs);
+  } else qs = melange(questions(id)).slice(0, SERIE);
+  if (!qs.length) return renderTrain();
+  RUN = { id, qs, i: 0, res: [] };
+  montrer();
+  $t("train").scrollIntoView({ block: "start" });
+}
+function montrer() {
+  const q = RUN.qs[RUN.i], a = actDe(RUN.id), exam = RUN.id.startsWith("examen");
+  RUN.repondu = false;
+  $t("train").innerHTML = `<article class="jeu">
+    <header class="jeu-h"><button class="retour" data-menu>← Passeport</button><p class="jeu-t"><strong>${esc(a.nom)}</strong><em>${exam ? "Sections " + secs().join(", ") : a.oi ? "OI · " + esc(a.oi) : "Lire et calculer"} · ${RUN.i + 1}/${RUN.qs.length}</em></p></header>
+    <p class="seg-bar">${RUN.qs.map((_, j) => `<i class="${j < RUN.res.length ? (RUN.res[j].ok ? "ok" : "ko") : j === RUN.i ? "cur" : ""}"></i>`).join("")}</p>
+    ${exam ? `<p class="q-kick mono">${esc(actDe(q.act).rub + " · " + actDe(q.act).nom)}</p>` : ""}
+    <section class="scene" id="scene"></section><section id="retro"></section></article>`;
+  VUES[q.type](q, $t("scene"));
+}
+function repondre(q, ok) {
+  if (RUN.repondu) return;
+  RUN.repondu = true;
+  RUN.res.push({ ok, court: abrege(resume(q)), s: q.s });
+  document.querySelectorAll("#scene .ch, #scene .col").forEach(b => b.disabled = true);
+  document.querySelectorAll(".seg-bar i")[RUN.i].className = ok ? "ok" : "ko";
+  const der = RUN.i === RUN.qs.length - 1;
+  const bonne = q.type === "temps" ? q.items.join(" → ") : q.bonne;
+  $t("retro").innerHTML = `<p class="retro ${ok ? "bon" : "faux"}"><strong>${ok ? BRAVO[Math.floor(Math.random() * BRAVO.length)] : "La bonne réponse : " + esc(bonne)}</strong>${q.ex ? `<i style="font-style:normal">${esc(q.ex)}</i>` : ""}${ok ? "" : renvoi(q)}</p>
+    <button class="gros suite" id="suite">${der ? "Voir ma carte d'embarquement" : "Suivante →"}</button>`;
+  $t("suite").onclick = () => { if (der) fin(); else { RUN.i++; montrer(); } };
+  setTimeout(() => { $t("suite")?.focus({ preventScroll: true }); $t("suite")?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, 50);
+}
+// Des boutons de choix : marque la bonne et la mauvaise, puis répond.
+function brancher(st, q, sel, valeur, apres) {
+  st.querySelectorAll(sel).forEach(b => b.onclick = () => {
+    if (RUN.repondu) return;
+    const v = valeur(b), ok = v === q.bonne;
+    st.querySelectorAll(sel).forEach(x => { if (valeur(x) === q.bonne) x.classList.add("ok"); });
+    if (!ok) b.classList.add("ko");
+    if (apres) apres(ok, v);
+    repondre(q, ok);
+  });
+}
+const parIndex = q => b => q.options[+b.dataset.i];
+
+/* ============ Les graphiques (SVG dessinés ici) ============ */
+function barres(g) {
+  const L = 116, W = 196, H = 30, max = Math.max(...g.barres.map(b => Math.abs(b[1]))), neg = g.barres.some(b => b[1] < 0);
+  const zero = L + (neg ? 14 : 0), larg = W - (neg ? 14 : 0);
+  const nb = v => (g.signe && v > 0 ? "+" : "") + String(v).replace("-", "−").replace(".", ",") + g.unite;
+  return `<svg viewBox="0 0 360 ${g.barres.length * H + 6}" role="img" aria-label="Graphique à barres">${g.barres.map(([l, v], i) => {
+    const w = Math.max(2, Math.abs(v) / max * larg), y = i * H + 4, x = v < 0 ? zero - w : zero;
+    return `<text x="${L - 8}" y="${y + 17}" text-anchor="end" font-size="15">${esc(l)}</text><rect class="b${v < 0 ? " n" : ""}" x="${x}" y="${y + 3}" width="${w}" height="20"/><text class="v" x="${(v < 0 ? zero : x + w) + 6}" y="${y + 18}" font-size="15">${nb(v)}</text>`; }).join("")}
+    <line class="ax" x1="${zero}" x2="${zero}" y1="0" y2="${g.barres.length * H + 6}"/></svg>`;
+}
+function pyramide(forme) {
+  const L = forme === "jeune" ? [100, 90, 80, 70, 60, 50, 40, 30, 20, 10] : [52, 56, 60, 66, 70, 72, 68, 58, 42, 22];
+  const h = 16, c = 180;
+  return `<svg viewBox="0 0 360 ${L.length * h + 30}" role="img" aria-label="Pyramide des âges">${L.map((w, i) => { const y = (L.length - 1 - i) * h;
+    return `<rect class="b" x="${c - 4 - w * 1.5}" y="${y}" width="${w * 1.5}" height="${h - 3}"/><rect class="b" x="${c + 4}" y="${y}" width="${w * 1.5}" height="${h - 3}"/>`; }).join("")}
+    <text x="${c - 12}" y="${L.length * h + 22}" text-anchor="end" font-size="15">Hommes</text><text x="${c + 12}" y="${L.length * h + 22}" font-size="15">Femmes</text>
+    <text x="4" y="12" font-size="15">Aînés</text><text x="4" y="${L.length * h - 2}" font-size="15">Jeunes</text></svg>`;
+}
+
+const VUES = {
+  // Vérification des faits : une affirmation, un verdict tamponné
+  faits(q, st) {
+    st.innerHTML = `<blockquote class="fc"><b class="fc-k mono">Affirmation à vérifier</b><strong class="fc-q">${esc(q.t)}</strong></blockquote>
+      <p class="choix deux"><button class="ch" data-v="Vrai">Vrai</button><button class="ch" data-v="Faux">Faux</button></p>`;
+    brancher(st, q, ".ch", b => b.dataset.v, () => st.querySelector(".fc").insertAdjacentHTML("beforeend", `<b class="tampon ${q.bonne === "Vrai" ? "v" : "f"}">${q.bonne.toUpperCase()}</b>`));
+  },
+  // La dépêche : le mot qui manque
+  depeche(q, st) {
+    const [avant, apres] = q.t.split("___");
+    st.innerHTML = `<article class="dp"><b class="dp-l mono">MONTRÉAL (Le Fil) —</b><p class="dp-t">${esc(avant)}<b class="trou" id="trou">______</b>${esc(apres)}</p></article>
+      <p class="q-txt">Quel mot complète la dépêche?</p>${choixHtml(q.options)}`;
+    brancher(st, q, ".ch", parIndex(q), () => { const t = $t("trou"); t.textContent = q.bonne; t.classList.add("rempli"); });
+  },
+  // Le graphique du jour
+  graph(q, st) {
+    const dessin = q.g.pyramide ? pyramide(q.g.pyramide) : barres(q.g) + (q.g.bis ? barres(q.g.bis) : "");
+    st.innerHTML = `<figure class="gr"><b class="gr-k mono">Le graphique du jour</b><strong class="gr-t">${esc(q.titre)}</strong>${dessin}<i class="gr-s mono">Source : ${esc(q.src)}</i></figure>
+      <p class="q-txt">${esc(q.q)}</p>${choixHtml(q.options)}`;
+    brancher(st, q, ".ch", parIndex(q));
+  },
+  // Deux colonnes : de quel côté va cet énoncé?
+  deux(q, st) {
+    st.innerHTML = `<p class="dm">${esc(q.t)}</p>
+      <p class="cols">${q.cotes.map((c, i) => `<button class="col" data-v="${esc(c)}">${esc(c)}<small>${esc(q.notes[i])}</small></button>`).join("")}</p>`;
+    brancher(st, q, ".col", b => b.dataset.v);
+  },
+  // L'entrevue : un témoignage, une question
+  entrevue(q, st) {
+    st.innerHTML = `<figure class="iv"><b class="iv-av" style="--h:${q.h}">${esc(q.nom[0])}</b><figcaption><strong class="iv-n">${esc(q.nom)}</strong><i class="iv-r mono">${esc(q.qui)} · propos recueillis</i></figcaption>
+      <blockquote class="iv-q">« ${esc(q.dit)} »</blockquote></figure>
+      <p class="q-txt">${esc(q.q)}</p>${choixHtml(q.options)}`;
+    brancher(st, q, ".ch", parIndex(q));
+  },
+  // Le démographe : une fiche pays à compléter
+  demo(q, st) {
+    st.innerHTML = `<section class="fp"><p class="fp-h"><em style="font-style:normal">${esc(q.nom)}</em><b>FICHE PAYS</b></p>
+      ${q.lignes.map(([l, v]) => `<p class="fp-l"><em style="font-style:normal">${esc(l)}</em><b>${esc(v)}</b></p>`).join("")}
+      <p class="fp-l cible"><em style="font-style:normal">${esc(q.cible)}</em><b id="cible">?</b></p></section>
+      <p class="q-txt">${esc(q.cible)} : combien?</p>${choixHtml(q.options)}`;
+    brancher(st, q, ".ch", parIndex(q), () => { const c = $t("cible"); c.textContent = q.bonne; c.classList.add("vu"); });
+  },
+  // La ligne du temps : touche les éléments dans l'ordre
+  temps(q, st) {
+    let pile; do pile = melange(q.items); while (pile.join() === q.items.join());
+    const place = [];
+    st.innerHTML = `<p class="q-txt">${esc(q.t)} : remets dans l'ordre.</p><ol class="lt" id="lt"></ol><p class="pile" id="pile"></p><button class="gros" id="valider" disabled>Valider</button>`;
+    const dessiner = () => {
+      $t("lt").innerHTML = q.items.map((_, j) => `<li class="slot${place[j] !== undefined ? " plein" : ""}" data-j="${j}"><b>${j + 1}</b><em>${place[j] !== undefined ? esc(place[j]) : ""}</em></li>`).join("");
+      $t("pile").innerHTML = pile.filter(t => !place.includes(t)).map(t => `<button class="pc" data-t="${esc(t)}">${esc(t)}</button>`).join("");
+      $t("valider").disabled = place.length !== q.items.length;
+    };
+    st.addEventListener("click", e => {
+      if (RUN.repondu) return;
+      const pc = e.target.closest(".pc"), sl = e.target.closest(".slot.plein");
+      if (pc) { place.push(pc.dataset.t); dessiner(); }
+      else if (sl) { place.splice(+sl.dataset.j, 1); dessiner(); }
+    });
+    dessiner();
+    $t("valider").onclick = () => {
+      st.querySelectorAll(".slot").forEach((s, j) => s.classList.add(place[j] === q.items[j] ? "ok" : "ko"));
+      $t("valider").remove();
+      repondre(q, place.join() === q.items.join());
+    };
+  }
+};
+
+/* ============ Le passeport : l'accueil ============ */
+let RUN = null;
+function renderTrain() {
+  RUN = null;
+  const ss = secs(), tout = ss.length === TOUTES.length, faits = store.get("faits") || {};
   const today = parse(iso(NOW));
-
-  // Manchette
-  const semTot = Math.ceil(diff(parse(HUB.annee.debut), parse(HUB.annee.fin)) / 7);
-  const sem = Math.min(semTot, Math.max(0, Math.floor(diff(parse(HUB.annee.debut), today) / 7) + 1));
-  document.getElementById("dateline").textContent = fmt(today, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
-  document.getElementById("edition").textContent = "Semaine " + sem + " / " + semTot;
-
-  // En direct : où on est dans l'année
-  const etape = HUB.etapes.find(e => today >= parse(e.debut) && today <= parse(e.fin));
-  let label = "Congé", rest = "Entre deux étapes";
-  if (today < parse(HUB.annee.debut)) { label = "Bientôt la rentrée"; rest = ""; }
-  else if (today > parse(HUB.annee.fin)) { label = "Bon été"; rest = "L'année est terminée"; }
-  else if (etape) {
-    const total = diff(parse(etape.debut), parse(etape.fin)), fait = diff(parse(etape.debut), today), reste = total - fait;
-    label = etape.nom + " · " + enj(etape.enjeu).nom + " · " + (reste <= 7 ? "dernier droit" : fait / total < .5 ? "1re moitié" : "2e moitié");
-    rest = reste === 0 ? "Dernier jour" : "Fin dans " + reste + " j";
-  }
-  document.getElementById("live").innerHTML = `<span class="on mono">En direct</span><b>${esc(label)}</b><span class="rest mono">${esc(rest)}</span>`;
-  document.getElementById("year").innerHTML = HUB.etapes.map(e => {
-    const p = Math.max(0, Math.min(1, diff(parse(e.debut), today) / diff(parse(e.debut), parse(e.fin))));
-    return `<div class="${enj(e.enjeu).classe} ${e === etape ? "now" : ""}" style="flex:${diff(parse(e.debut), parse(e.fin))}"><div class="bar"><i style="width:${p * 100}%"></i></div><small class="mono">${esc(enj(e.enjeu).nom)}</small></div>`;
-  }).join("");
-
-  // À la une : le prochain examen
-  const nx = HUB.examens.filter(x => finSemaine(x) >= today).sort((a, b) => parse(a.semaine) - parse(b.semaine))[0];
-  const une = document.getElementById("une");
-  if (!nx) {
-    une.className = "une";
-    une.innerHTML = `<p class="kick mono">À la une</p><h2>Aucun examen à l'horizon</h2><p class="deck">Profites-en pour suivre l'actualité.</p>`;
-  } else {
-    const w = semainesAvant(nx, today);
-    const notes = nx.notes.map(noteById).filter(Boolean);
-    const dispo = notes.filter(n => ouverte(n, today));
-    une.className = "une " + enj(nx.enjeu).classe;
-    une.innerHTML = `
-      <p class="kick mono"><span>${esc(enj(nx.enjeu).nom)} · ${esc(nx.titre)}</span><span class="when">${esc(quand(w))}</span></p>
-      <h2>${esc(nx.manchette)}</h2>
-      <p class="deck">${esc(nx.deck)}</p>
-      <p class="by mono">Semaine du ${esc(fmt(parse(nx.semaine), { day: "numeric", month: "long" }))} · le jour dépend de ton groupe</p>
-      <div class="dossier"><h3 class="mono">Dans ce dossier · manuel</h3>
-        <ol>${nx.sections.map(s => `<li><b>${esc(s[0])}</b><span class="mono">${esc(s[1])}</span></li>`).join("")}</ol></div>
-      ${nx.format.length ? `<div class="format">${nx.format.map(f => `<span>${esc(f)}</span>`).join("")}</div>` : ""}
-      ${dispo.length
-        ? dispo.map(n => `<a class="read" href="${encodeURI(n.fichier)}"><span>Lire le dossier : ${esc(n.titre)}</span><span class="arr">→</span></a>`).join("")
-        : `<span class="read off"><span>🔒 Le dossier sort bientôt</span></span>`}`;
-  }
-
-  // Je suis prêt si…
-  const ready = document.getElementById("ready");
-  if (nx && nx.pret.length) {
-    const coche = store.get("pret-" + nx.id) || [];
-    const nb = coche.filter(Boolean).length;
-    ready.hidden = false;
-    ready.className = "ready " + enj(nx.enjeu).classe;
-    ready.innerHTML = `
-      <div class="ready-h"><b>Je suis prêt si je peux…</b><span class="mono" style="color:var(--ink-3)">${nb} / ${nx.pret.length}</span></div>
-      <div class="meter"><i style="width:${nb / nx.pret.length * 100}%"></i></div>
-      ${nx.pret.map((t, i) => `<label class="check"><input type="checkbox" data-ex="${nx.id}" data-i="${i}" ${coche[i] ? "checked" : ""}><span>${esc(t)}</span></label>`).join("")}`;
-  } else ready.hidden = true;
-
-  // Le chiffre du monde
-  const c = HUB.chiffres[(sem - 1 + HUB.chiffres.length * 10) % HUB.chiffres.length];
-  document.getElementById("fig").innerHTML = `<p class="mono" style="color:var(--red)">Le chiffre du monde</p><div class="big">${esc(c.gros)}</div><p>${esc(c.texte)}</p><small class="mono">Source : ${esc(c.source)}</small>`;
-
-  // Dossiers
-  document.getElementById("cards").innerHTML = HUB.notes.map(n => {
-    const d = parse(n.dispo), ok = ouverte(n, today), neuf = ok && diff(d, today) <= 7;
-    const st = ok
-      ? `<div class="st">${neuf ? '<span class="new mono">Nouveau</span>' : ""}Lire le dossier →</div>`
-      : `<div class="st"><span class="stamp mono">Sous embargo</span>${d > today ? "jusqu'au " + esc(fmt(d, { day: "numeric", month: "long" })) : "bientôt"}</div>`;
-    const inner = `<div class="k mono"><span>${esc(enj(n.enjeu).nom)}</span></div><h3>${esc(n.titre)}</h3><p>${esc(n.sujet)}</p>${st}`;
-    const cls = "card " + enj(n.enjeu).classe;
-    return ok ? `<a class="${cls}" href="${encodeURI(n.fichier)}">${inner}</a>` : `<div class="${cls} emb">${inner}</div>`;
-  }).join("");
-
-  // Agenda
-  document.getElementById("agenda").innerHTML = HUB.examens.map(x => {
-    const d = parse(x.semaine), etat = finSemaine(x) < today ? "past" : x === nx ? "now" : "";
-    return `<div class="ag ${etat} ${enj(x.enjeu).classe}">
-      <div class="d"><small class="mono">sem. du</small><b>${d.getDate()}</b><small class="mono">${esc(fmt(d, { month: "short" }).replace(".", ""))}</small></div>
-      <div><p class="k mono">${esc(enj(x.enjeu).nom)}${etat === "past" ? " · terminé" : etat === "now" ? " · " + esc(quand(semainesAvant(x, today))) : ""}</p>
-        <h3>${esc(x.manchette)}</h3><p>${esc(x.titre)} · manuel p. ${Math.min(...pages(x))} à ${Math.max(...pages(x))}</p></div></div>`;
-  }).join("");
-
-  // Dépêches
-  const items = [
-    ...HUB.depeches.map(m => ({ d: parse(m.date), b: m.texte, s: m.detail })),
-    ...HUB.notes.filter(n => n.fichier).map(n => ({ d: parse(n.dispo), b: "Nouveau dossier : " + n.titre, s: enj(n.enjeu).nom })),
-    ...HUB.examens.map(x => ({ d: finSemaine(x), b: x.titre + " : c'est fait", s: enj(x.enjeu).nom }))
-  ].filter(i => i.d <= today).sort((a, b) => b.d - a.d);
-  document.getElementById("wire").innerHTML = items.length
-    ? items.map(i => `<div class="dep"><span class="t mono">${esc(court(i.d))}</span><div><b>${esc(i.b)}</b><span>${esc(i.s)}</span></div></div>`).join("")
-    : `<p class="empty">Aucune dépêche pour l'instant.</p>`;
-  const vu = store.get("wire-vu");
-  document.getElementById("wireDot").hidden = !items.length || (vu && parse(vu) >= items[0].d);
+  const nx = EXAMENS.filter(x => finSemaine(x) >= today && SECTIONS_EXAMEN[x.id]).sort((a, b) => parse(a.semaine) - parse(b.semaine))[0];
+  const nxs = nx ? SECTIONS_EXAMEN[nx.id] : [];
+  // Un visa par rubrique ; une rubrique terminée reçoit son tampon (la date où elle l'a été).
+  // Chaque visa a sa couleur d'encre, comme les tampons de vrais pays.
+  const ENCRES = ["#2b59c3", "#b8322a", "#2e7d4f", "#7a3fa0", "#b06a12", "#0f7c80", "#9c2f6b", "#4a5a12"];
+  const visa = (a, i) => { const n = questions(a.id).length, f = faits[a.id];
+    return `<button class="visa" data-act="${a.id}" style="--vc:${ENCRES[i % ENCRES.length]}"${n ? "" : " disabled"}><b class="v-code">${a.rub}</b><strong class="v-t">${esc(a.nom)}</strong><i class="v-d">${n ? esc(a.desc) : "Pas dans ce choix"}</i>
+      ${f && n ? `<i class="tampon-v">VALIDÉ<br>${esc(typeof f === "string" ? fmt(parse(f), { day: "numeric", month: "short" }) : "✓")}</i>` : n ? `<i class="v-n">${Math.min(SERIE, n)} q.</i>` : ""}</button>`; };
+  $t("train").innerHTML = `
+    <section class="intro"><h2>Enjeu 1 · La population</h2><p>Choisis tes destinations, puis décolle. Une erreur? La bonne réponse, et les pages du manuel à relire.</p></section>
+    ${notesHtml()}
+    <section><b class="lab">Tes destinations</b><div class="secs-g">
+      <button class="sx${tout ? " on" : ""}" data-sx="tout" aria-pressed="${tout}">Tout l'enjeu</button>
+      ${Object.entries(SECTIONS).map(([s, t]) => { const on = !tout && ss.includes(s);
+        return `<button class="sx${on ? " on" : ""}" data-sx="${s}" aria-pressed="${on}">${s} · ${esc(t)}</button>`; }).join("")}
+    </div>${nxs.length && nxs.join() !== ss.join() && nxs.length < TOUTES.length ? `<button class="sx-exam" data-sx="${nxs.join(",")}">🎯 Seulement la matière de ton ${esc(nx.titre.charAt(0).toLowerCase() + nx.titre.slice(1))} (sections ${nxs.join(", ")})</button>` : ""}</section>
+    <section class="go-g"><button class="gros go" data-ex="examen5">✈ Teste-toi · 5 questions<small>Un peu de tout, dans tes destinations</small></button><button class="gros ghost" data-ex="examen10">Mini-examen · 10 questions</button></section>
+    <details class="types" id="types"${store.get("types") ? " open" : ""}><summary>Ou choisis un visa précis <i>${ACTS.length}</i></summary><div class="visas">${ACTS.map(visa).join("")}</div></details>
+    <p class="t-note">Rien n'est envoyé : tes choix restent sur ton appareil.</p>`;
+  // Le menu des visas reste ouvert ou fermé, comme l'élève l'a laissé.
+  $t("types").addEventListener("toggle", e => store.set("types", e.target.open));
+}
+// Mes notes de cours : celles qui sont sorties s'ouvrent ; les autres montrent leur date de sortie.
+function notesHtml() {
+  const today = parse(iso(NOW));
+  return `<section><b class="lab">Mes notes de cours</b><div class="notes-l">${HUB.notes.map(n => n.fichier && parse(n.dispo) <= today
+    ? `<a class="note" href="${encodeURI(n.fichier)}"><b>📘 ${esc(n.titre)}</b><small>${esc(n.sujet)}</small></a>`
+    : `<p class="note off"><b>🔒 ${esc(n.titre)}</b><small>${parse(n.dispo) > today ? "Sort le " + esc(fmt(parse(n.dispo), { day: "numeric", month: "long" })) : "Bientôt"}</small></p>`).join("")}</div></section>`;
+}
+function choisirSec(v) {
+  let ss = secs();
+  if (v === "tout") ss = TOUTES;
+  else if (v.includes(",")) ss = v.split(",");
+  else ss = ss.length === TOUTES.length ? [v] : ss.includes(v) ? ss.filter(x => x !== v) : [...ss, v].sort();
+  store.set("sections", ss.length ? ss : TOUTES);
+  renderTrain();
 }
 
-/* ============ Navigation ============ */
-const main = document.getElementById("main");
-const LARGE = matchMedia("(min-width: 900px)");
-function go(v) {
-  if (LARGE.matches && v === "all") main.classList.add("dash");
-  else {
-    main.classList.remove("dash");
-    document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.dataset.v === v));
-  }
-  document.querySelectorAll("[data-go]").forEach(b => b.setAttribute("aria-current", b.dataset.go === v));
-  if (v === "depeches") { store.set("wire-vu", iso(NOW)); document.getElementById("wireDot").hidden = true; }
-  scrollTo({ top: 0, behavior: "smooth" });
+/* ============ La carte d'embarquement (la fin) ============ */
+function fin() {
+  const bons = RUN.res.filter(r => r.ok).length, n = RUN.res.length, a = actDe(RUN.id);
+  const faits = store.get("faits") || {}; faits[RUN.id] = iso(new Date()); store.set("faits", faits);
+  const aRelire = [...new Set(RUN.res.filter(r => !r.ok).map(r => r.s))].sort();
+  const verdict = bons === n ? "Sans faute" : bons / n >= .7 ? "Solide" : bons / n >= .4 ? "À moitié" : "À revoir";
+  $t("train").innerHTML = `<article class="jeu"><section class="cb">
+      <p class="cb-h"><b>Carte d'embarquement</b><b>${esc(fmt(new Date(), { day: "numeric", month: "short" }))}</b></p>
+      <div class="cb-b">
+        <p class="cb-route"><b><small>De</small>Ton cahier</b><i>✈</i><b><small>Vers</small>${a.rub ? esc(a.rub) : RUN.id === "examen10" ? "Examen" : "Le monde"}</b></p>
+        <p class="cb-champs"><em style="font-style:normal"><small>Score</small><b>${bons}/${n}</b></em><em style="font-style:normal"><small>Verdict</small><b>${verdict}</b></em><em style="font-style:normal"><small>Sections</small><b>${secs().length === TOUTES.length ? "Toutes" : secs().join(",")}</b></em></p>
+        <ol>${RUN.res.map((r, j) => `<li class="${r.ok ? "" : "ko"}"><em style="font-style:normal">${j + 1}. ${esc(r.court)}</em><i>${r.ok ? "✓" : "✗"}</i></li>`).join("")}</ol>
+        ${aRelire.length ? `<i class="cb-r" style="font-style:normal">📘 À relire : ${aRelire.map(s => "manuel p. " + PAGES_SEC[s] + " (section " + s + ")").join(", ")}</i>` : `<i class="cb-r" style="font-style:normal">Rien à relire. Bon vol!</i>`}
+      </div><div class="cb-code"></div></section>
+    <p class="fin-btns"><button class="gros" id="rejouer">Rejouer</button><button class="gros ghost" data-menu>Passeport</button></p></article>`;
 }
-document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
-LARGE.addEventListener("change", e => go(e.matches ? "all" : "une"));
-if (!LARGE.matches) main.classList.remove("dash");
 
-document.addEventListener("change", e => {
-  const c = e.target.closest("input[data-ex]");
-  if (!c) return;
-  const k = "pret-" + c.dataset.ex, v = store.get(k) || [];
-  v[+c.dataset.i] = c.checked; store.set(k, v); render();
+/* ============ Branchements ============ */
+$t("train").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b || b.disabled) return;
+  if (b.dataset.sx) choisirSec(b.dataset.sx);
+  else if (b.dataset.act) lancer(b.dataset.act);
+  else if (b.dataset.ex) lancer(b.dataset.ex);
+  else if (b.hasAttribute("data-menu")) { renderTrain(); scrollTo({ top: 0 }); }
+  else if (b.id === "rejouer") lancer(RUN.id);
 });
+renderTrain();
 
-/* ============ Mode prof : voir le hub à une autre date (?prof) ============ */
-if (params.has("prof")) {
-  const p = document.createElement("div");
-  p.className = "prof";
-  p.innerHTML = `Mode prof · date simulée <input type="date" value="${iso(NOW)}">`;
-  p.querySelector("input").addEventListener("input", e => { if (e.target.value) { NOW = parse(e.target.value); render(); } });
-  document.body.appendChild(p);
-}
-
-render();
 </script>
 </body>
 </html>
