@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Remonter le temps · HQC 3</title>
+<title>Histoire du Québec et du Canada · Sec 3</title>
 <meta name="theme-color" content="#fbf4ea">
 <style>
 /* Polices intégrées (Bricolage Grotesque, Atkinson Hyperlegible) : le fichier fonctionne seul, sans Internet ni tierce partie */
@@ -156,7 +156,7 @@ header b{font-family:var(--titre);font-size:20px;font-weight:800;letter-spacing:
 .dos.on small{color:var(--ink)}
 .dos.on .n{background:var(--c);color:#fff}
 @media (max-width:560px){.dos-g{grid-template-columns:1fr}.dos{padding:8px 12px}}
-@media (min-width:900px){.dos-g{grid-template-columns:auto repeat(4,1fr)}.dos.tout{grid-column:auto;padding:10px 20px}}
+@media (min-width:900px){.dos-g{grid-template-columns:auto repeat(var(--nd,4),1fr)}.dos.tout{grid-column:auto;padding:10px 20px}}
 
 /* Feuille plein écran */
 .sheet{position:fixed;inset:0;z-index:30;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);visibility:hidden}
@@ -386,6 +386,26 @@ footer{color:var(--ink-3);font-size:12px;text-align:center;padding:26px 0 8px}
 .plein-ecran,.retour .plein-ecran{display:none;margin-left:auto;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:700;font-size:15px;color:var(--ink-2);flex:none}
 .plein-ecran svg{width:18px;height:18px}
 @media (min-width: 900px){ .plein-ecran,.retour .plein-ecran{display:inline-flex} }
+/* Mode TBI (2026-10-27) : un petit bouton pâle dans le coin, invisible au cellulaire. En classe, l'enseignant choisit le chapitre et les dossiers,
+   puis 5 ou 10 questions ; l'accueil se réduit à ça, en gros, et rien n'est gardé sur l'appareil. */
+.tbi-btn{display:none;margin-left:auto;padding:8px 10px;border-radius:999px;font-size:15px;font-weight:800;letter-spacing:.06em;color:var(--ink-3);opacity:.45;flex:none}
+.tbi-btn:hover{opacity:1;background:var(--surface)}
+.plein-ecran + .tbi-btn{margin-left:0}
+@media (min-width: 900px){ .tbi-btn{display:inline-flex} }
+body.tbi .tbi-btn{opacity:1;background:var(--ink);color:var(--bg)}
+body.tbi .wrap{max-width:1100px;zoom:1.7}
+body.tbi #hero,body.tbi .par-oi,body.tbi footer,body.tbi .dossiers .astuce{display:none}
+body.tbi .dossiers{margin-top:6px}
+body.tbi .titre-tbi{display:block}
+.titre-tbi{display:none;font:800 32px/1.1 var(--titre);margin:4px 0 0}
+/* Les chapitres : une petite rangée au-dessus des dossiers */
+.chaps{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.chaps .eyebrow{margin-right:4px}
+.chap{width:44px;height:40px;border-radius:12px;border:2px solid color-mix(in srgb,var(--ink) 18%,transparent);font:800 18px/1 var(--titre);color:var(--ink-2);display:grid;place-items:center}
+.chap.on{background:var(--k);border-color:var(--k);color:#fff}
+/* Question ouverte (banque formative) : on pense, on retourne, on dit si on l'avait */
+.retro.rep{background:color-mix(in srgb,var(--a,var(--c)) 12%,var(--bg))}
+.choix.auto{margin-top:12px}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
 </style>
 
@@ -407,8 +427,9 @@ footer{color:var(--ink-3);font-size:12px;text-align:center;padding:26px 0 8px}
 <div class="wrap">
   <header>
     <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12M6 22h12M7 2c0 5 10 5 10 10S7 17 7 22M17 2c0 5-10 5-10 10s10 5 10 10"/></svg></div>
-    <div><span class="eyebrow">HQC · 3e secondaire</span><b>Remonter le temps</b></div>
+    <div><span class="eyebrow">3e secondaire</span><b>Histoire du Québec et du Canada</b></div>
     <button class="plein-ecran" data-plein></button>
+    <button class="tbi-btn" data-tbi title="Mode TBI, pour l'enseignant">TBI</button>
   </header>
 
   <main>
@@ -434,7 +455,16 @@ const PICTOS = {"faits":"data:image/webp;base64,UklGRs4SAABXRUJQVlA4WAoAAAAwAAAA
    Pages = pages du cahier imprimé du chapitre 1 (relevées le 2026-10-23 ; à revérifier si les notes changent).
    Chaque entrée finit par [page, dossier].
    ===================================================================== */
-const CH = { titre: "L'expérience des Autochtones et le projet de colonie", per: "Des origines à 1608" };
+// Les 4 chapitres. Le chapitre 1 a ses activités par OI et les pages du cahier ; tous ont les questions de la banque formative (FORM).
+const CHS = {
+  1: { titre: "L'expérience des Autochtones et le projet de colonie", per: "Des origines à 1608" },
+  2: { titre: "L'évolution de la société coloniale sous l'autorité de la métropole française", per: "1608 à 1760" },
+  3: { titre: "La Conquête et le changement d'empire", per: "1760 à 1791" },
+  4: { titre: "Les revendications et les luttes nationales", per: "1791 à 1840" }
+};
+// Banque formative de l'enseignant, recopiée ici par [09] Questions formatives/construire.js : ne pas modifier entre les marqueurs.
+// ch = [couleur, dossiers…] ; q = [chapitre, dossier, type, OI, question, réponse, choix?]
+/*FORM*/const FORM = {"ch":[["#E1701A","Les premiers occupants","Les rapports sociaux","Économie, alliances et croyances","Les contacts avec les Européens"],["#1F4E79","La colonisation au début des années 1600","La Nouvelle-France de 1627 à 1663","Le gouvernement royal","Société et économie (1700-1760)","La guerre de la Conquête"],["#99281E","Le régime militaire","La Proclamation royale","L'Acte de Québec et la Révolution américaine","Les effets de la Révolution américaine","La société coloniale (1760-1791)"],["#1B6B43","Les débuts du parlementarisme","La société du Bas et du Haut-Canada","La transformation de l'économie","Les tensions dans le Bas-Canada","Les rébellions et leurs conséquences"]],"q":[[1,1,"cm","espace","Dans quelle région naturelle le sol est-il fertile et propice à l'agriculture?","b) Les Basses-terres du Saint-Laurent.",["Le Bouclier canadien","Les Basses-terres du Saint-Laurent","Les Appalaches"]],[1,1,"vf","faits","Les premiers humains en Amérique sont nés sur le continent.","Faux. Ils sont venus d'Asie par la Béringie, un pont de terre aujourd'hui disparu."],[1,1,"rc","faits","Nomme les deux hypothèses qui expliquent comment les premiers humains ont peuplé l'Amérique.","Le corridor libre de glace (par l'intérieur du continent) et la migration côtière (le long des côtes, par bateau)."],[1,1,"ordre","temps","Place en ordre : premiers humains au Québec, recul des glaciers, premiers humains en Amérique.","Premiers humains en Amérique (−30 000) → recul des glaciers (−15 000) → premiers humains au Québec (−12 000)."],[1,1,"rc","cause","Pourquoi les Algonquiens sont-ils nomades?","Le sol pauvre et rocheux du Bouclier canadien empêche l'agriculture. Ils vivent de la chasse, de la pêche et de la cueillette, et doivent se déplacer."],[1,1,"rc","diff","Donne une différence entre le mode de vie des Iroquoiens et celui des Algonquiens.","Les Iroquoiens sont sédentaires et cultivent (maïs, courge, haricot). Les Algonquiens sont nomades et vivent de la chasse, de la pêche et de la cueillette."],[1,1,"qui","faits","Je suis une maison longue entourée d'une palissade. Quelle famille linguistique m'habite?","Les Iroquoiens."],[1,1,"rc","faits","Quel double rôle le fleuve Saint-Laurent joue-t-il pour les premiers occupants?","C'est une voie de circulation et une source de nourriture."],[1,2,"rc","faits","Chez les Inuits, comment se prennent les décisions?","Par consensus."],[1,2,"vf","faits","Chez les Iroquoiens, ce sont les mères de clan qui désignent les chefs.","Vrai. Il y a un chef civil et un chef de guerre."],[1,2,"rc","diff","Donne une similitude dans la prise de décision des Algonquiens et des Iroquoiens.","Chez les deux, les décisions importantes se prennent en conseil."],[1,2,"def",null,"Que veut dire « matrilinéaire »?","La filiation passe par la mère. Chez les Iroquoiens, la nation est gérée par les femmes : les mères de clan désignent les chefs."],[1,2,"rc","liens","Pourquoi les femmes ont-elles l'autorité chez les Iroquoiens?","Ce sont elles qui assurent l'essentiel des récoltes. Or, la personne qui rapporte la nourriture dirige la nation."],[1,2,"rc","faits","Sans écriture, comment les Autochtones transmettent-ils leurs savoirs?","Par la tradition orale : les aînés racontent les contes et les légendes, de génération en génération."],[1,2,"qui","faits","Je suis un guérisseur. J'interprète les rêves et je communique avec les esprits.","Le chaman."],[1,2,"vf","faits","Chez les Autochtones, chaque personne possède ses propres biens.","Faux. L'économie repose sur le partage plutôt que sur la propriété : les biens appartiennent à la communauté, et chacun reçoit selon ses besoins."],[1,2,"def",null,"Qu'est-ce que le don et le contre-don?","Une coutume : entre amis et alliés, on se fait des présents mutuels pour renforcer les liens."],[1,3,"def",null,"Qu'est-ce que le troc?","L'échange d'un bien contre un autre, sans utiliser de monnaie."],[1,3,"rc","espace","À quels endroits les nations autochtones se rencontraient-elles pour commercer?","Aux confluents, là où deux cours d'eau se rejoignent."],[1,3,"rc","cause","Nomme deux raisons pour lesquelles les nations autochtones commercent entre elles.","Satisfaire leurs besoins (obtenir ce qu'elles ne produisent pas) et établir des alliances durables."],[1,3,"rc","rel","Qu'échangent les Iroquoiens et les Algonquiens? Pourquoi?","Les Iroquoiens échangent leur maïs contre les fourrures et la viande des Algonquiens. Chacun obtient ce que son mode de vie ne lui permet pas de produire."],[1,3,"qui","faits","Je suis un collier de perles tissé qui sert de contrat officiel entre les nations.","Le wampum."],[1,3,"rc","faits","Nomme deux buts d'une alliance entre nations autochtones.","Au choix : faire du commerce, se défendre mutuellement, combattre un ennemi commun, entretenir des liens politiques."],[1,3,"rc","cause","Nomme une cause de guerre entre nations autochtones.","Au choix : un territoire de chasse contesté, le contrôle de produits commerciaux, un droit de passage exigé."],[1,3,"def",null,"Qu'est-ce que l'animisme?","La croyance qu'un monde parallèle, peuplé d'esprits bons et mauvais, coexiste avec le nôtre."],[1,3,"vf","faits","Le totem est l'esprit protecteur d'une personne.","Vrai."],[1,4,"ordre","temps","Place en ordre : Jacques Cartier, Christophe Colomb, Jean Cabot.","Colomb (1492, Espagne) → Cabot (1497, Angleterre) → Cartier (1534, France)."],[1,4,"rc","espace","Qui sont les premiers Européens à accoster en Amérique, vers l'an 1000? Où?","Les Vikings, à l'Anse aux Meadows, à Terre-Neuve."],[1,4,"rc","cause","Nomme deux objectifs des expéditions européennes.","Au choix : trouver une route vers l'Asie, créer un empire colonial, trouver des métaux précieux, évangéliser les Autochtones."],[1,4,"rc","faits","Que fait Cartier à Gaspé en 1534? Pourquoi?","Il plante une croix pour montrer que la région appartient désormais à la France."],[1,4,"rc","espace","Quels villages Cartier visite-t-il en 1535? Que deviendront-ils?","Stadaconé (le futur Québec) et Hochelaga (le futur Montréal)."],[1,4,"rc","chg","Qu'est-ce qui change dans les objectifs de Cartier à son 3e voyage (1541)?","Il faut maintenant évangéliser et coloniser : il fonde Charlesbourg-Royal avec 400 colons."],[1,4,"vf","faits","Cartier rapporte de l'or et des diamants en France.","Faux. Ce n'est que de la pyrite (faux or) et du quartz (faux diamants)."],[1,4,"rc","liens","Pourquoi les pêcheurs français doivent-ils débarquer sur la terre? Qu'est-ce que ça déclenche?","Ils font sécher le poisson sur la terre. C'est là que commencent les échanges avec les Autochtones."],[1,4,"rc","cause","Donne une conséquence des échanges avec les Européens pour les Autochtones.","Leur niveau de vie s'améliore beaucoup, mais leurs habitudes changent : la chasse et les réseaux d'échanges ne sont plus les mêmes."],[1,4,"rc","faits","Nomme les deux premiers succès français du début des années 1600.","Un poste de traite à Tadoussac et l'alliance franco-amérindienne de 1603."],[2,1,"def",null,"Qu'est-ce que le mercantilisme?","L'idée qu'un pays s'enrichit en accumulant des métaux précieux. La colonie fournit des matières premières à bas prix et achète les produits fabriqués dans la métropole."],[2,1,"def",null,"Qu'est-ce qu'une métropole?","Le pays qui possède la colonie (ici, la France)."],[2,1,"rc","diff","Donne une différence entre une colonie-comptoir et une colonie de peuplement.","Le comptoir commerce avec les Autochtones et l'occupation est temporaire. La colonie de peuplement exploite elle-même les ressources et l'occupation est permanente."],[2,1,"rc","liens","Pourquoi un comptoir coûte-t-il peu, mais protège-t-il mal le territoire?","Il n'installe personne sur place : il coûte peu, mais la France ne contrôle pas vraiment le territoire."],[2,1,"rc","temps","En quelle année Champlain fonde-t-il Québec?","En 1608. C'est le premier établissement permanent de la Nouvelle-France."],[2,1,"rc","espace","Nomme deux raisons du choix du site de Québec.","Au choix : le fleuve y est plus étroit (surveiller les bateaux), le territoire appartient à des alliés (les Algonquiens), la rivière Saint-Charles facilite la traite des fourrures."],[2,1,"rc","cause","Nomme les deux objectifs de l'alliance avec les Autochtones pour la France.","Économique : augmenter le commerce des fourrures. Religieux : évangéliser les Autochtones."],[2,1,"ordre","temps","Place en ordre : alliance huronne-wendat, fondation de Québec, alliance franco-amérindienne.","Alliance franco-amérindienne (1603) → fondation de Québec (1608) → alliance huronne-wendat (1609)."],[2,1,"rc","faits","Que fait un missionnaire en Nouvelle-France?","Il vit dans les villages autochtones, apprend leur langue et fonde des missions pour les convertir au christianisme."],[2,2,"def",null,"Qu'est-ce que le monopole?","Le droit d'être le seul à faire le commerce."],[2,2,"rc","faits","Nomme les trois responsabilités des compagnies.","Développer le commerce des fourrures, peupler la colonie et évangéliser les Autochtones."],[2,2,"rc","cause","Pourquoi le peuplement échoue-t-il sous les compagnies?","Les colons coûtent cher (recruter, transporter, nourrir, installer), alors que le commerce des fourrures demande peu de colons."],[2,2,"ordre","temps","Place en ordre la fondation de Trois-Rivières, de Ville-Marie et de Québec.","Québec (1608) → Trois-Rivières (1634) → Ville-Marie (1642)."],[2,2,"rc","espace","Pourquoi Trois-Rivières est-elle bâtie à cet endroit?","À un confluent (le Saint-Maurice rejoint le fleuve) : pour surveiller le fleuve et augmenter le commerce des fourrures."],[2,2,"rc","faits","Nomme deux devoirs du censitaire.","Au choix : exploiter sa terre, payer des taxes et redevances, faire des journées de corvée, entretenir les chemins."],[2,2,"def",null,"Qu'est-ce que la corvée?","Un travail obligatoire et gratuit."],[2,2,"qui","faits","Avec Maisonneuve, je fonde Ville-Marie en 1642 et j'y soigne les malades.","Jeanne Mance."],[2,2,"rc","faits","Nomme trois rôles de la religion dans la colonie.","Au choix : encadrer les colons, l'enseignement, les soins de santé, les rites religieux, l'évangélisation."],[2,2,"cm","faits","Au XVIIe siècle, qui sont les alliés des Anglais?","b) La Confédération iroquoise (Ligue des cinq nations).",["La Confédération huronne-wendat","La Confédération iroquoise","Les Innus (Montagnais)"]],[2,2,"rc","cause","Quelle conséquence la destruction de la Huronie a-t-elle pour la France?","Elle perd son principal allié pour le commerce des fourrures."],[2,2,"rc","faits","En 1663, combien de colons en Nouvelle-France? Et en Nouvelle-Angleterre?","Environ 3 500 contre 80 000. Cet écart est un grand danger pour la Nouvelle-France."],[2,2,"def",null,"Qu'est-ce que le choc microbien?","Les maladies européennes, contre lesquelles les Autochtones ne sont pas protégés. Leur population chute."],[2,3,"rc","temps","Qu'est-ce qui commence en 1663?","Le gouvernement royal : le roi prend la colonie en main, à la place des compagnies."],[2,3,"def",null,"Qu'est-ce que l'absolutisme?","Un système où le roi a un pouvoir absolu : il décide de tout, seul."],[2,3,"rc","rel","Associe chaque fonction à son rôle : gouverneur général, intendant, secrétaire d'État à la Marine.","Gouverneur : l'armée et la diplomatie. Intendant : l'économie, la justice, les finances et le peuplement. Secrétaire d'État : gère les colonies depuis la France."],[2,3,"rc","cause","Pourquoi le roi envoie-t-il le régiment de Carignan-Salières en 1665? Résultat?","Pour défendre la colonie. Il mène à une paix avec la Confédération iroquoise en 1667, mais elle est temporaire."],[2,3,"rc","diff","Quelle différence entre un soldat de métier et un milicien?","Le soldat de métier est payé par le roi. Le milicien est un colon appelé à combattre, sans salaire."],[2,3,"rc","faits","Nomme trois mesures de Jean Talon pour peupler la colonie.","Au choix : encourager mariages et naissances, amendes aux célibataires, récompenses aux familles de 10 enfants et plus, les Filles du Roy, des immigrants, des terres aux soldats."],[2,3,"qui","faits","Nous sommes des femmes envoyées par le roi entre 1663 et 1673 pour nous marier dans la colonie.","Les Filles du Roy."],[2,3,"def",null,"Comment calcule-t-on l'accroissement naturel?","Naissances − décès."],[2,3,"vf","faits","Jean Talon réussit à remplacer la fourrure par d'autres activités économiques.","Faux. C'est un succès limité : la fourrure reste la principale richesse."],[2,3,"qui","faits","Nous partons loin chez les Autochtones pour échanger des fourrures.","Les coureurs des bois."],[2,3,"rc","temps","Quel traité de 1701 met fin aux guerres iroquoises?","La Grande Paix de Montréal."],[2,4,"def",null,"Qu'est-ce que l'acclimatation?","L'adaptation des colons au froid de l'hiver : vêtements, déplacements, habitation."],[2,4,"rc","faits","Donne deux adaptations de l'habitation au climat.","Au choix : des toits plus pentus, des fenêtres plus petites, des fondations plus profondes."],[2,4,"rc","liens","Pourquoi les colons se voient-ils peu à peu comme des Canadiens?","Ils sont nés en Nouvelle-France, adaptés au climat, et ont des coutumes différentes de celles de la France."],[2,4,"rc","rel","Associe chaque industrie à ce qu'elle fait : scieries, forges du Saint-Maurice, chantiers navals.","Scieries : le bois en planches. Forges : le fer (outils, clous, poêles). Chantiers navals : des navires pour le commerce."],[2,4,"rc","faits","À quoi sert le chemin du Roy?","À se déplacer plus facilement, surtout l'hiver."],[2,4,"rc","espace","Quelles trois régions le commerce triangulaire relie-t-il?","La France, les Antilles et la Nouvelle-France."],[2,4,"rc","cause","Quelle conséquence le commerce triangulaire a-t-il pour la colonie?","Elle dépend de plus en plus de la France."],[2,4,"rc","faits","De combien à combien la population passe-t-elle entre 1713 et 1760?","De 25 000 à 75 000 habitants."],[2,5,"rc","cause","Pour quelles deux raisons la France et la Grande-Bretagne se disputent-elles l'Amérique?","Le territoire et le commerce des fourrures."],[2,5,"ordre","temps","Place en ordre : siège de Québec, déportation des Acadiens, prise de Louisbourg, vallée de l'Ohio, capitulation de Montréal.","Vallée de l'Ohio (1754) → déportation (1755) → Louisbourg (1758) → siège de Québec (1759) → Montréal capitule (1760)."],[2,5,"rc","cause","Nomme une cause de la déportation des Acadiens.","Ils participent aux guerres contre les Britanniques, ou ils refusent l'arrivée d'immigrants britanniques."],[2,5,"rc","cause","Quelle est la conséquence de la prise de Louisbourg en 1758?","Les Britanniques contrôlent l'entrée du fleuve Saint-Laurent."],[2,5,"qui","faits","Nous sommes les deux chefs morts au combat sur les plaines d'Abraham.","Wolfe (britannique) et Montcalm (français)."],[2,5,"vf","faits","Les Français perdent la bataille de Sainte-Foy en 1760.","Faux. Ils la gagnent, mais ils n'ont plus de ressources pour continuer."],[2,5,"rc","liens","Pourquoi les Français ne peuvent-ils pas reprendre Québec après Sainte-Foy?","Au printemps, ce sont des navires britanniques qui arrivent avec du ravitaillement. La France n'envoie aucun secours."],[2,5,"def",null,"Que veut dire « faire le siège » d'une ville?","L'encercler pour la forcer à se rendre."],[3,1,"rc","faits","Nomme les trois peuples qui cohabitent en Amérique du Nord en 1760.","Les Canadiens, les Britanniques et les Autochtones."],[3,1,"rc","cause","Pourquoi un régime « militaire » de 1760 à 1763?","La guerre n'est pas finie en Europe : aucun traité de paix n'est signé. En attendant, c'est l'armée qui administre."],[3,1,"cm","chg","Sous le régime militaire, garder la religion catholique, c'est…","b) Une continuité.",["Une différence","Une continuité"]],[3,1,"cm","chg","Le serment d'allégeance à George III, c'est…","a) Une différence : une promesse d'être fidèle au roi britannique.",["Une différence","Une continuité"]],[3,1,"rc","chg","La langue française sous le régime militaire : différence ou continuité?","Les deux. Continuité dans la vie de tous les jours, mais l'administration passe à l'anglais : une différence."],[3,1,"rc","cause","Quelle conséquence le départ d'environ 4000 membres de l'élite a-t-il?","Des marchands britanniques des Treize colonies arrivent et prennent le contrôle du commerce des fourrures. Une élite britannique remplace l'ancienne."],[3,1,"rc","faits","Que reste-t-il à la France en Amérique du Nord après le traité de Paris (1763)?","Les îles de Saint-Pierre-et-Miquelon et des droits de pêche dans le golfe du Saint-Laurent."],[3,1,"rc","cause","Pourquoi les mesures d'Amherst irritent-elles les Autochtones?","Ils ont besoin des armes pour chasser, et les cadeaux et les bons prix étaient une marque de respect entre alliés."],[3,1,"def",null,"Qu'est-ce qu'une coalition?","Une alliance de plusieurs groupes qui s'unissent pour un but commun. Exemple : la coalition de Pontiac (1763)."],[3,1,"rc","cause","Pourquoi les nations de Pontiac se révoltent-elles en 1763?","Elles craignent de perdre leurs terres au profit des colons britanniques, et de perdre le commerce des fourrures."],[3,2,"def",null,"Qu'est-ce qu'une constitution?","Un ensemble de lois qui fixent l'organisation politique d'un État."],[3,2,"rc","espace","Nomme les trois territoires créés par la Proclamation royale.","La Province de Québec, le territoire autochtone et les Treize colonies."],[3,2,"rc","liens","Pourquoi la Proclamation réserve-t-elle un territoire aux Autochtones?","C'est une réponse à la révolte de Pontiac : calmer les Premières Nations et éviter une nouvelle guerre."],[3,2,"rc","cause","Pourquoi la chambre d'assemblée promise n'est-elle jamais créée?","Elle serait réservée aux protestants (serment du Test). Une petite minorité britannique gouvernerait une grande majorité catholique."],[3,2,"rc","faits","Nomme deux instructions de George III à Murray pour assimiler les Canadiens.","Au choix : diviser la terre en cantons, appliquer les lois britanniques, établir l'Église anglicane, des écoles protestantes, attirer des immigrants anglophones, imposer le serment du Test."],[3,2,"def",null,"Qu'est-ce que le serment du Test?","Un serment qui force les catholiques à renier leur religion pour occuper un poste. Il les écarte du pouvoir."],[3,2,"rc","cause","Pourquoi Murray fait-il des concessions aux Canadiens?","Environ 100 000 Canadiens contre 500 Britanniques : gouverner autant de mécontents serait impossible. Il choisit la paix sociale."],[3,2,"rc","diff","Donne une différence entre le French Party et le British Party.","French Party (administrateurs, nobles, officiers) : favorable aux compromis. British Party (marchands) : veut l'assimilation, l'interdiction du catholicisme et une chambre réservée aux protestants."],[3,2,"rc","cause","Quelle est la conséquence des pétitions du British Party?","Murray est remplacé par Guy Carleton."],[3,2,"rc","faits","Qu'est-ce que Murray accorde à l'Église catholique, et que donne-t-elle en retour?","Il permet la nomination d'un nouvel évêque. L'Église demande aux Canadiens d'être fidèles aux Britanniques."],[3,3,"rc","cause","Nomme deux raisons de l'Acte de Québec (1774).","Au choix : l'agitation grandit dans les Treize colonies, l'assimilation ne fonctionne pas, il faut s'assurer de la loyauté des Canadiens."],[3,3,"cm","chg","Les lois criminelles britanniques en 1774, c'est…","b) Une continuité : elles sont maintenues.",["Un changement","Une continuité"]],[3,3,"cm","chg","Les lois civiles françaises en 1774, c'est…","a) Un changement : elles sont rétablies et les seigneuries sont reconnues.",["Un changement","Une continuité"]],[3,3,"rc","cause","Le serment du Test est remplacé par un serment de fidélité. Conséquence?","Les Canadiens peuvent siéger au Conseil et occuper des postes sans renier leur religion."],[3,3,"rc","diff","Comment les Canadiens et les Treize colonies réagissent-ils à l'Acte de Québec?","Les Canadiens sont satisfaits (lois civiles, religion, territoire). Les Treize colonies sont très mécontentes : pour elles, c'est une loi intolérable."],[3,3,"rc","cause","Nomme deux causes de la Révolution américaine.","Aucun nouveau territoire n'est ouvert aux colons après 1763, et la Grande-Bretagne impose des taxes (sucre, timbres, thé) pour payer la dette de la guerre de Sept Ans."],[3,3,"rc","liens","Explique le slogan « No taxation without representation ».","Les colons paient des taxes, mais n'ont aucun représentant au parlement de Londres. Ils jugent cela injuste."],[3,3,"ordre","temps","Place en ordre : déclaration d'indépendance, Boston Tea Party, traité de Paris, Acte de Québec.","Boston Tea Party (1773) → Acte de Québec (1774) → indépendance (1776) → traité de Paris (1783)."],[3,3,"rc","cause","Comment la Grande-Bretagne réagit-elle au Boston Tea Party?","Par les Lois intolérables : elle ferme le port de Boston."],[3,4,"rc","faits","Pourquoi les Canadiens ne se joignent-ils pas à la révolution en 1774?","Carleton rejette l'invitation, et l'évêque Briand convainc la population de rester fidèle à la couronne britannique."],[3,4,"rc","cause","Pourquoi l'invasion américaine de 1775 échoue-t-elle?","L'arrivée de renforts britanniques et l'hiver canadien."],[3,4,"cm","chg","Après 1783, la Province de Québec reste une colonie britannique. C'est…","b) Une continuité.",["Un changement","Une continuité"]],[3,4,"rc","cause","Quelle conséquence la perte de la vallée de l'Ohio a-t-elle pour les marchands britanniques?","Ils perdent un immense territoire de traite des fourrures, qui passe aux mains des États-Unis."],[3,4,"def",null,"Qu'est-ce qu'un loyaliste?","Un colon anglophone des Treize colonies resté fidèle à la couronne britannique pendant la révolution."],[3,4,"rc","faits","Combien de loyalistes s'installent dans la Province de Québec?","Environ 7000, sur plus de 100 000 qui quittent les États-Unis."],[3,4,"def",null,"Qu'est-ce que l'habeas corpus?","On ne peut pas emprisonner quelqu'un sans procès ni accusation."],[3,4,"rc","faits","Nomme deux revendications des loyalistes.","Au choix : une chambre d'assemblée, l'habeas corpus, des procès avec jury, les lois civiles anglaises."],[3,5,"rc","cause","D'où vient surtout la hausse de population entre 1763 et 1791?","De l'accroissement naturel (plus de naissances que de décès), pas de l'immigration."],[3,5,"cm","chg","La majorité reste canadienne, francophone et catholique. C'est…","b) Une continuité.",["Un changement","Une continuité"]],[3,5,"qui","faits","Nous sommes médecins, avocats et notaires canadiens, et nous réclamons une chambre d'assemblée.","La bourgeoisie professionnelle canadienne."],[3,5,"vf","faits","Après la Conquête, les marchands canadiens contrôlent la majorité du commerce.","Faux. Les marchands anglophones en contrôlent environ 90 %."],[3,5,"rc","faits","Nomme les deux compagnies de fourrures qui se font concurrence.","La Compagnie de la Baie d'Hudson et la Compagnie du Nord-Ouest."],[3,5,"def",null,"Qu'est-ce que la dîme?","La part de la récolte versée à l'Église."],[3,5,"rc","chg","Après 1783, la proportion d'anglophones passe de combien à combien? Pourquoi?","De 1 % à 12 %, à cause de l'arrivée des loyalistes."],[4,1,"rc","diff","Donne une différence entre le libéralisme et le républicanisme.","Le libéralisme veut partager le pouvoir du roi avec des élus (le roi reste). Le républicanisme veut donner le pouvoir au peuple et remet en question la monarchie elle-même."],[4,1,"ordre","temps","Place les trois constitutions en ordre.","Proclamation royale (1763) → Acte de Québec (1774) → Acte constitutionnel (1791)."],[4,1,"rc","espace","Quelle rivière sert de frontière entre le Haut-Canada et le Bas-Canada?","La rivière des Outaouais."],[4,1,"rc","espace","Pourquoi le Haut-Canada est-il plus au sud que le Bas-Canada sur la carte?","Les noms suivent le fleuve : le Haut-Canada est près de la source du Saint-Laurent, le Bas-Canada près de l'embouchure."],[4,1,"rc","diff","Donne une différence entre le Bas-Canada et le Haut-Canada en 1791.","Bas-Canada : environ 160 000 habitants, surtout francophones et catholiques, seigneuries et cantons. Haut-Canada : environ 10 000, surtout anglophones et protestants, cantons seulement."],[4,1,"rc","faits","Nomme les trois conditions pour voter en 1791.","Être sujet britannique, avoir 21 ans ou plus, être propriétaire foncier (ou locataire qui paie un loyer suffisant)."],[4,1,"vf","faits","En 1791, aucune femme ne peut voter.","Faux. L'Acte ne précise pas le sexe : celles qui remplissent les conditions votent dès 1791. Ce droit leur sera retiré en 1849."],[4,1,"rc","liens","Pourquoi dit-on que la démocratie est limitée en 1791?","Le gouverneur, nommé par Londres, a un droit de veto et peut dissoudre la Chambre. Les conseils nommés peuvent bloquer les lois des élus."],[4,1,"rc","faits","Quel compromis règle la question de la langue en 1793?","L'anglais devient la langue officielle, mais le français est toléré dans les débats et les lois sont traduites."],[4,1,"rc","diff","Parti canadien ou Tory Party : lequel est réformiste? Que veut-il?","Le Parti canadien : réformer les institutions et donner le contrôle du budget aux élus."],[4,1,"rc","faits","Que fait le gouverneur Craig en 1810?","Il fait supprimer le journal Le Canadien et emprisonner des dirigeants du Parti canadien, dont Pierre-Stanislas Bédard."],[4,2,"rc","diff","Pourquoi les populations du Bas-Canada et du Haut-Canada augmentent-elles?","Bas-Canada : l'accroissement naturel (beaucoup de naissances). Haut-Canada : l'immigration."],[4,2,"rc","cause","Nomme deux causes du départ de tant de gens du Royaume-Uni.","Au choix : la famine, les épidémies, la crise économique (chômage)."],[4,2,"def",null,"Qu'est-ce que la quarantaine?","L'isolement des malades pendant 40 jours. Exemple : Grosse-Île, ouverte en 1832."],[4,2,"rc","faits","Nomme deux solutions des Canadiens à la surpopulation des seigneuries.","Au choix : ouvrir de nouvelles régions (Saguenay, Beauce), migrer vers les villes, émigrer aux États-Unis."],[4,2,"rc","cause","Quelle conséquence l'abolition de l'esclavage (1834) a-t-elle?","Les deux Canadas deviennent une terre de refuge pour des milliers d'esclaves noirs américains."],[4,2,"def",null,"Que sont les réserves du clergé?","Un septième (1/7) des terres des nouveaux cantons, réservé à l'Église anglicane."],[4,2,"rc","cause","Pourquoi les Canadiens se méfient-ils de la Loi de l'institution royale (1801)?","Ils y voient une tentative d'assimilation : on craint l'anglicisation des enfants."],[4,2,"rc","diff","Où chaque bourgeoisie a-t-elle son pouvoir?","La bourgeoisie professionnelle canadienne : à la Chambre d'assemblée (élue). La bourgeoisie d'affaires britannique : dans les Conseils (nommés)."],[4,3,"rc","liens","Explique la chaîne d'événements qui mène à la guerre de 1812.","Blocus continental de Napoléon (1806) → blocus maritime britannique (1807) → il nuit au commerce des États-Unis → les États-Unis déclarent la guerre (1812)."],[4,3,"rc","cause","Pourquoi de nombreuses Premières Nations s'allient-elles aux Britanniques en 1812?","L'expansion américaine menace leurs terres. Exemple : le chef Tecumseh."],[4,3,"qui","faits","Avec mes Voltigeurs, je repousse les Américains à la bataille de la Châteauguay en 1813.","Charles-Michel de Salaberry."],[4,3,"rc","cause","Nomme deux causes du déclin du commerce des fourrures.","Au choix : les castors deviennent rares (on chasse plus loin, les coûts montent), la concurrence tourne à la guerre puis les compagnies fusionnent (1821), la soie remplace le feutre de castor."],[4,3,"rc","cause","Pourquoi le commerce du bois prend-il son essor?","Le Royaume-Uni a besoin de bois pour ses navires, le blocus l'empêche d'en acheter en Europe, et il accorde des tarifs préférentiels à ses colonies."],[4,3,"rc","rel","Associe chaque métier à sa tâche : bûcheron, équarrisseur, cageux.","Bûcheron : coupe les arbres. Équarrisseur : taille le tronc en forme carrée. Cageux : fait flotter le bois jusqu'aux ports."],[4,3,"rc","cause","Nomme deux causes de la crise agricole des années 1830.","Au choix : des sols surexploités, des terres surpeuplées, un blé du Haut-Canada meilleur et plus abondant."],[4,3,"rc","faits","À quoi sert le canal de Lachine (1825)?","À contourner les rapides du Saint-Laurent et à augmenter le commerce avec les États-Unis."],[4,3,"rc","cause","Pourquoi les marchands créent-ils les premières banques?","Environ six devises circulent dans la colonie : il faut mettre de l'ordre (changer l'argent, prêter, émettre du papier-monnaie, financer les infrastructures)."],[4,3,"def",null,"Qu'est-ce que le protectionnisme?","Protéger son économie contre la concurrence étrangère. Exemple : les Corn Laws (1815)."],[4,4,"rc","diff","Donne une différence entre le nationalisme canadien et le nationalisme britannique.","Le nationalisme canadien (francophone) veut préserver la religion catholique, la langue française et le droit civil français. Le nationalisme britannique (impérialisme) veut assimiler les Canadiens."],[4,4,"qui","faits","En 1834, je fonde la Société Saint-Jean-Baptiste.","Ludger Duvernay."],[4,4,"def",null,"Que sont les subsides?","L'argent que la Chambre récolte par les taxes."],[4,4,"cm","diff","Dans le Parti patriote, quelle position réclame l'indépendance par les armes?","b) La position révolutionnaire (radicale).",["La position réformiste","La position révolutionnaire"]],[4,4,"rc","cause","Nomme deux causes du mécontentement des Canadiens dans les années 1830.","Au choix : les mauvaises récoltes, le refus de nouvelles seigneuries, la hausse des rentes seigneuriales, les cantons réservés aux immigrants britanniques, la violence de l'armée."],[4,4,"rc","faits","Nomme deux revendications des 92 Résolutions.","Au choix : un Conseil législatif élu, la gestion du budget par la Chambre, plus de Canadiens dans l'administration, la protection de la langue et du droit civil français, la responsabilité ministérielle."],[4,4,"rc","cause","Comment Londres répond-elle aux 92 Résolutions?","Par les 10 résolutions Russell (1837) : toutes les demandes sont rejetées, et le gouverneur peut puiser dans les subsides sans l'accord de la Chambre."],[4,4,"rc","faits","Aux élections de 1834, combien de patriotes sont élus?","78 sur 84 : la population appuie massivement le Parti patriote."],[4,5,"def",null,"Que veut dire « boycotter »?","Refuser d'acheter certains produits pour défendre une cause."],[4,5,"rc","diff","À l'assemblée des Six Comtés, que veulent Papineau et Wolfred Nelson?","Papineau veut continuer la lutte politique. Wolfred Nelson appelle à la révolte armée."],[4,5,"rc","faits","Quelle est la seule victoire des Patriotes?","Saint-Denis, le 23 novembre 1837."],[4,5,"rc","diff","Pourquoi le clergé et les seigneurs s'opposent-ils aux rébellions?","Le clergé craint la séparation de l'Église et de l'État. Les seigneurs craignent pour leurs privilèges."],[4,5,"qui","faits","En 1838, je proclame l'indépendance du Bas-Canada.","Robert Nelson."],[4,5,"rc","cause","Nomme deux conséquences des rébellions.","Au choix : de nombreux morts, des villages brûlés, 12 pendus et 58 déportés en Australie, la constitution suspendue, un Conseil spécial sans élus (1838-1841)."],[4,5,"rc","faits","Nomme deux solutions proposées par Durham.","Au choix : un gouvernement responsable, l'union du Haut et du Bas-Canada, l'anglais comme seule langue officielle, une immigration britannique massive. Le but : l'assimilation."],[4,5,"rc","diff","Pourquoi les Canadiens français s'opposent-ils à l'union des deux Canadas?","Ils ont peur de devenir minoritaires."],[4,5,"ordre","temps","Place en ordre : rapport Durham, bataille de Saint-Denis, union des deux Canadas, défaite d'Odelltown.","Saint-Denis (1837) → Odelltown (1838) → rapport Durham (1839) → union (1840)."]]};/*/FORM*/
 
 // Les 8 OI, dans l'ordre et avec les familles de l'aide-mémoire OI.
 const FAM = {
@@ -570,18 +600,32 @@ const store = {
   get(k) { try { return JSON.parse(localStorage.getItem("hubhqc:" + k)); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem("hubhqc:" + k, JSON.stringify(v)); } catch (e) {} }
 };
-const page = (p, d) => `<span class="page">📒 Cahier p. ${p}${d ? " · Dossier " + d : ""}</span>`;
-// Les dossiers choisis en haut de la page (gardés sur l'appareil) : toutes les activités y pigent leurs questions.
-// Aucun dossier choisi = tout le chapitre. Un clic ajoute ou retire un dossier, toujours de la même façon (2026-10-27).
-const TOUS = [1, 2, 3, 4];
-const selection = () => { const d = store.get("choix"); return Array.isArray(d) ? d.filter(x => TOUS.includes(x)) : []; };
-const choisis = () => { const d = selection(); return d.length ? d : TOUS; };
-const nomChoix = (ds = choisis()) => ds.length === TOUS.length ? "Tout le chapitre" : (ds.length > 1 ? "Dossiers " : "Dossier ") + ds.join(", ").replace(/, (\d)$/, " et $1");
-function choisirDossier(v) {
-  const ds = selection(), d = +v;
-  store.set("choix", v === "tout" ? [] : ds.includes(d) ? ds.filter(x => x !== d) : [...ds, d].sort());
+// Les questions de la banque formative n'ont pas de page : on renvoie au dossier.
+const page = (p, d) => p ? `<span class="page">📒 Cahier p. ${p}${d ? " · Dossier " + d : ""}</span>` : d ? `<span class="page">📒 Dossier ${d} de ton cahier</span>` : "";
+// Mode TBI : l'enseignant projette ; rien n'est gardé sur l'appareil (ni crochets ni questions ratées).
+const tbi = () => document.body.classList.contains("tbi");
+function basculerTbi(on = !tbi()) {
+  document.body.classList.toggle("tbi", on);
+  document.querySelectorAll("[data-tbi]").forEach(b => b.textContent = on ? "Quitter TBI" : "TBI");
+  if (on && !document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(() => {});
+  if (!on && document.fullscreenElement) document.exitFullscreen?.();
   render();
 }
+// Le chapitre et les dossiers choisis en haut de la page (gardés sur l'appareil) : toutes les activités y pigent leurs questions.
+// Aucun dossier choisi = tout le chapitre. Un clic ajoute ou retire un dossier, toujours de la même façon (2026-10-27).
+const chap = () => { const c = store.get("chap"); return CHS[c] ? c : 1; };
+const dossiers = (c = chap()) => c === 1 ? DOSSIERS : Object.fromEntries((FORM.ch[c - 1] || []).slice(1).map((t, i) => [i + 1, t]));
+const tous = () => Object.keys(dossiers()).map(Number);
+const cleChoix = () => "choix" + (chap() > 1 ? chap() : "");
+const selection = () => { const d = store.get(cleChoix()), t = tous(); return Array.isArray(d) ? d.filter(x => t.includes(x)) : []; };
+const choisis = () => { const d = selection(); return d.length ? d : tous(); };
+const nomChoix = (ds = choisis()) => ds.length === tous().length ? "Tout le chapitre" : (ds.length > 1 ? "Dossiers " : "Dossier ") + ds.join(", ").replace(/, (\d)$/, " et $1");
+function choisirDossier(v) {
+  const ds = selection(), d = +v;
+  store.set(cleChoix(), v === "tout" ? [] : ds.includes(d) ? ds.filter(x => x !== d) : [...ds, d].sort());
+  render();
+}
+function choisirChap(c) { store.set("chap", +c); render(); }
 // Le dossier d'une question. Le tri et les paires n'ont que la page du cahier : on la convertit.
 const parPage = p => p <= 7 ? 1 : p <= 10 ? 2 : p <= 13 ? 3 : 4;
 const DOS = { chaine: x => x[2], tri: x => parPage(x[2]), paires: x => parPage(x[2]), ordre: x => x[3] };
@@ -597,20 +641,27 @@ const LETTRES = "ABCDE";
 /* ============ Accueil : les OI ============ */
 function render() {
   $("sansjs")?.remove();
-  $("hero").style.backgroundImage = `url(${IMAGES.couv})`;
-  $("hero").innerHTML = `<div><p class="eyebrow">Chapitre 1 · ${esc(CH.per)}</p><h1>${esc(CH.titre)}</h1>
-    <p>Tu étudies dans ton cahier, tu te testes ici&nbsp;: 2&nbsp;minutes par activité. Une erreur? Tu as la bonne réponse et la page de ton cahier.</p></div>`;
+  const c = chap(), CH = CHS[c], coul = FORM.ch[c - 1]?.[0] || "#3b2a1d";
+  // Le chapitre 1 a son illustration ; les autres, la couleur du chapitre (celle du tableau de bord).
+  $("hero").style.backgroundImage = c === 1 ? `url(${IMAGES.couv})` : "none";
+  $("hero").style.backgroundColor = c === 1 ? "" : coul;
+  $("hero").innerHTML = `<div><p class="eyebrow">Chapitre ${c} · ${esc(CH.per)}</p><h1>${esc(CH.titre)}</h1>
+    <p>Tu étudies dans ton cahier, tu te testes ici&nbsp;: 2&nbsp;minutes par activité. Une erreur? Tu as la bonne réponse et ${c === 1 ? "la page" : "le dossier"} de ton cahier.</p></div>`;
   const faits = store.get("faits") || {};
-  const ds = selection(), tout = !ds.length;
-  let h = `<div class="dossiers"><p class="eyebrow">Où es-tu rendu dans ton cahier?</p><div class="dos-g">
+  const ds = selection(), tout = !ds.length, dz = dossiers();
+  let h = `<p class="titre-tbi">Chapitre ${c} · ${esc(CH.titre)}</p><div class="dossiers" style="--c:${coul}">
+    <div class="chaps"><span class="eyebrow">Chapitre</span>${Object.keys(CHS).map(k => `<button class="chap${+k === c ? " on" : ""}" data-chap="${k}" style="--k:${FORM.ch[k - 1]?.[0] || "var(--c)"}" aria-pressed="${+k === c}">${k}</button>`).join("")}</div>
+    <p class="eyebrow">Où es-tu rendu dans ton cahier?</p><div class="dos-g" style="--nd:${Object.keys(dz).length}">
     <button class="dos tout${tout ? " on" : ""}" data-dos="tout" aria-pressed="${tout}">Tout le chapitre</button>
-    ${Object.entries(DOSSIERS).map(([d, t]) => { const on = ds.includes(+d);
+    ${Object.entries(dz).map(([d, t]) => { const on = ds.includes(+d);
       return `<button class="dos${on ? " on" : ""}" data-dos="${d}" aria-pressed="${on}"><span class="n">${d}</span><small>${esc(t)}</small></button>`; }).join("")}
     </div><p class="astuce">Touche un ou plusieurs dossiers : toutes les questions suivent.</p></div>`, fam = "";
   // Deux boutons de même valeur, côte à côte : l'élève choisit (2026-10-27) ; les activités par OI sont repliées.
   h += `<div class="go-g"><button class="go" data-act="examen5"><b>Teste-toi</b><small>5 questions</small></button>
-    <button class="go" data-act="examen"><b>Teste-toi</b><small>10 questions</small></button></div>
-    <details class="par-oi"${store.get("ouvert-oi") ? " open" : ""}><summary><span>Ou choisis une activité <i>par opération intellectuelle</i></span></summary>`;
+    <button class="go" data-act="examen"><b>Teste-toi</b><small>10 questions</small></button></div>`;
+  // Les activités par OI n'existent que pour le chapitre 1.
+  if (c !== 1) { $("ois").innerHTML = h; return; }
+  h += `<details class="par-oi"${store.get("ouvert-oi") ? " open" : ""}><summary><span>Ou choisis une activité <i>par opération intellectuelle</i></span></summary>`;
   // Combien de questions chaque activité a dans les dossiers choisis
   const nb = id => admis(id).length;
   const carteAct = a => { const n = nb(a.id), vide = n < (MINI[a.id] || 1), q = Math.min(SERIE, n);
@@ -717,15 +768,25 @@ const Q = {
     const nom = (zone ? CARTE.zones : CARTE.lieux)[cible][0];
     return { q, r: lettres[cible], rAff: lettres[cible] + " · " + nom, choix: cles.map(k => lettres[k]).sort(), p, d, carte: zone ? "zone" : "lieu", lettres,
       consigne: zone ? "Quel numéro sur la carte?" : "Quelle lettre sur la carte?" };
+  }),
+  // La banque formative (chapitres 1 à 4) : vrai ou faux et choix multiples se corrigent seuls ;
+  // les autres se retournent : on pense à sa réponse, on la voit, puis on dit si on l'avait.
+  form: () => FORMQ ||= FORM.q.map(([ch, d, t, oi, q, r, choix]) => {
+    if (t === "vf") { const v = /^Vrai/.test(r), corr = r.replace(/^(Vrai|Faux)\.?\s*/, ""); return { ch, d, q, r: v ? "Vrai" : "Faux", choix: ["Vrai", "Faux"], corr: corr || undefined, consigne: "Vrai ou faux?" }; }
+    if (t === "cm") { const bon = choix["abcde".indexOf(r[0])], plein = r.replace(/^[a-e]\)\s*/, "");
+      return { ch, d, q, r: bon, choix, corr: plein.replace(/\.$/, "") !== bon ? plein : undefined, consigne: "Choisis la bonne réponse." }; }
+    return { ch, d, q, r, ouverte: true, consigne: CONSIGNES[t] || CONSIGNES.rc };
   })
 };
+let FORMQ = null;
+const CONSIGNES = { rc: "Réponds dans ta tête, puis vérifie.", def: "Que veut dire ce mot? Réponds, puis vérifie.", qui: "Qui suis-je?", ordre: "Place en ordre dans ta tête, puis vérifie." };
 // Chaque activité a son paquet mélangé : on pige 5 cartes à la fois, sans répétition jusqu'à ce que le paquet soit vide.
 // Les questions ratées reviennent en douce dans les séries suivantes du même jeu (2 par série au plus),
 // jusqu'à ce qu'elles soient réussies. Rien n'est affiché à l'élève. Gardé sur l'appareil, comme les crochets.
 const PAQUETS = {};
 const ratees = id => (store.get("ratees") || {})[id] || [];
 function noter(id, i, bon) {
-  if (id == null || i == null) return;
+  if (id == null || i == null || tbi()) return;
   const r = store.get("ratees") || {}, l = (r[id] || []).filter(x => x !== i);
   if (!bon) l.push(i);
   r[id] = l; store.set("ratees", r);
@@ -740,11 +801,12 @@ function piger(id, ok, n = SERIE) {
 }
 const marquer = (x, id, i) => Array.isArray(x) ? Object.assign([...x], { _i: i, _src: id }) : { ...x, _i: i, _src: id };
 const tirage = (id, b) => piger(id, admis(id, b)).map(i => marquer(b[i], id, i));
-// Mini-examen (ou mini-test d'un dossier) : n questions des dossiers choisis, en variant les types de questions.
-function miniTest(ds, n = SERIE) {
+// Teste-toi (ou mini-test d'un dossier) : n questions des dossiers choisis du chapitre, en variant les types de questions.
+// La banque formative compte pour deux types (à corriger seul, à retourner) ; aux chapitres 2 à 4, c'est la seule source.
+function miniTest(ds, n = SERIE, c = chap()) {
   const parType = {};
-  for (const k of ["vf", "mot", "perso", "qui", "pareil", "change", "cause", "carte", "avant"])
-    Q[k]().forEach((m, i) => { if (ds.includes(m.d)) (parType[k] ||= []).push(marquer(m, k, i)); });
+  for (const k of ["vf", "mot", "perso", "qui", "pareil", "change", "cause", "carte", "avant", "form"])
+    Q[k]().forEach((m, i) => { if (ds.includes(m.d) && (m.ch || 1) === c) { const t = k === "form" ? (m.ouverte ? "fo" : "fc") : k; (parType[t] ||= []).push(marquer(m, k, i)); } });
   Object.keys(parType).forEach(k => parType[k] = melange(parType[k]));
   const out = [], types = melange(Object.keys(parType));
   while (out.length < n && types.some(k => parType[k].length))
@@ -757,7 +819,7 @@ function lancer(id, opts = {}) {
   let items;
   if (opts.items) items = opts.items;
   else if (id === "examen" || id === "examen5") items = miniTest(choisis(), id === "examen" ? 10 : 5);
-  else if (/^test\d$/.test(id)) items = miniTest([+id[4]]);
+  else if (/^test\d$/.test(id)) items = miniTest([+id[4]], SERIE, 1);
   else if (Q[id]) items = tirage(id, Q[id]());
   const o = oiDe(act.oi);
   run = { id, opts, act, items, k: 0, rates: [], etat: [] };
@@ -773,6 +835,8 @@ const barreProg = () => { const h = etoiles(run.etat, run.items.length, run.dern
 function question() {
   if (run.k >= run.items.length) return fin(run.items.length - run.rates.length, run.items.length);
   const m = run.items[run.k];
+  if (m.ouverte) return $("zone").innerHTML = `${barreProg()}<p class="demande">${esc(m.consigne)}</p><div class="q-carte"><p class="q-jeu">${esc(m.q)}</p></div>
+    <div class="suite" id="voir"><button class="btn acc" data-voir>Voir la réponse</button></div><div id="retro"></div>`;
   const texte = m.trou ? esc(m.q).replace("___", '<span class="trou">?</span>') : esc(m.q);
   const classe = (m.carte ? "lettres" : m.choix.length === 2 ? "deux" : m.trou ? "tuiles" : "") + " n" + m.choix.length;
   const carteQ = `<div class="q-carte">${m.ctx || ""}<p class="q-jeu">${texte}</p>${m.ctx2 || ""}</div>`;
@@ -797,6 +861,22 @@ function repondre(btn) {
     ? `<div class="retro ok"><b>✅ ${BRAVO[Math.floor(Math.random() * BRAVO.length)]}</b>${m.rAff ? " · " + esc(m.rAff) : ""}${m.corr ? "<br>" + esc(m.corr) : ""}</div><div class="suite"><button class="btn acc" data-suite>Suivante →</button></div>`
     : `<div class="retro ko"><b>La bonne réponse : ${esc(rep)}</b>${m.corr ? "<br>" + esc(m.corr) : ""}<br>${page(m.p, m.d)}</div><div class="suite"><button class="btn acc" data-suite>Suivante →</button></div>`;
   $("retro").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+// Question ouverte : la réponse apparaît, puis un clic dit si on l'avait (et passe à la suivante).
+function voir() {
+  const m = run.items[run.k];
+  $("voir")?.remove();
+  $("retro").innerHTML = `<div class="retro rep"><b>La réponse</b><br>${esc(m.r)}<br>${page(m.p, m.d)}</div>
+    <div class="choix deux auto"><button data-auto="1">✓ ${tbi() ? "On l'avait" : "Je l'avais"}</button><button data-auto="0">Pas encore</button></div>`;
+  $("retro").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+function autoNote(bon) {
+  const m = run.items[run.k];
+  run.etat[run.k] = bon ? 1 : 0; run.dernier = run.k;
+  if (!bon) run.rates.push(m);
+  noter(m._src, m._i, bon);
+  run.k++; question();
 }
 
 /* ---------- Mets en ordre ---------- */
@@ -898,7 +978,7 @@ function tuile(btn) {
 
 /* ---------- Fin d'activité : réponses à revoir + la suite ---------- */
 function fin(bons, total, cible = "zone", note = "") {
-  const faits = store.get("faits") || {}; faits[run.id] = true; store.set("faits", faits);
+  if (!tbi()) { const faits = store.get("faits") || {}; faits[run.id] = true; store.set("faits", faits); }
   const pct = bons / total;
   const titre = pct === 1 ? "Félicitations!" : pct >= .8 ? "Bravo!" : pct >= .6 ? "Belle job!" : pct >= .4 ? "Bon début" : "Ça se travaille";
   const sous = pct === 1 ? "Toutes les étoiles. Tu maîtrises!" : pct >= .6 ? "Encore une série pour aller chercher toutes les étoiles?" : "Jette un œil aux pages ci-dessous, puis rejoue : tu vas t'améliorer.";
@@ -909,7 +989,7 @@ function fin(bons, total, cible = "zone", note = "") {
       <button class="btn acc" data-rejouer><span aria-hidden="true">↻</span> Rejouer</button>
       <button class="btn sec" data-fermer><span aria-hidden="true">⌂</span> Menu</button>
     </div>
-    ${run.rates.length && cible === "zone" ? `<div class="revoir"><p class="eyebrow" style="padding:10px 0 2px">À revoir dans ton cahier</p>${run.rates.map(m => `<div><span>${esc((m.rev || m.q).replace("___", "…"))} <b>→ ${esc(m.rAff || m.r)}</b></span>${page(m.p)}</div>`).join("")}</div>` : ""}</div>`;
+    ${run.rates.length && cible === "zone" ? `<div class="revoir"><p class="eyebrow" style="padding:10px 0 2px">À revoir dans ton cahier</p>${run.rates.map(m => `<div><span>${esc((m.rev || m.q).replace("___", "…"))} <b>→ ${esc(m.rAff || m.r)}</b></span>${page(m.p, m.p ? 0 : m.d)}</div>`).join("")}</div>` : ""}</div>`;
   $(cible).innerHTML = (cible === "zone" ? "" : $(cible).innerHTML) + html;
 }
 
@@ -917,6 +997,10 @@ function fin(bons, total, cible = "zone", note = "") {
 document.addEventListener("click", e => {
   const t = e.target;
   if (t.closest("[data-plein]")) return basculerPlein();
+  if (t.closest("[data-tbi]")) return basculerTbi();
+  const ch = t.closest("[data-chap]"); if (ch) return choisirChap(ch.dataset.chap);
+  if (t.closest("[data-voir]")) return voir();
+  const au = t.closest("[data-auto]"); if (au) return autoNote(au.dataset.auto === "1");
   if (t.closest("[data-fermer]")) return fermer();
   const dos = t.closest("[data-dos]"); if (dos) return choisirDossier(dos.dataset.dos);
   const a = t.closest("[data-act]"); if (a) return lancer(a.dataset.act);
@@ -945,7 +1029,9 @@ obsFeuille.observe($("sheetIn"), { childList: true, subtree: true });
 // Lien direct : #vf, #carte… ouvre une activité
 // Code QR d'une fin de dossier dans le cahier : #c1-d2 choisit ce dossier et lance tout de suite un mini-examen de 5 questions.
 const h = location.hash.slice(1), qr = h.match(/^c1-d([1-4])$/);
-if (qr) { store.set("choix", [+qr[1]]); render(); lancer("examen5"); }
+// #tbi (la tuile du tableau de bord) ouvre directement le mode TBI.
+if (h === "tbi") { history.replaceState(null, "", location.pathname + location.search); basculerTbi(true); }
+else if (qr) { store.set("chap", 1); store.set("choix", [+qr[1]]); render(); lancer("examen5"); }
 else if (ACTIVITES.some(a => a.id === h) || h === "examen" || h === "examen5" || /^test[1-4]$/.test(h)) lancer(h);
 </script>
 </body>
