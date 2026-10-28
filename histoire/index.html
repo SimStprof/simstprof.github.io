@@ -406,6 +406,12 @@ body.tbi .titre-tbi{display:block}
 /* Question ouverte (banque formative) : on pense, on retourne, on dit si on l'avait */
 .retro.rep{background:color-mix(in srgb,var(--a,var(--c)) 12%,var(--bg))}
 .choix.auto{margin-top:12px}
+/* Au TBI, les élèves écrivent sur papier : les réponses s'affichent (avec une lettre), mais seul « Voir la réponse » se clique ;
+   puis chacun se donne ses points. Les étoiles deviennent de simples points de progression. */
+body.tbi .choix button,body.tbi .carte [data-rep]{pointer-events:none}
+body.tbi .choix button{border-bottom-width:3px;box-shadow:none}
+.prog i.v{background:var(--ink-2)}
+.lettre{font-family:var(--titre);font-weight:800;color:var(--a,var(--c));margin-right:6px}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
 </style>
 
@@ -829,26 +835,26 @@ function lancer(id, opts = {}) {
   if (Q[id] || id.startsWith("examen") || /^test\d$/.test(id) || opts.items) return question();
   ({ ordre, tri, paires, chaine })[id]();
 }
-const etoiles = (etat, n, neuf) => `<div class="prog${n > 5 ? " dix" : ""}">${Array.from({ length: n }, (_, j) => `<i class="${etat[j] === 1 ? "f" : etat[j] === 0 ? "x" : ""}${j === neuf ? " neuf" : ""}"></i>`).join("")}</div>`;
+const etoiles = (etat, n, neuf) => `<div class="prog${n > 5 ? " dix" : ""}">${Array.from({ length: n }, (_, j) => `<i class="${etat[j] === 1 ? "f" : etat[j] === 0 ? "x" : etat[j] === 2 ? "v" : ""}${j === neuf ? " neuf" : ""}"></i>`).join("")}</div>`;
 // La dernière étoile remplie fait « tac » une seule fois.
 const barreProg = () => { const h = etoiles(run.etat, run.items.length, run.dernier); run.dernier = null; return h; };
 function question() {
-  if (run.k >= run.items.length) return fin(run.items.length - run.rates.length, run.items.length);
+  if (run.k >= run.items.length) return tbi() ? finTbi() : fin(run.items.length - run.rates.length, run.items.length);
   const m = run.items[run.k];
   if (m.ouverte) return $("zone").innerHTML = `${barreProg()}<p class="demande">${esc(m.consigne)}</p><div class="q-carte"><p class="q-jeu">${esc(m.q)}</p></div>
     <div class="suite" id="voir"><button class="btn acc" data-voir>Voir la réponse</button></div><div id="retro"></div>`;
   const texte = m.trou ? esc(m.q).replace("___", '<span class="trou">?</span>') : esc(m.q);
   const classe = (m.carte ? "lettres" : m.choix.length === 2 ? "deux" : m.trou ? "tuiles" : "") + " n" + m.choix.length;
   const carteQ = `<div class="q-carte">${m.ctx || ""}<p class="q-jeu">${texte}</p>${m.ctx2 || ""}</div>`;
-  const reps = m.frise ? `<div class="choix frise"><button data-rep="Avant">⬅ Avant</button><div class="repere-f"><small>Le repère</small><b>${esc(m.frise[0])}</b><small>${esc(m.frise[1])}</small></div><button data-rep="Après">Après ➡</button></div><div id="retro"></div>`
-    : `<div class="choix ${classe}"${m.carte ? ` style="grid-template-columns:repeat(${m.choix.length},1fr)"` : ""}>${m.choix.map(c => `<button data-rep="${esc(c)}">${esc(c)}${m.sous?.[c] ? `<small>${esc(m.sous[c])}</small>` : ""}</button>`).join("")}</div><div id="retro"></div>`;
+  const reps = m.frise ? `<div class="choix frise"><button data-rep="Avant">⬅ Avant</button><div class="repere-f"><small>Le repère</small><b>${esc(m.frise[0])}</b><small>${esc(m.frise[1])}</small></div><button data-rep="Après">Après ➡</button></div>${tbi() ? '<div class="suite" id="voir"><button class="btn acc" data-voir>Voir la réponse</button></div>' : ""}<div id="retro"></div>`
+    : `<div class="choix ${classe}"${m.carte ? ` style="grid-template-columns:repeat(${m.choix.length},1fr)"` : ""}>${m.choix.map((c, i) => `<button data-rep="${esc(c)}">${tbi() && m.choix.length > 2 && !m.carte ? `<span class="lettre">${LETTRES[i]}</span>` : ""}${esc(c)}${m.sous?.[c] ? `<small>${esc(m.sous[c])}</small>` : ""}</button>`).join("")}</div>${tbi() ? '<div class="suite" id="voir"><button class="btn acc" data-voir>Voir la réponse</button></div>' : ""}<div id="retro"></div>`;
   $("zone").innerHTML = `${barreProg()}<p class="demande">${esc(m.consigne)}</p>` + (m.carte
     ? `<div class="avec-carte">${carteQ}<div class="col-carte">${carteSvg(m.carte, m.lettres)}</div><div class="col-rep">${reps}</div></div>`
     : carteQ + reps);
 }
 function repondre(btn) {
   const m = run.items[run.k];
-  if (m.fait) return; m.fait = true;
+  if (m.fait || tbi()) return; m.fait = true;
   const bon = btn.dataset.rep === m.r;
   run.etat[run.k] = bon ? 1 : 0; run.dernier = run.k;
   if (!bon) run.rates.push(m);
@@ -867,6 +873,18 @@ function repondre(btn) {
 function voir() {
   const m = run.items[run.k];
   $("voir")?.remove();
+  // Au TBI : la réponse s'affiche, chaque élève corrige son papier, puis « Suivante ». Personne n'est noté à l'écran.
+  if (tbi()) {
+    run.etat[run.k] = 2;
+    document.querySelector(".prog").outerHTML = etoiles(run.etat, run.items.length);
+    if (!m.ouverte) {
+      document.querySelectorAll("[data-rep]").forEach(b => b.classList.add(b.dataset.rep === m.r ? "bon" : "pale"));
+      if (m.trou) document.querySelector(".trou").textContent = m.r;
+    }
+    const rep = m.ouverte ? m.r : (m.rAff || m.r) + (m.corr ? " · " + m.corr : "");
+    $("retro").innerHTML = `<div class="retro ${m.ouverte ? "rep" : "ok"}"><b>La réponse</b><br>${esc(rep)}<br>${page(m.p, m.d)}</div><div class="suite"><button class="btn acc" data-suite>Suivante →</button></div>`;
+    return;
+  }
   $("retro").innerHTML = `<div class="retro rep"><b>La réponse</b><br>${esc(m.r)}<br>${page(m.p, m.d)}</div>
     <div class="choix deux auto"><button data-auto="1">✓ ${tbi() ? "On l'avait" : "Je l'avais"}</button><button data-auto="0">Pas encore</button></div>`;
   $("retro").scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -974,6 +992,13 @@ function tuile(btn) {
       fin(run.items.length, run.items.length, "fin", extra ? `Trouvées avec ${extra} essai${extra > 1 ? "s" : ""} de trop.` : "Sans une seule erreur!");
     }
   } else { run.mepris = [...(run.mepris || []), a.i, b.i]; [sel, btn].forEach(x => { x.classList.add("ko"); setTimeout(() => x.classList.remove("ko"), 450); }); }
+}
+
+// Fin au TBI : les élèves comptent leurs points sur leur feuille.
+function finTbi() {
+  const n = run.items.length;
+  $("zone").innerHTML = `<div class="fin" style="margin-top:14px">${etoiles(run.etat, n)}<h3>Comptez vos points!</h3><p>Combien sur ${n}?</p>
+    <div class="choix-fin"><button class="btn acc" data-rejouer><span aria-hidden="true">↻</span> ${n} autres questions</button><button class="btn sec" data-fermer><span aria-hidden="true">⌂</span> Menu</button></div></div>`;
 }
 
 /* ---------- Fin d'activité : réponses à revoir + la suite ---------- */
