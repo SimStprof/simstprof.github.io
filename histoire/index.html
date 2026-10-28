@@ -448,9 +448,11 @@ body.tbi .titre-tbi{display:block}
 .pts{margin-left:auto;padding:3px 12px;border-radius:999px;border:2px solid var(--c);color:var(--c);font-weight:800;font-size:15px}
 body.tbi .tag-oi,body.tbi .pts{font-size:20px}
 body.tbi .tag-oi i{width:28px;height:28px}
-.total-pts{font-size:26px}.total-pts b{font-family:var(--titre);font-size:1.6em;color:var(--c)}
-.detail-pts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:10px}
-.detail-pts span{padding:3px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-weight:700;font-size:16px}
+.total-pts{font-size:46px;line-height:1.1;margin:4px 0}.total-pts b{font-family:var(--titre);font-size:1.6em;color:var(--c)}
+/* Le détail : le numéro de la question (comme sur la feuille), puis son dénominateur, « /2 » */
+.detail-pts{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:12px}
+.detail-pts span{display:inline-flex;align-items:center;gap:8px;padding:4px 14px 4px 4px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-family:var(--titre);font-weight:800;font-size:24px}
+.detail-pts b{min-width:34px;height:34px;padding:0 4px;border-radius:999px;display:grid;place-items:center;background:var(--c);color:#fff;font-size:20px}
 .bientot{grid-column:1 / -1;padding:20px;border-radius:24px;border:2px dashed var(--line);text-align:center;font-weight:700;color:var(--ink-2)}
 /* Au TBI, les élèves écrivent sur papier : les réponses s'affichent (avec une lettre), mais seul « Voir la réponse » se clique ;
    puis chacun se donne ses points. Les étoiles deviennent de simples points de progression. */
@@ -1164,8 +1166,8 @@ function tuile(btn) {
 // Fin au TBI : les élèves comptent leurs points sur leur feuille.
 function finTbi() {
   const n = run.items.length, total = run.items.reduce((s, m) => s + points(m), 0);
-  $("zone").innerHTML = `<div class="fin" style="margin-top:14px">${numeros()}<h3>Comptez vos points!</h3><p class="total-pts">Sur <b>${total}</b></p>
-    <p class="detail-pts">${run.items.map((m, j) => `<span>${j + 1} · ${txtPts(points(m))}</span>`).join("")}</p>
+  $("zone").innerHTML = `<div class="fin" style="margin-top:14px">${numeros()}<h3>Comptez vos points!</h3><p class="total-pts" style="font-size:46px">Sur <b>${total}</b></p>
+    <p class="detail-pts">${run.items.map((m, j) => `<span><b>${j + 1}</b>/${points(m)}</span>`).join("")}</p>
     <div class="choix-fin"><button class="btn acc" data-rejouer><span aria-hidden="true">↻</span> ${n} autres questions</button><button class="btn sec" data-fermer><span aria-hidden="true">⌂</span> Menu</button></div></div>`;
 }
 
