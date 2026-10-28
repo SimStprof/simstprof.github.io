@@ -367,6 +367,21 @@ footer .wrap { padding-block: 22px 40px; font-size: .85rem; }
   td.r { font-size: 16px !important; }
 }
 </style>
+<style id="retour-haut">
+/* Retour en haut (2026-10-27) : un clic remonte à l'en-tête ; il apparaît en fondu quand on descend (sans script).
+   En bas à gauche : le bouton « Aa » du site est en bas à droite. */
+html { scroll-behavior: smooth; }
+.haut { position: fixed; left: max(14px, env(safe-area-inset-left, 0px)); bottom: max(14px, env(safe-area-inset-bottom, 0px)); z-index: 7999;
+  padding: 11px 18px; border-radius: 999px; background: var(--ink, #15171C); color: var(--paper, #fff);
+  font: 700 16px/1 system-ui, sans-serif; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,.28); }
+.haut:hover { transform: translateY(-2px); }
+@supports (animation-timeline: scroll()) {
+  .haut { animation: haut-apparait linear both; animation-timeline: scroll(); animation-range: 0 500px; }
+  @keyframes haut-apparait { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print { .haut { display: none !important; } }
+</style>
 <style id="qr-notes-sec5">
 /* « Est-ce que j'ai compris? » en fin de section. Posé par [98] Coulisses/[05] Claude/outils/qr/qr-notes-sec5.js */
 .qr5{display:flex;align-items:center;gap:16px;max-width:760px;margin:28px auto 8px;padding:14px 18px;border:2px dashed currentColor;border-radius:14px;opacity:.95;break-inside:avoid;page-break-inside:avoid}
@@ -387,21 +402,6 @@ footer .wrap { padding-block: 22px 40px; font-size: .85rem; }
 .qr5-btns a:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .qr5-qr{display:none}
 @media print{.qr5-affiche{margin:16px 0 0;padding:12px 16px;gap:8px;background:none;color:#15171C;border:2.5px solid #15171C;box-shadow:none;break-inside:avoid;page-break-inside:avoid}.qr5-affiche h2{font-size:22pt;color:#15171C}.qr5-affiche p{font-size:10pt}.qr5-btns{display:none}.qr5-qr{display:flex;gap:36px;justify-content:center}.qr5-qr figure{margin:0;font:700 10pt/1.2 var(--body,inherit)}.qr5-qr svg{display:block;width:1in;height:1in;margin:0 auto 4px}}
-</style>
-<style id="retour-haut">
-/* Retour en haut (2026-10-27) : un clic remonte à l'en-tête ; il apparaît en fondu quand on descend (sans script).
-   En bas à gauche : le bouton « Aa » du site est en bas à droite. */
-html { scroll-behavior: smooth; }
-.haut { position: fixed; left: max(14px, env(safe-area-inset-left, 0px)); bottom: max(14px, env(safe-area-inset-bottom, 0px)); z-index: 7999;
-  padding: 11px 18px; border-radius: 999px; background: var(--ink, #15171C); color: var(--paper, #fff);
-  font: 700 16px/1 system-ui, sans-serif; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,.28); }
-.haut:hover { transform: translateY(-2px); }
-@supports (animation-timeline: scroll()) {
-  .haut { animation: haut-apparait linear both; animation-timeline: scroll(); animation-range: 0 500px; }
-  @keyframes haut-apparait { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
-}
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-@media print { .haut { display: none !important; } }
 </style>
 <link rel="stylesheet" href="../polices/d2b6d1b6a0.css">
 </head>
