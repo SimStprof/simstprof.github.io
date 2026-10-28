@@ -406,6 +406,17 @@ body.tbi .titre-tbi{display:block}
 /* Question ouverte (banque formative) : on pense, on retourne, on dit si on l'avait */
 .retro.rep{background:color-mix(in srgb,var(--a,var(--c)) 12%,var(--bg))}
 .choix.auto{margin-top:12px}
+/* L'OI de la question (petit, avec son picto) et, au TBI, les points */
+.tete-q{display:flex;align-items:center;gap:10px;margin-top:12px;min-height:28px}
+.tag-oi{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 4px;border-radius:999px;background:color-mix(in srgb,var(--a) 10%,var(--bg));color:var(--a);font-size:15px;font-weight:800}
+.tag-oi i{width:22px;height:22px;background:var(--a);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+.tete-q + .demande{margin-top:6px}
+.pts{margin-left:auto;padding:3px 12px;border-radius:999px;border:2px solid var(--c);color:var(--c);font-weight:800;font-size:15px}
+body.tbi .tag-oi,body.tbi .pts{font-size:20px}
+body.tbi .tag-oi i{width:28px;height:28px}
+.total-pts{font-size:26px}.total-pts b{font-family:var(--titre);font-size:1.6em;color:var(--c)}
+.detail-pts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:10px}
+.detail-pts span{padding:3px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-weight:700;font-size:16px}
 .bientot{grid-column:1 / -1;padding:20px;border-radius:24px;border:2px dashed var(--line);text-align:center;font-weight:700;color:var(--ink-2)}
 /* Au TBI, les élèves écrivent sur papier : les réponses s'affichent (avec une lettre), mais seul « Voir la réponse » se clique ;
    puis chacun se donne ses points. Les étoiles deviennent de simples points de progression. */
@@ -842,10 +853,10 @@ const Q = {
   // La banque formative (chapitres 1 à 4) : vrai ou faux et choix multiples se corrigent seuls ;
   // les autres se retournent : on pense à sa réponse, on la voit, puis on dit si on l'avait.
   form: () => FORMQ ||= FORM.q.map(([ch, d, t, oi, q, r, choix]) => {
-    if (t === "vf") { const v = /^Vrai/.test(r), corr = r.replace(/^(Vrai|Faux)\.?\s*/, ""); return { ch, d, q, r: v ? "Vrai" : "Faux", choix: ["Vrai", "Faux"], corr: corr || undefined, consigne: "Vrai ou faux?" }; }
+    if (t === "vf") { const v = /^Vrai/.test(r), corr = r.replace(/^(Vrai|Faux)\.?\s*/, ""); return { ch, d, q, oi, r: v ? "Vrai" : "Faux", choix: ["Vrai", "Faux"], corr: corr || undefined, consigne: "Vrai ou faux?" }; }
     if (t === "cm") { const bon = choix["abcde".indexOf(r[0])], plein = r.replace(/^[a-e]\)\s*/, "");
-      return { ch, d, q, r: bon, choix, corr: plein.replace(/\.$/, "") !== bon ? plein : undefined, consigne: "Choisis la bonne réponse." }; }
-    return { ch, d, q, r, ouverte: true, consigne: CONSIGNES[t] || CONSIGNES.rc };
+      return { ch, d, q, oi, r: bon, choix, corr: plein.replace(/\.$/, "") !== bon ? plein : undefined, consigne: "Choisis la bonne réponse." }; }
+    return { ch, d, q, r, oi, t, ouverte: true, consigne: CONSIGNES[t] || CONSIGNES.rc };
   })
 };
 let FORMQ = null;
@@ -906,6 +917,22 @@ const barreProg = () => { if (tbi()) return numeros(); const h = etoiles(run.eta
 // Au TBI : des numéros au lieu des étoiles (celui en cours en couleur, ceux vus pleins), et le numéro devant la consigne.
 const numeros = () => `<div class="prog num">${run.items.map((_, j) => `<b class="${j === run.k ? "cour" : run.etat[j] === 2 ? "v" : ""}">${j + 1}</b>`).join("")}</div>`;
 const numQ = () => tbi() ? `<span class="num-q">${run.k + 1}</span>` : "";
+// Les points d'une question à écrire : 1 point par élément demandé (« Nomme deux… » = 2), +1 si on demande aussi de justifier.
+// Mettre en ordre : 1 point. Questions à choix : 1 point.
+const NOMBRES = { deux: 2, trois: 3, quatre: 4, cinq: 5 };
+function points(m) {
+  if (!m.ouverte || m.t === "ordre") return 1;
+  if (m.oi === "liens") return 2; // liens de causalité : 1 point par lien (A → B, B → C), comme le barème de ses examens
+  const n = (m.q.match(/\b(?:nomme|donne|indique|identifie|cite|décris|explique)\s+(deux|trois|quatre|cinq|[2-5])\b/i) || [])[1];
+  let p = n ? NOMBRES[n.toLowerCase()] || +n : 1;
+  if (/\b(?:nomme|donne|indique|identifie)\b/i.test(m.q) && /\b(?:justifie|explique)\b/i.test(m.q)) p++;
+  return p;
+}
+const txtPts = p => `${p} point${p > 1 ? "s" : ""}`;
+// L'OI de chaque question, avec le picto de l'affiche OI : petit, à côté de la consigne, pour que l'élève associe.
+const OI_FORM = { faits: "faits", temps: "temps", espace: "espace", rel: "relation", diff: "differences", chg: "changements", cause: "causes", liens: "causalite" };
+const tagOi = m => { const o = oiDe(m._src === "form" ? OI_FORM[m.oi] : ACTIVITES.find(a => a.id === m._src)?.oi);
+  return o ? `<span class="tag-oi" style="--a:${o.a}"><i style="--m:url(${PICTOS[o.id]})"></i>${esc(o.nom)}</span>` : ""; };
 // La réponse se lit de loin : l'essentiel en gras et en couleur, ce qui est entre parenthèses en plus petit,
 // les « Au choix : a, b, c » en points de forme, les « A → B → C » en liste numérotée. **mot** dans la banque force le gras.
 function joliReponse(t) {
@@ -932,14 +959,14 @@ function question() {
   if (run.k >= run.items.length) return tbi() ? finTbi() : fin(run.items.length - run.rates.length, run.items.length);
   const m = run.items[run.k];
   // Au TBI, les élèves écrivent sur papier : la consigne le dit.
-  if (m.ouverte) return $("zone").innerHTML = `${barreProg()}<p class="demande">${numQ()}${esc(tbi() ? (m.consigne === CONSIGNES.qui ? "Qui suis-je? Écris ta réponse." : "Écris ta réponse.") : m.consigne)}</p><div class="q-carte"><p class="q-jeu">${esc(m.q)}</p></div>
+  if (m.ouverte) return $("zone").innerHTML = `${barreProg()}<div class="tete-q">${tagOi(m)}${tbi() ? `<span class="pts">${txtPts(points(m))}</span>` : ""}</div><p class="demande">${numQ()}${esc(tbi() ? (m.consigne === CONSIGNES.qui ? "Qui suis-je? Écris ta réponse." : "Écris ta réponse.") : m.consigne)}</p><div class="q-carte"><p class="q-jeu">${esc(m.q)}</p></div>
     <div class="suite" id="voir"><button class="btn acc" data-voir>Voir la réponse</button></div><div id="retro"></div>`;
   const texte = m.trou ? esc(m.q).replace("___", '<span class="trou">?</span>') : esc(m.q);
   const classe = (m.carte ? "lettres" : m.choix.length === 2 ? "deux" : m.trou ? "tuiles" : "") + " n" + m.choix.length;
   const carteQ = `<div class="q-carte">${m.ctx || ""}<p class="q-jeu">${texte}</p>${m.ctx2 || ""}</div>`;
   const reps = m.frise ? `<div class="choix frise"><button data-rep="Avant">⬅ Avant</button><div class="repere-f"><small>Le repère</small><b>${esc(m.frise[0])}</b><small>${esc(m.frise[1])}</small></div><button data-rep="Après">Après ➡</button></div>${tbi() ? '<div class="suite" id="voir"><button class="btn acc" data-voir>Voir la réponse</button></div>' : ""}<div id="retro"></div>`
     : `<div class="choix ${classe}"${m.carte ? ` style="grid-template-columns:repeat(${m.choix.length},1fr)"` : ""}>${m.choix.map((c, i) => `<button data-rep="${esc(c)}">${tbi() && m.choix.length > 2 && !m.carte ? `<span class="lettre">${LETTRES[i]}</span>` : ""}${esc(c)}${m.sous?.[c] ? `<small>${esc(m.sous[c])}</small>` : ""}</button>`).join("")}</div>${tbi() ? '<div class="suite" id="voir"><button class="btn acc" data-voir>Voir la réponse</button></div>' : ""}<div id="retro"></div>`;
-  $("zone").innerHTML = `${barreProg()}<p class="demande">${numQ()}${esc(m.consigne)}</p>` + (m.carte
+  $("zone").innerHTML = `${barreProg()}<div class="tete-q">${tagOi(m)}${tbi() ? `<span class="pts">${txtPts(points(m))}</span>` : ""}</div><p class="demande">${numQ()}${esc(m.consigne)}</p>` + (m.carte
     ? `<div class="avec-carte">${carteQ}<div class="col-carte">${carteSvg(m.carte, m.lettres)}</div><div class="col-rep">${reps}</div></div>`
     : carteQ + reps);
 }
@@ -974,7 +1001,7 @@ function voir() {
     }
     // Choix : la bonne réponse en titre, puis l'explication. Question ouverte : la réponse mise en forme.
     const corps = m.ouverte ? joliReponse(m.r) : `<p><strong class="tete">${esc(m.rAff || m.r)}</strong></p>${m.corr ? `<p>${esc(m.corr)}</p>` : ""}`;
-    $("retro").innerHTML = `<div class="retro rep"><span class="etiq">Réponse ${run.k + 1}</span><div class="reponse">${corps}</div>${page(m.p, m.d)}</div><div class="suite"><button class="btn acc" data-suite>Suivante →</button></div>`;
+    $("retro").innerHTML = `<div class="retro rep"><span class="etiq">Réponse ${run.k + 1} · ${txtPts(points(m))}</span><div class="reponse">${corps}</div>${page(m.p, m.d)}</div><div class="suite"><button class="btn acc" data-suite>Suivante →</button></div>`;
     return;
   }
   $("retro").innerHTML = `<div class="retro rep"><span class="etiq">La réponse</span><div class="reponse">${joliReponse(m.r)}</div>${page(m.p, m.d)}</div>
@@ -1088,8 +1115,9 @@ function tuile(btn) {
 
 // Fin au TBI : les élèves comptent leurs points sur leur feuille.
 function finTbi() {
-  const n = run.items.length;
-  $("zone").innerHTML = `<div class="fin" style="margin-top:14px">${numeros()}<h3>Comptez vos points!</h3><p>Combien sur ${n}?</p>
+  const n = run.items.length, total = run.items.reduce((s, m) => s + points(m), 0);
+  $("zone").innerHTML = `<div class="fin" style="margin-top:14px">${numeros()}<h3>Comptez vos points!</h3><p class="total-pts">Sur <b>${total}</b></p>
+    <p class="detail-pts">${run.items.map((m, j) => `<span>${j + 1} · ${txtPts(points(m))}</span>`).join("")}</p>
     <div class="choix-fin"><button class="btn acc" data-rejouer><span aria-hidden="true">↻</span> ${n} autres questions</button><button class="btn sec" data-fermer><span aria-hidden="true">⌂</span> Menu</button></div></div>`;
 }
 
