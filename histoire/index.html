@@ -411,6 +411,24 @@ body.tbi .titre-tbi{display:block}
 body.tbi .choix button,body.tbi .carte [data-rep]{pointer-events:none}
 body.tbi .choix button{border-bottom-width:3px;box-shadow:none}
 .prog i.v{background:var(--ink-2)}
+/* Au TBI, les questions sont numérotées : les élèves écrivent 1, 2, 3… sur leur feuille */
+.prog.num{gap:10px}
+.prog.num b{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font:800 22px/1 var(--titre);border:3px solid var(--line);color:var(--ink-3)}
+.prog.num b.cour{border-color:var(--c);color:var(--c)}
+.prog.num b.v{background:var(--ink-2);border-color:var(--ink-2);color:var(--bg)}
+.num-q{display:inline-grid;place-items:center;min-width:1.5em;height:1.5em;padding:0 .2em;border-radius:14px;background:var(--c);color:#fff;margin-right:14px;vertical-align:middle}
+/* La réponse : elle apparaît sous la question ; l'essentiel en gras et en couleur, les listes en points de forme */
+.reponse{font-size:19px;line-height:1.35}
+.reponse strong{color:var(--c-deep,var(--c));font-family:var(--titre);font-weight:800}
+.reponse .tete{display:block;font-size:1.45em;line-height:1.15}
+.reponse .par{font-family:var(--texte);font-weight:500;color:var(--ink-2)}
+.reponse p + p,.reponse p + ul,.reponse p + ol{margin-top:8px}
+.reponse ul,.reponse ol{padding-left:1.4em}
+.reponse li{margin:5px 0}
+.reponse li::marker{color:var(--c);font-weight:800}
+body.tbi .reponse{font-size:30px}
+body.tbi .retro.rep{background:var(--surface);border:3px solid var(--c)}
+body.tbi .retro .etiq{font-size:18px}
 .lettre{font-family:var(--titre);font-weight:800;color:var(--a,var(--c));margin-right:6px}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
 </style>
@@ -837,18 +855,44 @@ function lancer(id, opts = {}) {
 }
 const etoiles = (etat, n, neuf) => `<div class="prog${n > 5 ? " dix" : ""}">${Array.from({ length: n }, (_, j) => `<i class="${etat[j] === 1 ? "f" : etat[j] === 0 ? "x" : etat[j] === 2 ? "v" : ""}${j === neuf ? " neuf" : ""}"></i>`).join("")}</div>`;
 // La dernière étoile remplie fait « tac » une seule fois.
-const barreProg = () => { const h = etoiles(run.etat, run.items.length, run.dernier); run.dernier = null; return h; };
+const barreProg = () => { if (tbi()) return numeros(); const h = etoiles(run.etat, run.items.length, run.dernier); run.dernier = null; return h; };
+// Au TBI : des numéros au lieu des étoiles (celui en cours en couleur, ceux vus pleins), et le numéro devant la consigne.
+const numeros = () => `<div class="prog num">${run.items.map((_, j) => `<b class="${j === run.k ? "cour" : run.etat[j] === 2 ? "v" : ""}">${j + 1}</b>`).join("")}</div>`;
+const numQ = () => tbi() ? `<span class="num-q">${run.k + 1}</span>` : "";
+// La réponse se lit de loin : l'essentiel en gras et en couleur, ce qui est entre parenthèses en plus petit,
+// les « Au choix : a, b, c » en points de forme, les « A → B → C » en liste numérotée. **mot** dans la banque force le gras.
+function joliReponse(t) {
+  t = String(t).trim();
+  const par = s => s.replace(/\(([^)]*)\)/g, '<span class="par">($1)</span>');
+  const fort = s => `<strong>${par(esc(s))}</strong>`;
+  let m;
+  if (/\*\*/.test(t)) return `<p>${par(esc(t)).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</p>`;
+  if ((m = t.match(/^(Vrai|Faux)\.?\s*(.*)$/s))) return `<p><strong class="tete">${m[1]}</strong></p>${m[2] ? `<p>${par(esc(m[2]))}</p>` : ""}`;
+  if ((m = t.match(/^Au choix\s*:\s*(.+?)\.?$/s))) {
+    // Une phrase après la liste (« Le but : … ») va dessous, hors des points.
+    const [liste, ...apres] = m[1].split(/\.\s+(?=[A-ZÀ-ÖØ-Ý])/);
+    return `<p>Au choix :</p><ul>${liste.split(/\s*[,;]\s*/).map(x => `<li>${fort(x)}</li>`).join("")}</ul>${apres.length ? `<p>${par(esc(apres.join(". ")))}.</p>` : ""}`;
+  }
+  if (t.includes("→")) return `<ol>${t.replace(/\.$/, "").split(/\s*→\s*/).map(x => `<li>${fort(x)}</li>`).join("")}</ol>`;
+  const phrases = t.split(/(?<=[.!?])\s+(?=[A-ZÀ-ÖØ-Ý«])/);
+  const [une, ...reste] = phrases;
+  // Une longue phrase avec « : » : le début est l'essentiel, la suite l'explique.
+  const deux = une.length > 90 && une.indexOf(" : ") > 0 && une.indexOf(" : ") < 60;
+  const tete = deux ? une.slice(0, une.indexOf(" : ")) : une, suite = deux ? [maj(une.slice(une.indexOf(" : ") + 3)), ...reste] : reste;
+  return `<p><strong class="${tete.length < 60 ? "tete" : ""}">${par(esc(tete))}</strong></p>${suite.length ? `<p>${par(esc(suite.join(" ")))}</p>` : ""}`;
+}
 function question() {
   if (run.k >= run.items.length) return tbi() ? finTbi() : fin(run.items.length - run.rates.length, run.items.length);
   const m = run.items[run.k];
-  if (m.ouverte) return $("zone").innerHTML = `${barreProg()}<p class="demande">${esc(m.consigne)}</p><div class="q-carte"><p class="q-jeu">${esc(m.q)}</p></div>
+  // Au TBI, les élèves écrivent sur papier : la consigne le dit.
+  if (m.ouverte) return $("zone").innerHTML = `${barreProg()}<p class="demande">${numQ()}${esc(tbi() ? (m.consigne === CONSIGNES.qui ? "Qui suis-je? Écris ta réponse." : "Écris ta réponse.") : m.consigne)}</p><div class="q-carte"><p class="q-jeu">${esc(m.q)}</p></div>
     <div class="suite" id="voir"><button class="btn acc" data-voir>Voir la réponse</button></div><div id="retro"></div>`;
   const texte = m.trou ? esc(m.q).replace("___", '<span class="trou">?</span>') : esc(m.q);
   const classe = (m.carte ? "lettres" : m.choix.length === 2 ? "deux" : m.trou ? "tuiles" : "") + " n" + m.choix.length;
   const carteQ = `<div class="q-carte">${m.ctx || ""}<p class="q-jeu">${texte}</p>${m.ctx2 || ""}</div>`;
   const reps = m.frise ? `<div class="choix frise"><button data-rep="Avant">⬅ Avant</button><div class="repere-f"><small>Le repère</small><b>${esc(m.frise[0])}</b><small>${esc(m.frise[1])}</small></div><button data-rep="Après">Après ➡</button></div>${tbi() ? '<div class="suite" id="voir"><button class="btn acc" data-voir>Voir la réponse</button></div>' : ""}<div id="retro"></div>`
     : `<div class="choix ${classe}"${m.carte ? ` style="grid-template-columns:repeat(${m.choix.length},1fr)"` : ""}>${m.choix.map((c, i) => `<button data-rep="${esc(c)}">${tbi() && m.choix.length > 2 && !m.carte ? `<span class="lettre">${LETTRES[i]}</span>` : ""}${esc(c)}${m.sous?.[c] ? `<small>${esc(m.sous[c])}</small>` : ""}</button>`).join("")}</div>${tbi() ? '<div class="suite" id="voir"><button class="btn acc" data-voir>Voir la réponse</button></div>' : ""}<div id="retro"></div>`;
-  $("zone").innerHTML = `${barreProg()}<p class="demande">${esc(m.consigne)}</p>` + (m.carte
+  $("zone").innerHTML = `${barreProg()}<p class="demande">${numQ()}${esc(m.consigne)}</p>` + (m.carte
     ? `<div class="avec-carte">${carteQ}<div class="col-carte">${carteSvg(m.carte, m.lettres)}</div><div class="col-rep">${reps}</div></div>`
     : carteQ + reps);
 }
@@ -876,16 +920,17 @@ function voir() {
   // Au TBI : la réponse s'affiche, chaque élève corrige son papier, puis « Suivante ». Personne n'est noté à l'écran.
   if (tbi()) {
     run.etat[run.k] = 2;
-    document.querySelector(".prog").outerHTML = etoiles(run.etat, run.items.length);
+    document.querySelector(".prog").outerHTML = numeros();
     if (!m.ouverte) {
       document.querySelectorAll("[data-rep]").forEach(b => b.classList.add(b.dataset.rep === m.r ? "bon" : "pale"));
       if (m.trou) document.querySelector(".trou").textContent = m.r;
     }
-    const rep = m.ouverte ? m.r : (m.rAff || m.r) + (m.corr ? " · " + m.corr : "");
-    $("retro").innerHTML = `<div class="retro ${m.ouverte ? "rep" : "ok"}"><b>La réponse</b><br>${esc(rep)}<br>${page(m.p, m.d)}</div><div class="suite"><button class="btn acc" data-suite>Suivante →</button></div>`;
+    // Choix : la bonne réponse en titre, puis l'explication. Question ouverte : la réponse mise en forme.
+    const corps = m.ouverte ? joliReponse(m.r) : `<p><strong class="tete">${esc(m.rAff || m.r)}</strong></p>${m.corr ? `<p>${esc(m.corr)}</p>` : ""}`;
+    $("retro").innerHTML = `<div class="retro rep"><span class="etiq">Réponse ${run.k + 1}</span><div class="reponse">${corps}</div>${page(m.p, m.d)}</div><div class="suite"><button class="btn acc" data-suite>Suivante →</button></div>`;
     return;
   }
-  $("retro").innerHTML = `<div class="retro rep"><b>La réponse</b><br>${esc(m.r)}<br>${page(m.p, m.d)}</div>
+  $("retro").innerHTML = `<div class="retro rep"><span class="etiq">La réponse</span><div class="reponse">${joliReponse(m.r)}</div>${page(m.p, m.d)}</div>
     <div class="choix deux auto"><button data-auto="1">✓ ${tbi() ? "On l'avait" : "Je l'avais"}</button><button data-auto="0">Pas encore</button></div>`;
   $("retro").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
@@ -997,7 +1042,7 @@ function tuile(btn) {
 // Fin au TBI : les élèves comptent leurs points sur leur feuille.
 function finTbi() {
   const n = run.items.length;
-  $("zone").innerHTML = `<div class="fin" style="margin-top:14px">${etoiles(run.etat, n)}<h3>Comptez vos points!</h3><p>Combien sur ${n}?</p>
+  $("zone").innerHTML = `<div class="fin" style="margin-top:14px">${numeros()}<h3>Comptez vos points!</h3><p>Combien sur ${n}?</p>
     <div class="choix-fin"><button class="btn acc" data-rejouer><span aria-hidden="true">↻</span> ${n} autres questions</button><button class="btn sec" data-fermer><span aria-hidden="true">⌂</span> Menu</button></div></div>`;
 }
 
