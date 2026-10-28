@@ -68,8 +68,8 @@ svg{width:1em;height:1em;flex:none}
 .note small{font-size:15px;color:var(--ink-3)}
 .note.off{opacity:.6;box-shadow:none;border-style:dashed}
 /* Un seul geste pour commencer ; les types d'activité sont repliés dans un menu */
-.go-g{display:grid;gap:14px}
-.gros.go{flex-direction:column;padding:22px 16px;font-size:24px;background:var(--jaune);color:#0e0e0e}
+.go-g{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.gros.go{flex-direction:column;padding:22px 8px;font-size:clamp(19px,5.4vw,24px);white-space:nowrap;background:var(--jaune);color:#0e0e0e}
 .gros.go small{font-family:var(--mono);font-size:15px;font-weight:700;text-transform:none;margin-top:4px}
 .types summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 4px;border-top:3px solid var(--line);font-weight:800;font-size:17px}
 .types summary::-webkit-details-marker{display:none}
@@ -485,7 +485,7 @@ const ACTS = [
   { id: "budget", nom: "Classe la dépense", ic: "pie", oi: "Différences et similitudes", c1: "#3a0d24", c2: "#b8336a" },
   { id: "ordre", nom: "Dans l'ordre", ic: "list", oi: null, c1: "#3a1010", c2: "#a83226" }
 ];
-const actDe = id => ACTS.find(a => a.id === id) || { id, nom: id === "examen10" ? "Mini-examen · 10 questions" : "Teste-toi · un peu de tout", c1: "#10140f", c2: "#3f5a12" };
+const actDe = id => ACTS.find(a => a.id === id) || { id, nom: "Teste-toi · " + (id === "examen10" ? 10 : 5) + " questions", c1: "#10140f", c2: "#3f5a12" };
 
 // Chaque activité fabrique ses questions : { type, …, s, p }
 const glisse = (banque, cotes, titre) => banque.map(([t, ok, ex, s, p]) => ({ type: "swipe", t, cotes, titre, ok, ex, s, p }));
@@ -509,7 +509,9 @@ const Q = {
 const $t = id => document.getElementById(id);
 const melange = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const TOUTES = Object.keys(SECTIONS);
-const secs = () => { const v = store.get("sections"); return Array.isArray(v) && v.length ? v.filter(s => SECTIONS[s]) : TOUTES; };
+// Aucune section choisie = tout le chapitre ; un clic ajoute ou retire une section, toujours de la même façon (2026-10-27).
+const choixSec = () => { const v = store.get("sections"); return Array.isArray(v) ? v.filter(s => SECTIONS[s]) : []; };
+const secs = () => { const v = choixSec(); return v.length ? v : TOUTES; };
 const questions = id => (Q[id] ? Q[id]() : []).filter(q => secs().includes(q.s)).map(q => ({ ...q, act: id }));
 // Une ligne du reçu de fin : assez longue pour qu'on reconnaisse la question (elle peut aller à la ligne).
 const court = t => t.length > 70 ? t.slice(0, 69).trimEnd() + "…" : t;
@@ -672,7 +674,7 @@ const VUES = {
 let RUN = null;
 function renderTrain() {
   RUN = null;
-  const ss = secs(), tout = ss.length === TOUTES.length, faits = store.get("faits") || {};
+  const ss = secs(), tout = !choixSec().length, faits = store.get("faits") || {};
   const today = parse(iso(NOW));
   const nx = EXAMENS.filter(x => finSemaine(x) >= today).sort((a, b) => parse(a.semaine) - parse(b.semaine))[0];
   const nxs = nx ? nx.sections : [];
@@ -690,7 +692,7 @@ function renderTrain() {
       ${Object.entries(SECTIONS).map(([s, t]) => { const on = !tout && ss.includes(s);
         return `<button class="sx${on ? " on" : ""}" data-sx="${s}" aria-pressed="${on}"><b>${s}</b><small>${esc(t)}</small></button>`; }).join("")}
     </div>${nxs.length && nxs.join() !== ss.join() ? `<button class="sx-exam" data-sx="${nxs.join(",")}">🎯 Seulement la matière de ton ${esc(nx.titre.charAt(0).toLowerCase() + nx.titre.slice(1))} (${nxs.join(", ")})</button>` : ""}</section>
-    <section class="go-g"><button class="gros go" data-ex="examen5">▶ Teste-toi · 5 questions<small>Un peu de tout, dans tes sections</small></button><button class="gros ghost" data-ex="examen10">Mini-examen · 10 questions</button></section>
+    <section class="go-g"><button class="gros go" data-ex="examen5">Teste-toi<small>5 questions</small></button><button class="gros go" data-ex="examen10">Teste-toi<small>10 questions</small></button></section>
     <details class="types" id="types"${store.get("types") ? " open" : ""}><summary>Ou choisis un type d'activité <i>${ACTS.length}</i></summary><div class="grille">${ACTS.map(tuile).join("")}</div></details>
     <p class="t-note">Rien n'est envoyé : tes choix restent sur ton appareil.</p>`;
   // Le menu des types d'activité reste ouvert ou fermé, comme l'élève l'a laissé.
@@ -704,11 +706,11 @@ function notesHtml() {
     : `<p class="note off"><b>🔒 ${esc(n.titre)}</b><small>${parse(n.dispo) > today ? "Sort le " + esc(fmt(parse(n.dispo), { day: "numeric", month: "long" })) : "Bientôt"}</small></p>`).join("")}</div></section>`;
 }
 function choisirSec(v) {
-  let ss = secs();
-  if (v === "tout") ss = TOUTES;
+  let ss = choixSec();
+  if (v === "tout") ss = [];
   else if (v.includes(",")) ss = v.split(",");
-  else ss = ss.length === TOUTES.length ? [v] : ss.includes(v) ? ss.filter(x => x !== v) : [...ss, v].sort();
-  store.set("sections", ss.length ? ss : TOUTES);
+  else ss = ss.includes(v) ? ss.filter(x => x !== v) : [...ss, v].sort();
+  store.set("sections", ss);
   renderTrain();
 }
 

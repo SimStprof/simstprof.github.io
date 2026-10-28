@@ -129,7 +129,7 @@ header b{font-family:var(--titre);font-size:20px;font-weight:800;letter-spacing:
 .exams .act.large{grid-column:auto;margin-top:0}
 @media (max-width:560px){.exams .act.large .ic{display:none}}
 /* Un seul geste pour commencer : 5 questions mêlées ; les activités par OI, repliées (2026-10-26) */
-.go-g{display:grid;gap:12px;margin-top:18px}
+.go-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
 .go{display:flex;flex-direction:column;align-items:center;gap:4px;padding:20px 16px;border-radius:24px;background:var(--ink);color:var(--bg);text-align:center;transition:transform .15s}
 .go:active{transform:scale(.98)}
 .go b{font:800 24px/1.1 var(--titre)}
@@ -151,8 +151,9 @@ header b{font-family:var(--titre);font-size:20px;font-weight:800;letter-spacing:
 .dos .n{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:800 18px/1 var(--titre);background:var(--line);color:var(--ink-2)}
 .dos small{font-size:14px;font-weight:600;line-height:1.25;color:var(--ink-2)}
 .dos.tout{grid-column:1 / -1;justify-content:center;font-weight:800;padding:9px 12px}
-.dos.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
-.dos.on small{color:var(--bg);opacity:.85}
+/* Choisi : bordure et teinte de la couleur du cours (le noir plein faisait lourd, 2026-10-27) */
+.dos.on{background:color-mix(in srgb,var(--c) 14%,var(--bg));border-color:var(--c);color:var(--ink)}
+.dos.on small{color:var(--ink)}
 .dos.on .n{background:var(--c);color:#fff}
 @media (max-width:560px){.dos-g{grid-template-columns:1fr}.dos{padding:8px 12px}}
 @media (min-width:900px){.dos-g{grid-template-columns:auto repeat(4,1fr)}.dos.tout{grid-column:auto;padding:10px 20px}}
@@ -416,7 +417,6 @@ footer{color:var(--ink-3);font-size:12px;text-align:center;padding:26px 0 8px}
       <p style="color:var(--ink-3)">L'aperçu de ton application (OneDrive, Teams, courriel…) n'affiche pas ce site. Ouvre-le avec Safari, Chrome ou Edge.</p>
     </div>
     <div class="hero" id="hero"></div>
-    <div class="mode"><span>📒 Tu étudies dans ton cahier</span><span>🎯 Tu te testes ici</span><span>⏱️ 2 minutes par activité</span></div>
     <div id="ois"></div>
   </main>
 
@@ -571,15 +571,15 @@ const store = {
   set(k, v) { try { localStorage.setItem("hubhqc:" + k, JSON.stringify(v)); } catch (e) {} }
 };
 const page = (p, d) => `<span class="page">📒 Cahier p. ${p}${d ? " · Dossier " + d : ""}</span>`;
-// Les dossiers choisis en haut de la page (un ou plusieurs, gardés sur l'appareil) : toutes les activités y pigent leurs questions.
+// Les dossiers choisis en haut de la page (gardés sur l'appareil) : toutes les activités y pigent leurs questions.
+// Aucun dossier choisi = tout le chapitre. Un clic ajoute ou retire un dossier, toujours de la même façon (2026-10-27).
 const TOUS = [1, 2, 3, 4];
-const choisis = () => { const d = store.get("dossiers"); return Array.isArray(d) && d.length ? d : TOUS; };
+const selection = () => { const d = store.get("choix"); return Array.isArray(d) ? d.filter(x => TOUS.includes(x)) : []; };
+const choisis = () => { const d = selection(); return d.length ? d : TOUS; };
 const nomChoix = (ds = choisis()) => ds.length === TOUS.length ? "Tout le chapitre" : (ds.length > 1 ? "Dossiers " : "Dossier ") + ds.join(", ").replace(/, (\d)$/, " et $1");
 function choisirDossier(v) {
-  let ds = choisis();
-  if (v === "tout") ds = TOUS;
-  else { const d = +v; ds = ds.length === TOUS.length ? [d] : ds.includes(d) ? ds.filter(x => x !== d) : [...ds, d].sort(); }
-  store.set("dossiers", ds.length ? ds : TOUS);
+  const ds = selection(), d = +v;
+  store.set("choix", v === "tout" ? [] : ds.includes(d) ? ds.filter(x => x !== d) : [...ds, d].sort());
   render();
 }
 // Le dossier d'une question. Le tri et les paires n'ont que la page du cahier : on la convertit.
@@ -589,7 +589,7 @@ const banque = id => Q[id] ? Q[id]() : { chaine: CHAINES, tri: TRI, paires: PAIR
 const admis = (id, b = banque(id)) => { const ds = choisis(); return [...b.keys()].filter(i => ds.includes(DOS[id] ? DOS[id](b[i]) : b[i].d)); };
 const MINI = { ordre: 3, paires: 2 }; // moins que ça, l'activité n'a pas de sens
 const actDe = id => ACTIVITES.find(a => a.id === id)
-  || (/^test\d$/.test(id) ? { id, nom: "Mini-test · Dossier " + id[4], oi: DOSSIERS[id[4]], ic: "✏️", a: "#1f1611" } : { id, nom: "Mini-examen · " + (id === "examen5" ? 5 : 10) + " questions", oi: nomChoix(), ic: "📝", a: "#1f1611" });
+  || (/^test\d$/.test(id) ? { id, nom: "Mini-test · Dossier " + id[4], oi: DOSSIERS[id[4]], ic: "✏️", a: "#1f1611" } : { id, nom: "Teste-toi · " + (id === "examen5" ? 5 : 10) + " questions", oi: nomChoix(), ic: "📝", a: "#1f1611" });
 const oiDe = id => OIS.find(o => o.id === id);
 const BRAVO = ["Exact!", "Oui!", "Bien vu!", "C'est ça!", "Parfait!"];
 const LETTRES = "ABCDE";
@@ -599,17 +599,17 @@ function render() {
   $("sansjs")?.remove();
   $("hero").style.backgroundImage = `url(${IMAGES.couv})`;
   $("hero").innerHTML = `<div><p class="eyebrow">Chapitre 1 · ${esc(CH.per)}</p><h1>${esc(CH.titre)}</h1>
-    <p>Choisis où tu es rendu dans ton cahier, puis teste-toi. Une erreur? Tu as la bonne réponse et la page de ton cahier.</p></div>`;
+    <p>Tu étudies dans ton cahier, tu te testes ici&nbsp;: 2&nbsp;minutes par activité. Une erreur? Tu as la bonne réponse et la page de ton cahier.</p></div>`;
   const faits = store.get("faits") || {};
-  const ds = choisis(), tout = ds.length === TOUS.length;
+  const ds = selection(), tout = !ds.length;
   let h = `<div class="dossiers"><p class="eyebrow">Où es-tu rendu dans ton cahier?</p><div class="dos-g">
     <button class="dos tout${tout ? " on" : ""}" data-dos="tout" aria-pressed="${tout}">Tout le chapitre</button>
     ${Object.entries(DOSSIERS).map(([d, t]) => { const on = ds.includes(+d);
       return `<button class="dos${on ? " on" : ""}" data-dos="${d}" aria-pressed="${on}"><span class="n">${d}</span><small>${esc(t)}</small></button>`; }).join("")}
     </div><p class="astuce">Touche un ou plusieurs dossiers : toutes les questions suivent.</p></div>`, fam = "";
-  // Un seul geste pour commencer (2026-10-26, avis du comité) : 5 questions mêlées ; les activités par OI sont repliées.
-  h += `<div class="go-g"><button class="go" data-act="examen5"><b>▶ Teste-toi · 5 questions</b><small>Un peu de tout, dans ${esc(nomChoix(ds).toLowerCase())}</small></button>
-    <button class="go ghost" data-act="examen"><b>Mini-examen · 10 questions</b></button></div>
+  // Deux boutons de même valeur, côte à côte : l'élève choisit (2026-10-27) ; les activités par OI sont repliées.
+  h += `<div class="go-g"><button class="go" data-act="examen5"><b>Teste-toi</b><small>5 questions</small></button>
+    <button class="go" data-act="examen"><b>Teste-toi</b><small>10 questions</small></button></div>
     <details class="par-oi"${store.get("ouvert-oi") ? " open" : ""}><summary><span>Ou choisis une activité <i>par opération intellectuelle</i></span></summary>`;
   // Combien de questions chaque activité a dans les dossiers choisis
   const nb = id => admis(id).length;
@@ -945,7 +945,7 @@ obsFeuille.observe($("sheetIn"), { childList: true, subtree: true });
 // Lien direct : #vf, #carte… ouvre une activité
 // Code QR d'une fin de dossier dans le cahier : #c1-d2 choisit ce dossier et lance tout de suite un mini-examen de 5 questions.
 const h = location.hash.slice(1), qr = h.match(/^c1-d([1-4])$/);
-if (qr) { store.set("dossiers", [+qr[1]]); render(); lancer("examen5"); }
+if (qr) { store.set("choix", [+qr[1]]); render(); lancer("examen5"); }
 else if (ACTIVITES.some(a => a.id === h) || h === "examen" || h === "examen5" || /^test[1-4]$/.test(h)) lancer(h);
 </script>
 </body>
